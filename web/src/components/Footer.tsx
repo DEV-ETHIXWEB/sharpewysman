@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCaseStudies, getIndustries, getSettings } from "@/lib/wp";
 import { FOUNDED_YEAR, SITE } from "@/lib/site";
 import { Logo } from "./ui";
+import { PoweredBy } from "./PoweredBy";
 import { IconArrow, IconLinkedIn, IconMail, IconPhone, IconPin } from "./icons";
 
 export async function Footer() {
@@ -121,6 +122,13 @@ export async function Footer() {
               </a>
             </li>
           </ul>
+        </div>
+      </div>
+
+      {/* Studio signature */}
+      <div className="border-t border-white/[0.06]">
+        <div className="container-sw flex justify-center py-5">
+          <PoweredBy tone="light" />
         </div>
       </div>
     </footer>

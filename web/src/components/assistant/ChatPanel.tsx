@@ -7,6 +7,7 @@ import { AssistantEngine } from "@/lib/assistant/engine";
 import { emptyCtx, type AssistantKB, type Block, type Ctx, type Reply } from "@/lib/assistant/types";
 import { IconArrow, IconPin, IconSalary } from "../icons";
 import { Tick } from "../ui";
+import { PoweredBy } from "../PoweredBy";
 
 type Msg = { id: string; from: "bot" | "user"; reply?: Reply; text?: string; streamed?: boolean };
 
@@ -257,6 +258,9 @@ export function ChatPanel({ open, onClose }: { open: boolean; onClose: () => voi
             Talk to a recruiter
           </Link>
         </p>
+        <div className="mt-2.5 flex justify-center border-t border-line pt-2.5">
+          <PoweredBy tone="dark" size="sm" />
+        </div>
       </form>
     </div>
   );
