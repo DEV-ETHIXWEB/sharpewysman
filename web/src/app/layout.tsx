@@ -5,11 +5,12 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/ui";
-import { SITE, SITE_URL } from "@/lib/site";
+import { GA_ID, SITE, SITE_URL } from "@/lib/site";
 import { organizationLd, websiteLd } from "@/lib/seo";
 import { getSettings } from "@/lib/wp";
 import { MotionRuntime } from "@/components/motion/MotionRuntime";
 import { ChatLauncher } from "@/components/assistant/ChatLauncher";
+import { CookieConsent } from "@/components/CookieConsent";
 
 /**
  * Typography
@@ -53,7 +54,6 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings = await getSettings();
@@ -78,10 +78,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ChatLauncher />
         {GA_ID ? (
           <>
-            <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
-            <Script id="ga" strategy="afterInteractive">
-              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
+            {/* Consent Mode v2: analytics stays off until the visitor accepts; ads are never used. */}
+            <Script id="ga-consent" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}var c=null;try{c=localStorage.getItem('sw-consent')}catch(e){}gtag('consent','default',{analytics_storage:c==='granted'?'granted':'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});gtag('js',new Date());gtag('config','${GA_ID}',{anonymize_ip:true});`}
             </Script>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+            <CookieConsent />
           </>
         ) : null}
       </body>

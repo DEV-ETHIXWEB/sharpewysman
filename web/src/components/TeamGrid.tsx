@@ -37,19 +37,19 @@ export function TeamGrid({ team, detailed = false }: { team: TeamMember[]; detai
             ) : null}
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-bold tabular-nums">
               {m.phone ? (
-                <a href={telHref(m.phone)} className="icon-inline hover:text-maroon">
+                <a href={telHref(m.phone)} className="icon-inline min-h-6 hover:text-maroon">
                   <IconPhone className="h-4 w-4 text-maroon" />
                   {m.phone}
                 </a>
               ) : null}
               {m.email ? (
-                <a href={`mailto:${m.email}`} className="icon-inline hover:text-maroon">
+                <a href={`mailto:${m.email}`} className="icon-inline min-h-6 hover:text-maroon">
                   <IconMail className="h-4 w-4 text-maroon" />
                   Email
                 </a>
               ) : null}
               {m.linkedin ? (
-                <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="icon-inline hover:text-maroon">
+                <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="icon-inline min-h-6 hover:text-maroon">
                   <IconLinkedIn className="h-4 w-4 text-maroon" />
                   LinkedIn
                   <span className="sr-only">(opens in a new tab)</span>

@@ -37,6 +37,12 @@ async function wpFetch<T>(path: string, tags: string[]): Promise<T | null> {
   }
 }
 
+/** Collection endpoints: anything other than a JSON array (an error object, an HTML page) counts as unavailable. */
+async function wpList<T>(path: string, tags: string[]): Promise<T[] | null> {
+  const data = await wpFetch<unknown>(path, tags);
+  return Array.isArray(data) ? (data as T[]) : null;
+}
+
 const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', "#039": "'", apos: "'", nbsp: " ", hellip: "…", ndash: "-", mdash: "-", rsquo: "’", lsquo: "‘", rdquo: "”", ldquo: "“" };
 export function decodeEntities(s: string): string {
   return noDashes(
@@ -66,7 +72,7 @@ interface WPItem<S> {
 type JobFields = Omit<Job, "slug" | "title" | "body" | "datePosted">;
 
 export const getJobs = cache(async (): Promise<Job[]> => {
-  const data = await wpFetch<WPItem<JobFields>[]>("/wp/v2/sw-jobs?per_page=100&orderby=date&order=desc", ["wp:jobs"]);
+  const data = await wpList<WPItem<JobFields>>("/wp/v2/sw-jobs?per_page=100&orderby=date&order=desc", ["wp:jobs"]);
   if (!data) return seedJobs;
   return data
     .filter((d) => d.sw)
@@ -90,7 +96,7 @@ export async function getJob(slug: string): Promise<Job | undefined> {
 /* ---------------------------------------------------------- testimonials */
 
 export const getTestimonials = cache(async (): Promise<Testimonial[]> => {
-  const data = await wpFetch<WPItem<Omit<Testimonial, "id" | "quote" | "name">>[]>(
+  const data = await wpList<WPItem<Omit<Testimonial, "id" | "quote" | "name">>>(
     "/wp/v2/sw-testimonials?per_page=100&orderby=menu_order&order=asc",
     ["wp:testimonials"],
   );
@@ -108,7 +114,7 @@ export const getTestimonials = cache(async (): Promise<Testimonial[]> => {
 /* ------------------------------------------------------------------ team */
 
 export const getTeam = cache(async (): Promise<TeamMember[]> => {
-  const data = await wpFetch<WPItem<Omit<TeamMember, "slug" | "name" | "bio">>[]>(
+  const data = await wpList<WPItem<Omit<TeamMember, "slug" | "name" | "bio">>>(
     "/wp/v2/sw-team?per_page=100&orderby=menu_order&order=asc",
     ["wp:team"],
   );
@@ -129,7 +135,7 @@ export const getTeam = cache(async (): Promise<TeamMember[]> => {
 /* ------------------------------------------------------------ industries */
 
 export const getIndustries = cache(async (): Promise<Industry[]> => {
-  const data = await wpFetch<WPItem<Omit<Industry, "slug" | "name" | "intro">>[]>(
+  const data = await wpList<WPItem<Omit<Industry, "slug" | "name" | "intro">>>(
     "/wp/v2/sw-industries?per_page=100",
     ["wp:industries"],
   );
@@ -153,7 +159,7 @@ export async function getIndustry(slug: string): Promise<Industry | undefined> {
 /* ------------------------------------------------------------------ faqs */
 
 export const getFaqs = cache(async (): Promise<Faq[]> => {
-  const data = await wpFetch<WPItem<Pick<Faq, "audience">>[]>(
+  const data = await wpList<WPItem<Pick<Faq, "audience">>>(
     "/wp/v2/sw-faqs?per_page=100&orderby=menu_order&order=asc",
     ["wp:faqs"],
   );
@@ -169,7 +175,7 @@ export const getFaqs = cache(async (): Promise<Faq[]> => {
 /* ---------------------------------------------------------- case studies */
 
 export const getCaseStudies = cache(async (): Promise<CaseStudy[]> => {
-  const data = await wpFetch<WPItem<Omit<CaseStudy, "slug" | "title" | "summary">>[]>(
+  const data = await wpList<WPItem<Omit<CaseStudy, "slug" | "title" | "summary">>>(
     "/wp/v2/sw-case-studies?per_page=100",
     ["wp:case-studies"],
   );
@@ -193,7 +199,7 @@ interface WPPost extends WPItem<{ image?: string; category?: string; author?: st
 const PLACEHOLDER_POSTS = new Set(["hello-world"]);
 
 export const getArticles = cache(async (): Promise<Article[]> => {
-  const data = await wpFetch<WPPost[]>("/wp/v2/posts?per_page=50&status=publish", ["wp:posts"]);
+  const data = await wpList<WPPost>("/wp/v2/posts?per_page=50&status=publish", ["wp:posts"]);
   const fromWp = (data ?? [])
     .filter((p) => !PLACEHOLDER_POSTS.has(p.slug))
     .map<Article>((p) => ({
@@ -218,7 +224,7 @@ export async function getArticle(slug: string): Promise<Article | undefined> {
 /* ----------------------------------------------------------------- pages */
 
 export const getWpPage = cache(async (slug: string): Promise<{ title: string; html: string; modified: string } | null> => {
-  const data = await wpFetch<WPItem<never>[]>(`/wp/v2/pages?slug=${encodeURIComponent(slug)}`, [`wp:page:${slug}`]);
+  const data = await wpList<WPItem<never>>(`/wp/v2/pages?slug=${encodeURIComponent(slug)}`, [`wp:page:${slug}`]);
   const page = data?.[0];
   if (!page) return null;
   return { title: decodeEntities(page.title.rendered), html: page.content.rendered, modified: page.modified.slice(0, 10) };
@@ -228,11 +234,11 @@ export const getWpPage = cache(async (slug: string): Promise<{ title: string; ht
 
 export const getSettings = cache(async (): Promise<SiteSettings> => {
   const data = await wpFetch<Partial<SiteSettings>>("/sw/v1/settings", ["wp:settings"]);
-  if (!data) return DEFAULT_SETTINGS;
+  if (!data || typeof data !== "object" || Array.isArray(data)) return DEFAULT_SETTINGS;
   return {
     ...DEFAULT_SETTINGS,
     ...Object.fromEntries(Object.entries(data).filter(([, v]) => v !== "" && v != null)),
-    stats: data.stats?.length ? data.stats : DEFAULT_SETTINGS.stats,
+    stats: Array.isArray(data.stats) && data.stats.length ? data.stats : DEFAULT_SETTINGS.stats,
   } as SiteSettings;
 });
 

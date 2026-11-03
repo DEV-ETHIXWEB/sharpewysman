@@ -4,6 +4,9 @@ export const FOUNDED_YEAR = 2008;
 
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://sharpewysman.com").replace(/\/$/, "");
 
+/** GA4 measurement ID, only if well formed (it is written into an inline script). */
+export const GA_ID = /^G-[A-Z0-9]{4,16}$/.test(process.env.NEXT_PUBLIC_GA_ID ?? "") ? process.env.NEXT_PUBLIC_GA_ID : undefined;
+
 export const SITE = {
   name: "Sharpe Wysman",
   legalName: "Sharpe Wysman Recruitment Solutions",

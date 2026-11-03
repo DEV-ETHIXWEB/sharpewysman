@@ -870,3 +870,14 @@ html[data-scrolled="true"] .site-header {
     animation: none !important;
   }
 }
+
+/* Touch targets: footer and breadcrumb links get a 24px minimum hit area (WCAG 2.2 target size) without changing their look. */
+@layer components {
+  footer a,
+  footer button,
+  nav[aria-label="Breadcrumb"] a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
+  }
+}

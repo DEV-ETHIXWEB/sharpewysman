@@ -560,19 +560,51 @@ function sw_forms_authorised( WP_REST_Request $req ) {
 	return hash_equals( SW_FORMS_SECRET, (string) $req->get_header( 'x_sw_secret' ) );
 }
 
+/**
+ * Where resumes are stored. Defaults to wp-content/sw-private (locked down with .htaccess and a
+ * random 20-character file prefix). For the strongest protection, define SW_PRIVATE_DIR in
+ * wp-config.php as a folder outside the web root, e.g. dirname( ABSPATH ) . '/sw-private'.
+ */
 function sw_private_dir() {
-	$dir = WP_CONTENT_DIR . '/sw-private';
+	$dir = defined( 'SW_PRIVATE_DIR' ) && SW_PRIVATE_DIR ? untrailingslashit( SW_PRIVATE_DIR ) : WP_CONTENT_DIR . '/sw-private';
 	if ( ! is_dir( $dir ) ) {
 		wp_mkdir_p( $dir );
+	}
+	if ( ! file_exists( $dir . '/.htaccess' ) ) {
 		file_put_contents( $dir . '/.htaccess', "Require all denied\nDeny from all\n" ); // phpcs:ignore
+	}
+	if ( ! file_exists( $dir . '/index.php' ) ) {
 		file_put_contents( $dir . '/index.php', '<?php // Silence.' ); // phpcs:ignore
 	}
 	return $dir;
 }
 
+/**
+ * Persistent rate limit (survives across serverless instances of the frontend).
+ * Returns true when the action is allowed.
+ */
+function sw_rate_ok( $bucket, $key, $limit, $window ) {
+	$k     = 'sw_rl_' . $bucket . '_' . md5( strtolower( (string) $key ) );
+	$count = (int) get_transient( $k );
+	if ( $count >= $limit ) {
+		return false;
+	}
+	set_transient( $k, $count + 1, $window );
+	return true;
+}
+
+/** Removes anything that looks like a web address, so confirmation emails can't carry spam links. */
+function sw_no_links( $s ) {
+	return trim( preg_replace( '~(?:https?://|www\.)\S+|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|net|org|info|biz|ru|cn|xyz|top|io|co|ly|me|link|click|site|online|shop)\b\S*~i', '', (string) $s ) );
+}
+
 function sw_rest_enquiry( WP_REST_Request $req ) {
 	$p    = $req->get_body_params();
+	// Single-line fields: sanitize_text_field strips line breaks (prevents email header injection).
 	$get  = function ( $k, $max = 500 ) use ( $p ) {
+		return isset( $p[ $k ] ) ? mb_substr( sanitize_text_field( wp_unslash( $p[ $k ] ) ), 0, $max ) : '';
+	};
+	$text = function ( $k, $max = 5000 ) use ( $p ) {
 		return isset( $p[ $k ] ) ? mb_substr( sanitize_textarea_field( wp_unslash( $p[ $k ] ) ), 0, $max ) : '';
 	};
 	$data = array(
@@ -583,13 +615,33 @@ function sw_rest_enquiry( WP_REST_Request $req ) {
 		'phone'    => $get( 'phone', 40 ),
 		'company'  => $get( 'company', 160 ),
 		'linkedin' => esc_url_raw( $get( 'linkedin', 300 ) ),
-		'message'  => $get( 'message', 5000 ),
+		'message'  => $text( 'message', 5000 ),
 		'jobSlug'  => sanitize_title( $get( 'jobSlug', 200 ) ),
 		'jobTitle' => $get( 'jobTitle', 200 ),
 		'ip'       => $get( 'ip', 64 ),
 	);
 	if ( ! $data['name'] || ! is_email( $data['email'] ) ) {
 		return new WP_Error( 'sw_invalid', 'Name and a valid email are required.', array( 'status' => 422 ) );
+	}
+	if ( ! in_array( $data['topic'], array( 'hire', 'register', 'general' ), true ) ) {
+		$data['topic'] = 'general';
+	}
+
+	// Persistent abuse limits: 8 enquiries per hour per IP.
+	if ( ! sw_rate_ok( 'ip', $data['ip'], 8, HOUR_IN_SECONDS ) ) {
+		return new WP_Error( 'sw_rate_limited', 'Too many submissions.', array( 'status' => 429 ) );
+	}
+
+	// Applications are always tied to a real job; its title comes from WordPress, not the request.
+	if ( 'apply' === $data['kind'] ) {
+		$job = $data['jobSlug'] ? get_page_by_path( $data['jobSlug'], OBJECT, 'sw_job' ) : null;
+		if ( ! $job || 'publish' !== $job->post_status ) {
+			return new WP_Error( 'sw_invalid_job', 'That role is not open.', array( 'status' => 422 ) );
+		}
+		$data['jobTitle'] = get_the_title( $job );
+	} else {
+		$data['jobSlug']  = '';
+		$data['jobTitle'] = '';
 	}
 
 	// Store the resume outside the public uploads folder.
@@ -641,19 +693,31 @@ function sw_rest_enquiry( WP_REST_Request $req ) {
 			'admin_url' => admin_url( 'post.php?post=' . $post_id . '&action=edit' ),
 		)
 	);
+	// Reply-To built only from safe characters (no quotes, brackets or separators).
+	$reply_name = trim( preg_replace( '/[^\p{L}\p{N} .\'-]/u', '', $data['name'] ) );
 	sw_send_email(
 		$to,
 		sw_render_email( 'team_notification', $mail ),
-		array( 'Reply-To: ' . $data['name'] . ' <' . $data['email'] . '>' ),
+		array( 'Reply-To: ' . ( $reply_name ? '"' . $reply_name . '" ' : '' ) . '<' . $data['email'] . '>' ),
 		$cv_path ? array( $cv_path ) : array()
 	);
 
 	// Confirmation to the person who wrote in (can be switched off in settings).
-	if ( '0' !== (string) $settings['send_confirmation'] ) {
+	// The address is unverified, so the confirmation never repeats free text or links typed into the form,
+	// and each address receives at most 3 confirmations a day: the form can't be used to send spam.
+	if ( '0' !== (string) $settings['send_confirmation'] && sw_rate_ok( 'to', $data['email'], 3, DAY_IN_SECONDS ) ) {
 		$template = 'apply' === $data['kind'] ? 'confirm_application' : ( 'hire' === $data['topic'] ? 'confirm_hire' : ( 'register' === $data['topic'] ? 'confirm_register' : 'confirm_general' ) );
+		$confirm  = array_merge(
+			$mail,
+			array(
+				'name'    => sw_no_links( $data['name'] ),
+				'company' => sw_no_links( $data['company'] ),
+				'message' => '',
+			)
+		);
 		sw_send_email(
 			$data['email'],
-			sw_render_email( $template, $mail ),
+			sw_render_email( $template, $confirm ),
 			array( 'Reply-To: Sharpe Wysman <' . $to . '>' )
 		);
 	}
@@ -692,7 +756,9 @@ add_action(
 		}
 		nocache_headers();
 		header( 'Content-Type: application/octet-stream' );
-		header( 'Content-Disposition: attachment; filename="' . preg_replace( '/^[A-Za-z0-9]{20}-/', '', basename( $path ) ) . '"' );
+		$fname = preg_replace( '/[^A-Za-z0-9._ -]/', '_', preg_replace( '/^[A-Za-z0-9]{20}-/', '', basename( $path ) ) );
+		header( 'Content-Disposition: attachment; filename="' . $fname . '"' );
+		header( 'X-Content-Type-Options: nosniff' );
 		header( 'Content-Length: ' . filesize( $path ) );
 		readfile( $path ); // phpcs:ignore
 		exit;
@@ -780,6 +846,92 @@ add_filter(
 	10,
 	2
 );
+
+/* ==========================================================================
+ * 7b. Privacy (PIPEDA): WordPress's built-in export and erase tools cover enquiries
+ *     Tools > Export Personal Data / Erase Personal Data, by email address.
+ * ======================================================================== */
+
+function sw_enquiries_for( $email ) {
+	return get_posts(
+		array(
+			'post_type'      => 'sw_enquiry',
+			'post_status'    => 'any',
+			'posts_per_page' => 100,
+			'meta_key'       => 'sw_email', // phpcs:ignore WordPress.DB.SlowDBQuery
+			'meta_value'     => sanitize_email( $email ), // phpcs:ignore WordPress.DB.SlowDBQuery
+			'fields'         => 'ids',
+		)
+	);
+}
+
+add_filter(
+	'wp_privacy_personal_data_exporters',
+	function ( $exporters ) {
+		$exporters['sw-enquiries'] = array(
+			'exporter_friendly_name' => 'Website enquiries and applications',
+			'callback'               => function ( $email ) {
+				$items = array();
+				foreach ( sw_enquiries_for( $email ) as $id ) {
+					$data = array();
+					foreach ( array( 'kind', 'topic', 'name', 'email', 'phone', 'company', 'linkedin', 'jobTitle', 'message' ) as $k ) {
+						$v = get_post_meta( $id, 'sw_' . $k, true );
+						if ( '' !== $v ) {
+							$data[] = array( 'name' => ucfirst( $k ), 'value' => $v );
+						}
+					}
+					$data[]  = array( 'name' => 'Received', 'value' => get_the_date( 'Y-m-d H:i', $id ) );
+					$items[] = array( 'group_id' => 'sw-enquiries', 'group_label' => 'Website enquiries', 'item_id' => 'sw-enquiry-' . $id, 'data' => $data );
+				}
+				return array( 'data' => $items, 'done' => true );
+			},
+		);
+		return $exporters;
+	}
+);
+
+add_filter(
+	'wp_privacy_personal_data_erasers',
+	function ( $erasers ) {
+		$erasers['sw-enquiries'] = array(
+			'eraser_friendly_name' => 'Website enquiries and applications',
+			'callback'             => function ( $email ) {
+				$removed = false;
+				foreach ( sw_enquiries_for( $email ) as $id ) {
+					$removed = (bool) wp_delete_post( $id, true ) || $removed; // also deletes the stored resume
+				}
+				return array( 'items_removed' => $removed, 'items_retained' => false, 'messages' => array(), 'done' => true );
+			},
+		);
+		return $erasers;
+	}
+);
+
+/* ==========================================================================
+ * 7c. Hardening for a headless CMS
+ * ======================================================================== */
+
+// Don't publish usernames: the frontend never uses the users endpoint.
+add_filter(
+	'rest_endpoints',
+	function ( $endpoints ) {
+		if ( is_user_logged_in() ) {
+			return $endpoints;
+		}
+		foreach ( array_keys( $endpoints ) as $route ) {
+			if ( 0 === strpos( $route, '/wp/v2/users' ) ) {
+				unset( $endpoints[ $route ] );
+			}
+		}
+		return $endpoints;
+	}
+);
+
+// XML-RPC is a common brute-force target and nothing here needs it.
+// define( 'SW_ALLOW_XMLRPC', true ) in wp-config.php to turn it back on (e.g. for Jetpack).
+if ( ! defined( 'SW_ALLOW_XMLRPC' ) || ! SW_ALLOW_XMLRPC ) {
+	add_filter( 'xmlrpc_enabled', '__return_false' );
+}
 
 /* ==========================================================================
  * 8. One-time import of launch content

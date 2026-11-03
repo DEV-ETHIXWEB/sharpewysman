@@ -112,13 +112,6 @@ export const IconBriefcase = (p: IconProps) => (
 );
 
 /** Clock with an open crescent face. */
-export const IconClock = (p: IconProps) => (
-  <Svg {...p}>
-    <path d="M19.4 9.4A8 8 0 1 1 15 4.6" />
-    <path d="M12 7.5V12l3 2" />
-  </Svg>
-);
-
 export const IconSalary = (p: IconProps) => (
   <Svg {...p}>
     <path d="M12 4.5v15" />

@@ -18,10 +18,12 @@ interface MetaInput {
 /** Page metadata with canonical URL, Open Graph and Twitter cards. */
 export function buildMetadata({ title, description, path, image, type = "website", publishedTime, modifiedTime, noindex }: MetaInput): Metadata {
   const url = abs(path);
-  const images = image ? [{ url: image.startsWith("http") ? image : abs(image) }] : undefined;
+  // Every page gets a share image: its own, or the branded default card.
+  const images = image ? [{ url: image.startsWith("http") ? image : abs(image) }] : [{ url: abs("/opengraph-image"), width: 1200, height: 630, alt: SITE.name }];
   return {
     // Titles that already carry the brand skip the "%s | Sharpe Wysman" template.
-    title: title.includes(SITE.name) ? { absolute: title } : title,
+    // Long titles (articles) skip the suffix so search results don't cut them off.
+    title: title.includes(SITE.name) || title.length > 52 ? { absolute: title } : title,
     description,
     alternates: { canonical: url },
     openGraph: {
@@ -31,10 +33,10 @@ export function buildMetadata({ title, description, path, image, type = "website
       description,
       siteName: SITE.name,
       locale: SITE.locale,
-      ...(images ? { images } : {}),
+      images,
       ...(type === "article" ? { publishedTime, modifiedTime } : {}),
     },
-    twitter: { card: "summary_large_image", title, description, ...(images ? { images } : {}) },
+    twitter: { card: "summary_large_image", title, description, images },
     ...(noindex ? { robots: { index: false, follow: true } } : {}),
   };
 }

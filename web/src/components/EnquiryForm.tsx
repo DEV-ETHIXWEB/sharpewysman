@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { Tick } from "./ui";
 import { IconArrow, IconDocument, IconUpload } from "./icons";
+import { trackLead } from "@/lib/analytics";
 
 type Topic = "hire" | "register" | "general";
 
@@ -76,14 +77,22 @@ export function EnquiryForm({
     }
     setStatus("sending");
     setError("");
+    let res: Response;
     try {
-      const res = await fetch(mode === "apply" ? "/api/apply" : "/api/contact", { method: "POST", body: fd });
-      const data = (await res.json().catch(() => ({}))) as { error?: string };
-      if (!res.ok) throw new Error(data.error || "send_failed");
-      setStatus("sent");
-    } catch (err) {
+      res = await fetch(mode === "apply" ? "/api/apply" : "/api/contact", { method: "POST", body: fd });
+    } catch {
+      // Network failure: never show the browser's raw error text.
       setStatus("error");
-      setError(err instanceof Error && err.message !== "send_failed" ? err.message : "");
+      setError("");
+      return;
+    }
+    const data = (await res.json().catch(() => ({}))) as { error?: string };
+    if (res.ok) {
+      setStatus("sent");
+      trackLead(mode === "apply" ? "application" : topic);
+    } else {
+      setStatus("error");
+      setError(typeof data.error === "string" ? data.error : "");
     }
   }
 

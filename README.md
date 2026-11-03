@@ -71,6 +71,8 @@ Checks: `npm run typecheck`, `npm run lint`, `npm run build`.
    define( 'SW_REVALIDATE_SECRET', '<openssl rand -hex 32>' );
    define( 'SW_FORMS_SECRET', '<openssl rand -hex 32>' );
    define( 'SW_REDIRECT_FRONTEND', true ); // old theme URLs → new site
+   define( 'SW_PRIVATE_DIR', dirname( ABSPATH ) . '/sw-private' ); // optional: resumes outside the web root
+   // define( 'SW_ALLOW_XMLRPC', true ); // only if something (e.g. Jetpack) needs XML-RPC
    ```
 4. **Deploy to Netlify (free plan; commercial sites allowed).** Connect the repository. `netlify.toml`
    already points the build at `web/`. Set the environment variables from `.env.example`, with
@@ -84,8 +86,60 @@ Checks: `npm run typecheck`, `npm run lint`, `npm run build`.
 7. **Google Search Console:** verify the domain, submit `https://sharpewysman.com/sitemap.xml`,
    and request indexing for `/`, `/jobs` and `/employers`.
 
+   A production build **stops with an error** if `NEXT_PUBLIC_SITE_URL`, `WORDPRESS_URL`,
+   `WP_FORMS_SECRET` or `REVALIDATE_SECRET` is missing, so a site with broken forms can never go live.
+   Netlify bakes environment variables in at build time: after changing one, trigger a new deploy.
+
 Every old WordPress URL (`/accounting`, `/our-values`, `/contact-us`, `/insurance`, `/test`,
 `/new-home`, …) permanently redirects to its new page (see `web/next.config.ts`).
+
+## Environment variables
+
+| Name | Where | Required | Purpose |
+|---|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | Netlify | Yes | Public URL, used for canonical URLs, sitemap and schema |
+| `WORDPRESS_URL` | Netlify | Yes | The headless WordPress, e.g. `https://cms.sharpewysman.com` |
+| `WP_FORMS_SECRET` | Netlify + `wp-config.php` (`SW_FORMS_SECRET`) | Yes | Authenticates form submissions sent to WordPress |
+| `REVALIDATE_SECRET` | Netlify + `wp-config.php` (`SW_REVALIDATE_SECRET`) | Yes | Authenticates WordPress's "content changed" calls |
+| `WP_REVALIDATE_SECONDS` | Netlify | No (600) | Background refresh interval |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Netlify | No | Fallback public email if WordPress has none |
+| `NEXT_PUBLIC_GA_ID` | Netlify | No | GA4 measurement ID (`G-…`). Turns on analytics **and** the consent card |
+| `NEXT_PUBLIC_GSC_VERIFICATION` | Netlify | No | Google Search Console verification token |
+
+Secrets are never in the code or in git. To rotate one, generate a new value (`openssl rand -hex 32`),
+set it in both Netlify and `wp-config.php`, then redeploy.
+
+## Security
+
+* **Headers:** Content-Security-Policy (scripts from this site only, plus Google Analytics when enabled),
+  HSTS, `X-Frame-Options: DENY`, `nosniff`, Referrer-Policy, Permissions-Policy, COOP (`web/next.config.ts`).
+* **Forms** (`web/src/lib/enquiry.ts` → plugin): same-origin check, honeypot, per-IP rate limits in Next.js
+  and persistent ones in WordPress, strict validation, control characters stripped (no email header
+  injection), resumes checked by file signature and stored outside the public uploads folder, job titles
+  always taken from WordPress. Confirmation emails never repeat free text or links typed into the form and
+  are limited to 3 per address per day, so the form can't be used to send spam.
+* **Webhooks:** both directions use shared secrets compared in constant time.
+* **WordPress:** public username listing and XML-RPC are off; the `sw/v1/enquiry` endpoint rejects anything
+  without the secret.
+* **Personal data (PIPEDA):** enquiries appear in WordPress's **Tools → Export / Erase Personal Data**;
+  erasing also deletes the stored resume. Visitor IP addresses are kept with each enquiry for abuse
+  investigation. Nothing personal is logged by the website.
+* **Analytics:** off unless `NEXT_PUBLIC_GA_ID` is set. When on, Google Consent Mode starts as *denied*
+  and a consent card asks first (Quebec Law 25 opt-in). The `generate_lead` event fires only after the
+  server confirms delivery, and carries the form type only.
+* **Errors:** branded error pages show a reference code, never a stack trace.
+
+## Rollback and troubleshooting
+
+* **Roll back the website:** Netlify → Deploys → pick the last good deploy → *Publish deploy*. Instant.
+* **Roll back the plugin:** reinstall the previous zip; content and enquiries are stored in WordPress, not
+  the plugin.
+* **Forms say "We couldn't send that just now":** check Netlify function logs for `[enquiry]` (status code
+  only, no personal data), confirm both secrets match, and that `cms.sharpewysman.com/wp-json/` loads.
+* **An edit in WordPress doesn't appear:** it will within 10 minutes anyway; for instant updates check
+  `SW_FRONTEND_URL` and `SW_REVALIDATE_SECRET` in `wp-config.php`.
+* **WordPress is down:** the site keeps serving the last good pages; forms return a clear error with the
+  phone number.
 
 ## Cost: free
 
@@ -165,7 +219,24 @@ The homepage hero plays a gold handshake film (generated, then AI-upscaled 4x fr
 * A dynamic `sitemap.xml` built from WordPress content, `robots.txt` (preview deployments are never
   indexed), and `llms.txt` for AI search assistants.
 * One H1 per page, a semantic heading order, and alt text on every image.
-* Lighthouse (mobile, production build): Performance 94 to 98, Accessibility 100, Best Practices 100, SEO 100.
+* Lighthouse (mobile, production build, 3 November 2026): Performance 94 to 95, Accessibility 100, Best Practices 100, SEO 100, CLS 0.
+
+## Launch punch list (what is still needed, and who owns it)
+
+| Item | Status | Owner |
+|---|---|---|
+| Netlify site + the 4 required environment variables | Pending | Ethixweb |
+| `cms.sharpewysman.com` DNS record + SSL on Cloudways | Pending | Client (Namecheap) / Ethixweb |
+| Plugin installed, `wp-config.php` constants added | Pending | Ethixweb |
+| Enquiry inbox set in Settings → Sharpe Wysman, WP Mail SMTP sending verified | Pending | Client / Ethixweb |
+| Real test enquiry and job application on the **production** URL, received by email | Pending (passes locally) | Ethixweb |
+| Domain pointed at Netlify, `www` → apex redirect, SSL | Pending | Client (Namecheap) |
+| GA4 property ID (optional; the consent card appears automatically) | Pending | Client |
+| Google Search Console verification + sitemap submitted | Pending | Client / Ethixweb |
+| Error monitoring (e.g. Sentry free plan) needs an account | Not set up; Netlify logs only | Client decision |
+| Netlify account ownership transferred to the client, or documented as Ethixweb-owned | Pending | Client / Ethixweb |
+| Content approvals below | Pending | Client |
+| Post-launch check 24 to 48 hours later: leads arriving, no errors, analytics sane | Scheduled after launch | Ethixweb |
 
 ## Content to confirm with the client before launch
 
@@ -179,7 +250,9 @@ The homepage hero plays a gold handshake film (generated, then AI-upscaled 4x fr
 * **FAQ answers** about fees and confidentiality are written to industry norms. Confirm they match
   how the client works.
 * **Privacy policy and terms:** the current text is a generic template (it mentions shipping and
-  payments). It should be replaced with a recruitment-specific policy that complies with PIPEDA.
+  payments). It should be replaced with a recruitment-specific policy that complies with PIPEDA. It must
+  cover: what the forms collect (including resumes and IP address), how long enquiries are kept, how to
+  request access or deletion, and Google Analytics cookies if GA4 is switched on.
 * **Case studies, awards and client logos:** none exist yet. Add real ones in WordPress. Template
   logos and "AllSquares" content from the old site were intentionally not carried over.
 * **Insights:** three launch articles were written for SEO and need the client's review.

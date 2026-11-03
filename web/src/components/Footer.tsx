@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { getCaseStudies, getIndustries, getSettings } from "@/lib/wp";
-import { FOUNDED_YEAR, SITE } from "@/lib/site";
+import { FOUNDED_YEAR, GA_ID, SITE } from "@/lib/site";
 import { Logo } from "./ui";
+import { CookieSettingsLink } from "./CookieConsent";
 import { PoweredBy } from "./PoweredBy";
 import { IconArrow, IconLinkedIn, IconMail, IconPhone, IconPin } from "./icons";
 
@@ -115,6 +116,11 @@ export async function Footer() {
                 Terms & conditions
               </Link>
             </li>
+            {GA_ID ? (
+              <li>
+                <CookieSettingsLink className="hover:text-gold" />
+              </li>
+            ) : null}
             <li>
               <a href={settings.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-gold">
                 <IconLinkedIn className="h-4 w-4" />

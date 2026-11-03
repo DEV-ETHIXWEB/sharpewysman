@@ -17,3 +17,6 @@ out/
 # Large raw working files (kept locally, superseded by optimised assets in web/public)
 /_source/
 /Home - Sharpe Wysman/
+
+# Internal QA / SOP documents (never ship to the repo)
+/MY SKILLS _AKASH/

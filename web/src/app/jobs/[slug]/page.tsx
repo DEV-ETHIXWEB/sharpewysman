@@ -48,7 +48,7 @@ export default async function JobPage({ params }: Props) {
             { name: "Jobs", path: "/jobs" },
             { name: job.title, path: `/jobs/${job.slug}` },
           ]),
-          ...(isOpen ? [jobPostingLd(job, settings)] : []),
+          ...(isOpen ? [jobPostingLd({ ...job, body: cleanHtml(job.body) }, settings)] : []),
         ]}
       />
 

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { IconArrow } from "../icons";
 import { Tick } from "../ui";
+import { trackLead } from "@/lib/analytics";
 
 const SEEN_KEY = "sw-quick-drawer";
 type Topic = "hire" | "register";
@@ -123,6 +124,7 @@ function DrawerForm({ titleId, onDone }: { titleId: string; onDone: () => void }
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [firstName, setFirstName] = useState("");
+  const [serverError, setServerError] = useState("");
   const uid = useId();
 
   async function submit(e: FormEvent<HTMLFormElement>) {
@@ -138,14 +140,23 @@ function DrawerForm({ titleId, onDone }: { titleId: string; onDone: () => void }
     if (Object.keys(errs).length) return;
     fd.set("topic", topic);
     setStatus("sending");
+    setServerError("");
+    let res: Response;
     try {
-      const res = await fetch("/api/contact", { method: "POST", body: fd });
-      if (!res.ok) throw new Error();
-      setFirstName(name.split(" ")[0]);
-      setStatus("sent");
+      res = await fetch("/api/contact", { method: "POST", body: fd });
     } catch {
       setStatus("error");
+      return;
     }
+    if (res.ok) {
+      setFirstName(name.split(" ")[0]);
+      setStatus("sent");
+      trackLead(topic);
+      return;
+    }
+    const data = (await res.json().catch(() => ({}))) as { error?: string };
+    setServerError(typeof data.error === "string" ? data.error : "");
+    setStatus("error");
   }
 
   const field =
@@ -238,7 +249,7 @@ function DrawerForm({ titleId, onDone }: { titleId: string; onDone: () => void }
 
       {status === "error" ? (
         <p role="alert" className="mt-3 text-xs text-[#ff9aa0]">
-          That didn&rsquo;t send. Please try again, or call us.
+          {serverError || "That didn\u2019t send because of a connection problem."} Please try again, or call us.
         </p>
       ) : null}
 
