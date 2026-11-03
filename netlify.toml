@@ -1,0 +1,11 @@
+# Netlify (free plan): build the Next.js app in /web.
+# Netlify detects Next.js automatically and enables ISR, on-demand revalidation,
+# API routes and image optimisation through its Next.js runtime.
+[build]
+  base = "web"
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"

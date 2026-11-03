@@ -1,0 +1,19 @@
+# Dependencies & builds
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# Environment (never commit secrets; .env.example is the template)
+.env*
+!.env.example
+
+# OS / editor
+.DS_Store
+*.log
+.vscode/
+.idea/
+
+# Large raw working files (kept locally, superseded by optimised assets in web/public)
+/_source/
+/Home - Sharpe Wysman/

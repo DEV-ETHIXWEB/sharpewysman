@@ -1,0 +1,36 @@
+import { JsonLd, PageHero } from "@/components/ui";
+import { TeamGrid } from "@/components/TeamGrid";
+import { CtaBand } from "@/components/CtaBand";
+import { getTeam } from "@/lib/wp";
+import { breadcrumbLd, buildMetadata, personLd } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Our Team of Accounting Recruiters",
+  description: "Meet the Sharpe Wysman team: experienced Vancouver recruiters who are designated accountants, led by founder Sukhjit Singh Lalli.",
+  path: "/team",
+});
+
+export default async function TeamPage() {
+  const team = await getTeam();
+  return (
+    <>
+      <JsonLd data={[breadcrumbLd([{ name: "Team", path: "/team" }]), ...team.map((m, i) => personLd(m, i === 0))]} />
+      <PageHero
+        eyebrow="Our team"
+        title={
+          <>
+            Speak to a recruiter <span className="font-serif italic text-gold">who knows your world.</span>
+          </>
+        }
+        intro="A small, experienced team. When you call, you speak directly to the person running your search."
+        crumbs={[{ name: "Team" }]}
+      />
+      <section className="py-16 md:py-24">
+        <div className="container-sw">
+          <TeamGrid team={team} detailed />
+        </div>
+      </section>
+      <CtaBand />
+    </>
+  );
+}
