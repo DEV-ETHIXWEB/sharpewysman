@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Fragment } from "react";
+import { Fragment, type CSSProperties } from "react";
 import type { Job } from "@/lib/types";
 import { ArcMotif, Arrow, Tick } from "../ui";
 import { formatSalary } from "../JobBits";
@@ -7,9 +7,25 @@ import { Tilt } from "../motion/Tilt";
 import { HeroVideo } from "./HeroVideo";
 import { QuickEnquiry } from "./QuickEnquiry";
 
-/** Soft vignette so the film's edges dissolve into the charcoal hero. */
-const VIGNETTE_DESKTOP = "radial-gradient(ellipse 62% 78% at 56% 50%, #000 58%, transparent 100%)";
-const VIGNETTE_INLINE = "radial-gradient(ellipse 72% 82% at 50% 50%, #000 62%, transparent 100%)";
+/**
+ * Feathered edges so the film dissolves into the charcoal and reads as part of the background.
+ * Two eased linear masks (horizontal x vertical) are intersected: no visible edge on any side.
+ */
+const ease = (dir: string, a: number, b: number, c?: number, d?: number) =>
+  `linear-gradient(${dir}, transparent 0%, rgb(0 0 0 / 0.06) ${a * 0.25}%, rgb(0 0 0 / 0.22) ${a * 0.5}%, rgb(0 0 0 / 0.55) ${a * 0.75}%, #000 ${a}%, #000 ${b}%` +
+  (c !== undefined && d !== undefined
+    ? `, rgb(0 0 0 / 0.55) ${b + (c - b) * 0.25}%, rgb(0 0 0 / 0.22) ${b + (c - b) * 0.5}%, rgb(0 0 0 / 0.06) ${b + (c - b) * 0.75}%, transparent ${d}%)`
+    : `)`);
+const feather = (h: string, v: string): CSSProperties => ({
+  maskImage: `${h}, ${v}`,
+  WebkitMaskImage: `${h}, ${v}`,
+  maskComposite: "intersect",
+  WebkitMaskComposite: "source-in",
+});
+// Desktop: long, soft fade on the left (towards the copy), gentle top/bottom, light right edge.
+const FEATHER_DESKTOP = feather(ease("to right", 24, 90, 100, 100), ease("to bottom", 16, 82, 100, 100));
+// Inline (phones/tablets): even feathering on every side.
+const FEATHER_INLINE = feather(ease("to right", 16, 84, 100, 100), ease("to bottom", 18, 80, 100, 100));
 
 /**
  * Homepage hero. The thesis: recruitment done by accountants,
@@ -21,13 +37,7 @@ export function Hero({ totalOpen }: { totalOpen: number }) {
       <ArcMotif className="spin-slow pointer-events-none absolute -left-56 top-10 -z-10 h-[46rem] w-[46rem] text-white/[0.03]" />
 
       {/* Film, large desktops: full height on the right */}
-      <HeroVideo
-        dockable
-        className="absolute inset-y-0 right-0 -z-10 hidden w-[60%] xl:block"
-        style={{ maskImage: VIGNETTE_DESKTOP, WebkitMaskImage: VIGNETTE_DESKTOP }}
-      />
-
-      <div aria-hidden className="film-veil pointer-events-none absolute inset-y-0 left-0 -z-[5] hidden w-[51%] xl:block" />
+      <HeroVideo className="absolute inset-y-0 right-0 -z-10 hidden w-[64%] xl:block" style={FEATHER_DESKTOP} />
 
       <div className="container-sw pb-16 pt-12 md:pb-20 md:pt-16 xl:flex xl:min-h-[min(46rem,calc(100svh-5rem))] xl:items-center xl:pb-24">
         <div className="xl:max-w-[40rem]">
@@ -57,7 +67,7 @@ export function Hero({ totalOpen }: { totalOpen: number }) {
           {/* Film, phones/tablets/small laptops: full width under the headline */}
           <HeroVideo
             className="relative -mx-5 my-8 aspect-[16/10] sm:-mx-8 md:mx-0 md:my-10 md:aspect-[16/8] xl:hidden"
-            style={{ maskImage: VIGNETTE_INLINE, WebkitMaskImage: VIGNETTE_INLINE }}
+            style={FEATHER_INLINE}
           />
 
           <p className="max-w-xl text-lg leading-relaxed text-muted-dark md:text-xl xl:mt-8">

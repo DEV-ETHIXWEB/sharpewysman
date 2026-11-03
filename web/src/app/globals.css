@@ -824,56 +824,28 @@ html[data-scrolled="true"] .site-header {
 }
 
 /* Film glides aside (smaller, left) while the enquiry card is open */
-/* Docked geometry, computed so the ring sits clear of both the copy and the card */
-.film-stage {
-  transform-origin: 15% 50%;
-  transition: transform 1.4s var(--ease-out-quart);
+/* Pull-tab enquiry drawer: closed shows only the tab (3rem) on the screen edge */
+.quick-drawer {
+  transform: translate3d(calc(100% - 3rem), -50%, 0);
+  transition: transform 0.8s var(--ease-out-quart);
 }
-.film-stage.is-docked {
-  transform: scale(0.5);
-}
-@media (min-width: 1536px) {
-  .film-stage.is-docked {
-    transform: scale(0.64);
-  }
-}
-/* Charcoal veil over the film's far-left edge while docked, so arms never sit behind copy */
-.film-veil {
-  background: linear-gradient(to right, var(--color-ink) 0%, var(--color-ink) 78%, transparent 100%);
-  opacity: 0;
-  transition: opacity 1.2s var(--ease-out-quart);
-}
-section:has(.film-stage.is-docked) .film-veil {
-  opacity: 1;
-}
-
-/* Enquiry card entrance */
-@keyframes card-in {
-  from {
-    opacity: 0;
-    transform: translate3d(2.5rem, -50%, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, -50%, 0);
-  }
-}
-.quick-card {
+.quick-drawer.is-open {
   transform: translate3d(0, -50%, 0);
-  animation: card-in 0.9s var(--ease-out-quart) 0.25s both;
 }
-@keyframes bar-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 120%, 0);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+.quick-drawer.is-away {
+  transform: translate3d(calc(100% + 1rem), -50%, 0);
 }
-.quick-bar {
-  animation: bar-in 0.6s var(--ease-out-quart) both;
+@keyframes drawer-nudge {
+  0%, 100% { transform: translate3d(calc(100% - 3rem), -50%, 0); }
+  20% { transform: translate3d(calc(100% - 3.9rem), -50%, 0); }
+  40% { transform: translate3d(calc(100% - 3rem), -50%, 0); }
+  60% { transform: translate3d(calc(100% - 3.6rem), -50%, 0); }
+}
+.quick-drawer.is-nudging:not(.is-open) {
+  animation: drawer-nudge 1.4s var(--ease-out-quart) 2;
+}
+.drawer-tab {
+  width: 3rem;
 }
 
 /* Checkbox on dark surfaces */
@@ -893,11 +865,8 @@ section:has(.film-stage.is-docked) .film-veil {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .film-stage {
+  .quick-drawer {
     transition: none;
-  }
-  .quick-card,
-  .quick-bar {
-    animation: none;
+    animation: none !important;
   }
 }
