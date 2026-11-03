@@ -30,7 +30,7 @@ export default async function EmployersPage() {
         eyebrow="For employers"
         title={
           <>
-            Top-tier accounting talent, <span className="font-serif italic text-gold">screened by accountants.</span>
+            Top-tier accounting talent, <span className="text-gold">screened by accountants.</span>
           </>
         }
         intro="We connect leading companies and CPA firms with professionals who are hard to find on your own, and we only send candidates we've pre-qualified for your role."
@@ -86,7 +86,7 @@ export default async function EmployersPage() {
                   <p className="mt-3 font-mono text-xs uppercase tracking-widest text-gold">Best for: {s.bestFor}</p>
                 </div>
                 <div>
-                  <p className="font-serif text-xl italic text-white">{s.lede}</p>
+                  <p className="font-serif text-xl text-white">{s.lede}</p>
                   <p className="mt-3 text-muted-dark">{s.body}</p>
                 </div>
                 <Link href={`/contact?topic=hire&service=${s.slug}`} className="link-arrow shrink-0 text-gold">

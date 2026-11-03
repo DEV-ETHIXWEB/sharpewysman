@@ -57,7 +57,7 @@ export default async function JobPage({ params }: Props) {
         <div className="container-sw relative pb-14 pt-10 md:pb-20 md:pt-14">
           <Breadcrumbs items={[{ name: "Jobs", path: "/jobs" }, { name: job.title }]} />
           <p className="eyebrow mt-10 text-gold">{industry?.name ?? "Current opportunity"}</p>
-          <h1 className="lift mt-4 max-w-4xl text-[2.6rem] leading-[1.05] md:text-6xl">{job.title}</h1>
+          <h1 className="hero-title lift mt-4 max-w-4xl text-[2.4rem] md:text-[3.4rem]">{job.title}</h1>
           <p className="mt-6 max-w-2xl text-lg text-muted-dark md:text-xl">{job.summary}</p>
           <dl className="mt-10 grid max-w-3xl gap-px overflow-hidden rounded-xl bg-line-dark font-mono text-sm sm:grid-cols-3">
             {(

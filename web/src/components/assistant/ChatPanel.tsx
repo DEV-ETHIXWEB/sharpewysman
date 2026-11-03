@@ -465,7 +465,7 @@ function RichBlock({ block, onNavigate }: { block: Block; onNavigate: () => void
     case "quote":
       return (
         <figure className="rounded-2xl border-l-[3px] border-gold bg-white p-4 shadow-sm">
-          <blockquote className="font-serif text-[0.98rem] italic leading-relaxed text-ink">&ldquo;{block.quote}&rdquo;</blockquote>
+          <blockquote className="font-serif text-[0.98rem] leading-relaxed text-ink">&ldquo;{block.quote}&rdquo;</blockquote>
           <figcaption className="mt-2 text-xs font-bold text-muted">{block.by}</figcaption>
         </figure>
       );

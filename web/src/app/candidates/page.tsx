@@ -29,7 +29,7 @@ export default async function CandidatesPage() {
         eyebrow="For candidates"
         title={
           <>
-            Your career, <span className="font-serif italic text-gold">advised by people who&rsquo;ve done the job.</span>
+            Your career, <span className="text-gold">advised by people who&rsquo;ve done the job.</span>
           </>
         }
         intro="Your career advancement and wellbeing come first. Our recruiters are all designated accountants, dedicated to connecting you with opportunities that genuinely fit your goals."

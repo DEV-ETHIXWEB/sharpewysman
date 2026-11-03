@@ -23,7 +23,7 @@ export default async function TestimonialsPage() {
         eyebrow="Testimonials"
         title={
           <>
-            Don&rsquo;t take <span className="font-serif italic text-gold">our word for it.</span>
+            Don&rsquo;t take <span className="text-gold">our word for it.</span>
           </>
         }
         intro="Every testimonial here comes from a named professional we've worked with."

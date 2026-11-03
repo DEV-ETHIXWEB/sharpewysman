@@ -50,7 +50,7 @@ export default async function HomePage() {
             <Marquee
               label="Firms whose professionals recommend Sharpe Wysman"
               items={endorsers.map((c) => (
-                <span key={c} className="font-serif text-xl italic text-ink/85 md:text-2xl">
+                <span key={c} className="font-serif text-xl text-ink/85 md:text-2xl">
                   {c}
                 </span>
               ))}
@@ -68,7 +68,7 @@ export default async function HomePage() {
             eyebrow="Why Sharpe Wysman"
             title={
               <>
-                Always professional. <span className="font-serif italic text-maroon">Never pushy.</span>
+                Always professional. <span className="text-maroon">Never pushy.</span>
               </>
             }
             intro="We care about finding the right fit between employer and candidate. Our recruiters have all worked as accounting professionals, so we understand what you do, what you're aiming for and the challenges you face."
@@ -138,7 +138,7 @@ export default async function HomePage() {
               >
                 <ServiceMark slug={s.slug} />
                 <h3 className="mt-8 text-[2rem] text-white">{s.title}</h3>
-                <p className="mt-4 font-serif text-lg italic text-gold">{s.lede}</p>
+                <p className="mt-4 font-serif text-lg text-gold">{s.lede}</p>
                 <p className="mt-4 flex-1 text-muted-dark">{s.body}</p>
                 <p className="mt-8 border-t border-white/10 pt-5 font-mono text-xs uppercase tracking-widest text-white/60">Best for: {s.bestFor}</p>
               </article>

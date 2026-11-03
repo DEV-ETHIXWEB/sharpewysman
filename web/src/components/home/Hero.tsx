@@ -5,6 +5,7 @@ import { ArcMotif, Arrow, Tick } from "../ui";
 import { formatSalary } from "../JobBits";
 import { Tilt } from "../motion/Tilt";
 import { HeroVideo } from "./HeroVideo";
+import { QuickEnquiry } from "./QuickEnquiry";
 
 /** Soft vignette so the film's edges dissolve into the charcoal hero. */
 const VIGNETTE_DESKTOP = "radial-gradient(ellipse 62% 78% at 56% 50%, #000 58%, transparent 100%)";
@@ -21,15 +22,18 @@ export function Hero({ totalOpen }: { totalOpen: number }) {
 
       {/* Film, large desktops: full height on the right */}
       <HeroVideo
+        dockable
         className="absolute inset-y-0 right-0 -z-10 hidden w-[60%] xl:block"
         style={{ maskImage: VIGNETTE_DESKTOP, WebkitMaskImage: VIGNETTE_DESKTOP }}
       />
 
+      <div aria-hidden className="film-veil pointer-events-none absolute inset-y-0 left-0 -z-[5] hidden w-[51%] xl:block" />
+
       <div className="container-sw pb-16 pt-12 md:pb-20 md:pt-16 xl:flex xl:min-h-[min(46rem,calc(100svh-5rem))] xl:items-center xl:pb-24">
-        <div className="xl:max-w-[38rem]">
+        <div className="xl:max-w-[40rem]">
           <h1>
             <span className="eyebrow block text-gold">Accounting &amp; finance recruiters · Vancouver, BC</span>
-            <span className="mt-6 block text-[2.75rem] leading-[1.04] tracking-[-0.025em] sm:text-[3.6rem] lg:text-[4.5rem] xl:text-[4.6rem]">
+            <span className="hero-title mt-6 block text-[2.6rem] sm:text-[3.4rem] lg:text-[4.1rem] xl:text-[3.9rem] 2xl:text-[4.2rem]">
               {"Hiring accountants is a job for".split(" ").map((w, i) => (
                 <Fragment key={i}>
                   <span className="word-lift" style={{ ["--w" as string]: i }}>
@@ -38,7 +42,7 @@ export function Hero({ totalOpen }: { totalOpen: number }) {
                   {i === 1 || i === 5 ? <br className="hidden sm:inline" /> : null}
                 </Fragment>
               ))}
-              <span className="word-lift relative inline-block whitespace-nowrap font-serif italic text-gold" style={{ ["--w" as string]: 6 }}>
+              <span className="word-lift relative inline-block whitespace-nowrap text-gold" style={{ ["--w" as string]: 6 }}>
                 accountants.
                 <Tick
                   animate
@@ -78,6 +82,9 @@ export function Hero({ totalOpen }: { totalOpen: number }) {
           </ul>
         </div>
       </div>
+
+      {/* Appears when the film settles: card on large screens, prompt bar on phones */}
+      <QuickEnquiry />
     </section>
   );
 }

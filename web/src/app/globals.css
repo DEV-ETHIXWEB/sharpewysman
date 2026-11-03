@@ -28,6 +28,7 @@
 
   --font-display: var(--font-serif-4), Georgia, "Times New Roman", serif;
   --font-serif: var(--font-serif-4), Georgia, "Times New Roman", serif;
+  --font-hero: var(--font-jakarta), var(--font-lato), system-ui, sans-serif;
   --font-sans: var(--font-lato), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
 
@@ -394,7 +395,6 @@
     border-left: 3px solid var(--color-gold);
     padding-left: 1.25rem;
     font-family: var(--font-serif);
-    font-style: italic;
   }
   .prose-sw strong {
     font-weight: 700;
@@ -810,6 +810,94 @@ html[data-scrolled="true"] .site-header {
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-glow {
+    animation: none;
+  }
+}
+
+/* Hero headlines: Plus Jakarta Sans, semibold, tightened for display sizes */
+.hero-title {
+  font-family: var(--font-hero);
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+
+/* Film glides aside (smaller, left) while the enquiry card is open */
+/* Docked geometry, computed so the ring sits clear of both the copy and the card */
+.film-stage {
+  transform-origin: 15% 50%;
+  transition: transform 1.4s var(--ease-out-quart);
+}
+.film-stage.is-docked {
+  transform: scale(0.5);
+}
+@media (min-width: 1536px) {
+  .film-stage.is-docked {
+    transform: scale(0.64);
+  }
+}
+/* Charcoal veil over the film's far-left edge while docked, so arms never sit behind copy */
+.film-veil {
+  background: linear-gradient(to right, var(--color-ink) 0%, var(--color-ink) 78%, transparent 100%);
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-out-quart);
+}
+section:has(.film-stage.is-docked) .film-veil {
+  opacity: 1;
+}
+
+/* Enquiry card entrance */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(2.5rem, -50%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, -50%, 0);
+  }
+}
+.quick-card {
+  transform: translate3d(0, -50%, 0);
+  animation: card-in 0.9s var(--ease-out-quart) 0.25s both;
+}
+@keyframes bar-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 120%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.quick-bar {
+  animation: bar-in 0.6s var(--ease-out-quart) both;
+}
+
+/* Checkbox on dark surfaces */
+.check-dark {
+  background: transparent;
+  border-color: rgb(255 255 255 / 0.35);
+}
+.check-dark:hover {
+  border-color: var(--color-gold);
+}
+.check-dark:checked {
+  background: var(--color-gold);
+  border-color: var(--color-gold);
+}
+.check-dark:checked::after {
+  background: var(--color-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .film-stage {
+    transition: none;
+  }
+  .quick-card,
+  .quick-bar {
     animation: none;
   }
 }

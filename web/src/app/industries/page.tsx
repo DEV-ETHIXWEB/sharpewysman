@@ -22,7 +22,7 @@ export default async function IndustriesPage() {
         eyebrow="Industries we serve"
         title={
           <>
-            Deep in accounting. <span className="font-serif italic text-gold">Trusted beyond it.</span>
+            Deep in accounting. <span className="text-gold">Trusted beyond it.</span>
           </>
         }
         intro="We specialize in mid-level to leadership positions in accounting and finance, in public practice and industry, and we recruit for the specialist teams that work alongside them."

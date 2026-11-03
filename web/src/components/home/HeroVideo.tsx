@@ -20,12 +20,33 @@ const SRC = (h: 1080 | 1440) => [
   { src: `/video/hero-handshake-${h}.h264.mp4`, type: 'video/mp4; codecs="avc1.640033"' },
 ];
 
-export function HeroVideo({ className = "", style }: { className?: string; style?: CSSProperties }) {
+export function HeroVideo({ className = "", style, dockable = false }: { className?: string; style?: CSSProperties; dockable?: boolean }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [mode, setMode] = useState<"pending" | "video" | "still">("pending");
   const [tier, setTier] = useState<1080 | 1440>(1080);
   const [ended, setEnded] = useState(false);
+  const [docked, setDocked] = useState(false);
+
+  // Tell the page the film has settled (the enquiry card listens for this).
+  useEffect(() => {
+    if (!ended && mode !== "still") return;
+    const t = window.setTimeout(() => window.dispatchEvent(new Event("sw:film-settled")), mode === "still" ? 1200 : 250);
+    return () => window.clearTimeout(t);
+  }, [ended, mode]);
+
+  // Desktop: glide aside while the enquiry card is open, return when it closes.
+  useEffect(() => {
+    if (!dockable) return;
+    const open = () => setDocked(true);
+    const close = () => setDocked(false);
+    window.addEventListener("sw:quick-open", open);
+    window.addEventListener("sw:quick-close", close);
+    return () => {
+      window.removeEventListener("sw:quick-open", open);
+      window.removeEventListener("sw:quick-close", close);
+    };
+  }, [dockable]);
 
   // Decide once, on the client, what this device should get.
   useEffect(() => {
@@ -57,6 +78,7 @@ export function HeroVideo({ className = "", style }: { className?: string; style
 
   return (
     <div ref={wrapRef} className={`pointer-events-none select-none mix-blend-screen ${className}`} style={style} aria-hidden>
+      <div className={`film-stage absolute inset-0 ${docked ? "is-docked" : ""}`}>
       {mode === "still" ? (
         <Image
           src="/video/hero-handshake-end-2560.jpg"
@@ -91,6 +113,7 @@ export function HeroVideo({ className = "", style }: { className?: string; style
           ended || mode === "still" ? "opacity-100" : "opacity-0"
         }`}
       />
+      </div>
     </div>
   );
 }

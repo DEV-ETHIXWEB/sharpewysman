@@ -170,7 +170,7 @@ export function PageHero({
         <div>
           <Breadcrumbs items={crumbs} />
           <p className="eyebrow mt-10 text-gold">{eyebrow}</p>
-          <h1 className="lift mt-4 max-w-4xl text-[2.6rem] leading-[1.04] md:text-6xl lg:text-[4.25rem]">{title}</h1>
+          <h1 className="hero-title lift mt-4 max-w-4xl text-[2.4rem] md:text-[3.4rem] lg:text-[3.9rem]">{title}</h1>
           {intro ? (
             <p className="lift mt-6 max-w-2xl text-lg leading-relaxed text-muted-dark md:text-xl" style={{ ["--delay" as string]: "0.08s" }}>
               {intro}

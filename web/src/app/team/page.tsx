@@ -19,7 +19,7 @@ export default async function TeamPage() {
         eyebrow="Our team"
         title={
           <>
-            Speak to a recruiter <span className="font-serif italic text-gold">who knows your world.</span>
+            Speak to a recruiter <span className="text-gold">who knows your world.</span>
           </>
         }
         intro="A small, experienced team. When you call, you speak directly to the person running your search."

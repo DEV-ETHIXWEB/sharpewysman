@@ -55,7 +55,7 @@ export default async function ArticlePage({ params }: Props) {
             <p className="eyebrow mt-10 text-gold">
               {a.category} · <time dateTime={a.date}>{formatDate(a.date)}</time> · {Math.max(1, Math.round(words / 230))} min read
             </p>
-            <h1 className="mt-4 max-w-4xl text-[2.4rem] leading-[1.06] md:text-6xl">{a.title}</h1>
+            <h1 className="hero-title mt-4 max-w-4xl text-[2.2rem] md:text-[3.2rem]">{a.title}</h1>
             <p className="mt-6 max-w-2xl text-lg text-muted-dark md:text-xl">{a.excerpt}</p>
           </div>
         </header>

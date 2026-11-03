@@ -25,7 +25,7 @@ export default async function FaqPage() {
         eyebrow="Frequently asked questions"
         title={
           <>
-            Good questions, <span className="font-serif italic text-gold">straight answers.</span>
+            Good questions, <span className="text-gold">straight answers.</span>
           </>
         }
         intro="Can't find what you're looking for? Call us or send a message. We're happy to help."

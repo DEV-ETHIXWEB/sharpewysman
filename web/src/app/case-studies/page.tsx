@@ -22,7 +22,7 @@ export default async function CaseStudiesPage() {
         eyebrow="Case studies"
         title={
           <>
-            How we&rsquo;ve helped businesses <span className="font-serif italic text-gold">like yours hire.</span>
+            How we&rsquo;ve helped businesses <span className="text-gold">like yours hire.</span>
           </>
         }
         crumbs={[{ name: "Case studies" }]}

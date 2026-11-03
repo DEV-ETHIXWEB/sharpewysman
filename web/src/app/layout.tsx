@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { IBM_Plex_Mono, Lato, Source_Serif_4 } from "next/font/google";
+import { IBM_Plex_Mono, Lato, Plus_Jakarta_Sans, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -14,17 +14,19 @@ import { ChatLauncher } from "@/components/assistant/ChatLauncher";
 /**
  * Typography
  *  - Source Serif 4 (Adobe, OFL): headings and accents. Robust rendering on Windows,
- *    professional-publishing pedigree. Loaded at the single weight the design uses (400 + italic).
+ *    professional-publishing pedigree. Loaded at the single weight the design uses (400, upright).
  *  - Lato: body and UI. Continuity with the Sharpe Wysman wordmark.
  *  - IBM Plex Mono: figures only (statistics, salaries, step numbers), tabular by design.
  */
 const serif = Source_Serif_4({
   subsets: ["latin"],
   weight: "400",
-  style: ["normal", "italic"],
+  style: "normal",
   variable: "--font-serif-4",
   display: "swap",
 });
+/** Hero headlines: refined geometric sans, semibold, upright. */
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], weight: "600", variable: "--font-jakarta", display: "swap" });
 const lato = Lato({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-lato", display: "swap" });
 const plexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono", display: "swap", preload: false });
 
@@ -58,7 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang="en-CA"
-      className={`${serif.variable} ${lato.variable} ${plexMono.variable}`}
+      className={`${serif.variable} ${jakarta.variable} ${lato.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <head>

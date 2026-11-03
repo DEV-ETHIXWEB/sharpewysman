@@ -30,7 +30,7 @@ export default async function JobsPage() {
         eyebrow="Current opportunities"
         title={
           <>
-            Find your <span className="font-serif italic text-gold">Everest.</span>
+            Find your <span className="text-gold">Everest.</span>
           </>
         }
         intro="Ready for the next challenge? These are some of the roles we're recruiting for now. Many more are confidential, so if you don't see the right fit, register with us."

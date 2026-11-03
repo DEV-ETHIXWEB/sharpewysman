@@ -27,7 +27,7 @@ export default async function ContactPage() {
         eyebrow="Get in touch"
         title={
           <>
-            Start with a <span className="font-serif italic text-gold">confidential conversation.</span>
+            Start with a <span className="text-gold">confidential conversation.</span>
           </>
         }
         intro="Hiring, looking for your next role, or just exploring the market? Tell us a little about it and we'll reply within one business day."

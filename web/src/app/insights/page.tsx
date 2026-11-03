@@ -20,7 +20,7 @@ export default async function InsightsPage() {
         eyebrow="Insights"
         title={
           <>
-            Advice from accountants <span className="font-serif italic text-gold">who recruit accountants.</span>
+            Advice from accountants <span className="text-gold">who recruit accountants.</span>
           </>
         }
         intro="Practical guidance for CPAs planning their next move, and for the firms hiring them."

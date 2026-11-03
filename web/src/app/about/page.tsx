@@ -29,7 +29,7 @@ export default async function AboutPage() {
         eyebrow="Our story"
         title={
           <>
-            Built by an accountant <span className="font-serif italic text-gold">who wanted better recruitment.</span>
+            Built by an accountant <span className="text-gold">who wanted better recruitment.</span>
           </>
         }
         intro="Sharpe Wysman is a Vancouver-based recruitment, contract staffing and workforce solutions firm. We specialize in mid-level to leadership positions in public practice and industry, and all of our recruiters are designated accountants themselves."
