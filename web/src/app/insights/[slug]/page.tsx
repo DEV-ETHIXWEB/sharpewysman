@@ -50,7 +50,7 @@ export default async function ArticlePage({ params }: Props) {
       />
       <article>
         <header className="on-dark bg-ink text-white">
-          <div className="container-sw pb-14 pt-10 md:pb-20 md:pt-14">
+          <div className="container-sw pb-14 pt-[7.5rem] md:pb-20 md:pt-[9.25rem]">
             <Breadcrumbs items={[{ name: "Insights", path: "/insights" }, { name: a.title }]} />
             <p className="eyebrow mt-10 text-gold">
               {a.category} · <time dateTime={a.date}>{formatDate(a.date)}</time> · {Math.max(1, Math.round(words / 230))} min read

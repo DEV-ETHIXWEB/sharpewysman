@@ -26,7 +26,7 @@ export const industries: Industry[] = [
       "Relevant designations (CPA, CFA, MBA, In-Depth Tax)",
     ],
     roles: ["Tax Manager", "Audit Manager", "Controller", "Senior Accountant", "Director of Finance", "Tax Partner"],
-    image: "/images/partners-office.jpg",
+    image: "/images/industry-accounting-finance.png",
     order: 1,
   },
   {
@@ -47,7 +47,7 @@ export const industries: Industry[] = [
       "Experience with contract drafting, compliance and dispute resolution",
     ],
     roles: ["Corporate Counsel", "Associate", "Compliance Manager", "Paralegal"],
-    image: "/images/team-meeting.jpg",
+    image: "/images/industry-legal.png",
     order: 2,
   },
   {
@@ -68,7 +68,7 @@ export const industries: Industry[] = [
       "Relevant certifications (CompTIA, Cisco, Microsoft, AWS, CISSP)",
     ],
     roles: ["ERP Analyst", "Software Developer", "Systems Administrator", "Data Analyst"],
-    image: "/images/team-collaboration.jpg",
+    image: "/images/industry-information-technology.png",
     order: 3,
   },
   {
@@ -89,7 +89,7 @@ export const industries: Industry[] = [
       "Relevant designations (CPHR)",
     ],
     roles: ["HR Business Partner", "HR Manager", "Payroll Manager", "Talent Acquisition Lead"],
-    image: "/images/professional-downtown.jpg",
+    image: "/images/industry-human-resources.png",
     order: 4,
   },
   {

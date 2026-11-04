@@ -11,6 +11,7 @@
     "seed:export": "node --no-warnings scripts/export-seed.mts"
   },
   "dependencies": {
+    "geist": "^1.9.0",
     "next": "15.5.28",
     "react": "^19.2.9",
     "react-dom": "^19.2.9",

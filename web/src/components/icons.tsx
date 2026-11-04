@@ -242,6 +242,93 @@ export const SERVICE_ICONS: Record<string, (p: IconProps) => ReactNode> = {
   "workplace-consulting": IconStructure,
 };
 
+/* ---------------------------------------------------------------- process */
+
+/** Initial consultation: a conversation. */
+export const IconChat = (p: IconProps) => (
+  <Industry {...p}>
+    <path d="M6 9.3a3.3 3.3 0 0 1 3.3-3.3h13.4A3.3 3.3 0 0 1 26 9.3v9.2a3.3 3.3 0 0 1-3.3 3.3h-9L9 26v-4.2H9.3A3.3 3.3 0 0 1 6 18.5V9.3Z" />
+    <path d="M10.8 13h10.4M10.8 9.6h6.6" />
+  </Industry>
+);
+
+/** Sourcing and vetting: a search, verified. */
+export const IconSearchCheck = (p: IconProps) => (
+  <Industry {...p}>
+    <circle cx="13.2" cy="13.2" r="7.7" />
+    <path d="M18.6 18.6 26.5 26.5" />
+    <path d="M9.8 13.4l2.2 2.3 4.4-5" />
+  </Industry>
+);
+
+/** Curated shortlist: a short, ticked list. */
+export const IconShortlist = (p: IconProps) => (
+  <Industry {...p}>
+    <rect x="6" y="4.5" width="20" height="23" rx="2.2" />
+    <path d="M10.3 11.3l1.5 1.5 2.7-3.1M10.3 16.3l1.5 1.5 2.7-3.1M10.3 21.3l1.5 1.5 2.7-3.1" />
+    <path d="M17.2 10h5M17.2 15h5M17.2 20h5" />
+  </Industry>
+);
+
+/** Resume refinement: a document, edited. */
+export const IconDocEdit = (p: IconProps) => (
+  <Industry {...p}>
+    <path d="M8 4.5h10l5 5V26a1.4 1.4 0 0 1-1.4 1.4H8A1.4 1.4 0 0 1 6.6 26V5.9A1.4 1.4 0 0 1 8 4.5Z" />
+    <path d="M18 4.5V10h5" />
+    <path d="M10.6 15h7M10.6 19h4.5" />
+  </Industry>
+);
+
+/** Screening and interviews: two people, in conversation. */
+export const IconTwoPeople = (p: IconProps) => (
+  <Industry {...p}>
+    <circle cx="12" cy="11.5" r="4" />
+    <path d="M5 26.5c0-4.6 3.1-7.2 7-7.2s7 2.6 7 7.2" />
+    <circle cx="23" cy="11" r="3.1" />
+    <path d="M19.3 26.5c.3-3.7 2.4-6.1 5.5-6.8" />
+  </Industry>
+);
+
+/** Job matching: the right fit. */
+export const IconFit = (p: IconProps) => (
+  <Industry {...p}>
+    <circle cx="12.6" cy="16" r="7.6" />
+    <circle cx="19.8" cy="16" r="7.6" />
+    <path d="M13.6 16l2 2 3.2-4.4" />
+  </Industry>
+);
+
+/** Interview coordination: a scheduled meeting. */
+export const IconCalendar = (p: IconProps) => (
+  <Industry {...p}>
+    <rect x="5.5" y="7.2" width="21" height="19.3" rx="2.2" />
+    <path d="M5.5 12.8h21" />
+    <path d="M10.6 4.5v5.3M21.4 4.5v5.3" />
+    <path d="M11.2 18l2 2 4.1-4.6" />
+  </Industry>
+);
+
+/** Placement and offer: the tick of a job done. */
+export const IconOffer = (p: IconProps) => (
+  <Industry {...p}>
+    <circle cx="16" cy="12.5" r="7.1" />
+    <path d="M12.7 12.6l2 2 3.6-4.3" />
+    <path d="M11.4 19l-2.3 8.5 6.9-3.4 6.9 3.4-2.3-8.5" />
+  </Industry>
+);
+
+export const PROCESS_ICONS: Record<string, (p: IconProps) => ReactNode> = {
+  "Initial consultation": IconChat,
+  "Sourcing and vetting": IconSearchCheck,
+  "Curated shortlist": IconShortlist,
+  "Placement and follow-up": IconOffer,
+  "Resume refinement": IconDocEdit,
+  "Screening and interviews": IconTwoPeople,
+  "Job matching": IconFit,
+  "Interview coordination": IconCalendar,
+  "Offer and placement": IconOffer,
+};
+
 /* --------------------------------------------------------------- quote */
 
 /** Quotation mark built from two crescents. */

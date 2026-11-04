@@ -1,18 +1,18 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Hero, OpenRoles } from "@/components/home/Hero";
-import { StatsLedger } from "@/components/StatsLedger";
 import { ProcessOrbit } from "@/components/ProcessOrbit";
 import { Testimonials } from "@/components/Testimonials";
 import { FaqList } from "@/components/FaqList";
-import { IndustryGrid } from "@/components/IndustryGrid";
+import { IndustryCarousel } from "@/components/IndustryCarousel";
 import { CtaBand } from "@/components/CtaBand";
 import { ArticleCard } from "@/components/ArticleCard";
-import { Marquee } from "@/components/motion/Marquee";
-import { Arrow, JsonLd, SectionHeading, TickList } from "@/components/ui";
+import { LogoCloud } from "@/components/home/LogoCloud";
+import { AudienceCard } from "@/components/home/AudienceCard";
+import { CountUp } from "@/components/motion/CountUp";
+import { Arrow, JsonLd, SectionHeading, Tick } from "@/components/ui";
 import { ServiceMark } from "@/components/ServiceMark";
 import { candidateProcess, employerProcess, services } from "@/content/company";
-import { getArticles, getFaqs, getIndustries, getOpenJobs, getSettings, getTeam, getTestimonials } from "@/lib/wp";
+import { getArticles, getFaqs, getIndustries, getOpenJobs, getSettings, getTestimonials } from "@/lib/wp";
 import { buildMetadata, faqLd } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -23,16 +23,14 @@ export const metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const [jobs, industries, testimonials, faqs, settings, articles, team] = await Promise.all([
+  const [jobs, industries, testimonials, faqs, settings, articles] = await Promise.all([
     getOpenJobs(),
     getIndustries(),
     getTestimonials(),
     getFaqs(),
     getSettings(),
     getArticles(),
-    getTeam(),
   ]);
-  const founder = team[0];
   const openByIndustry = jobs.reduce<Record<string, number>>((acc, j) => ({ ...acc, [j.industry]: (acc[j.industry] ?? 0) + 1 }), {});
   const homeFaqs = faqs.slice(0, 5);
   const endorsers = Array.from(new Set(testimonials.map((t) => t.company)));
@@ -40,21 +38,16 @@ export default async function HomePage() {
   return (
     <>
       <JsonLd data={faqLd(homeFaqs)} />
-      <Hero totalOpen={jobs.length} />
+      <Hero totalOpen={jobs.length} stats={settings.stats} />
 
-      {/* Endorsements strip */}
+      {/* Endorsements: a quiet logo cloud that periodically reshuffles */}
       {endorsers.length ? (
-        <section aria-label="Recommended by" className="border-b border-line bg-white">
-          <div className="container-sw flex flex-col gap-4 py-7 md:flex-row md:items-center md:gap-10">
-            <p className="eyebrow shrink-0 text-muted">Recommended by professionals at</p>
-            <Marquee
-              label="Firms whose professionals recommend Sharpe Wysman"
-              items={endorsers.map((c) => (
-                <span key={c} className="font-serif text-xl text-ink/85 md:text-2xl">
-                  {c}
-                </span>
-              ))}
-            />
+        <section aria-label="Recommended by" className="border-b border-line bg-paper-2/40 py-12 md:py-16">
+          <div className="container-sw">
+            <p className="eyebrow text-center text-muted">Recommended by professionals at</p>
+            <div className="mt-6">
+              <LogoCloud items={endorsers} />
+            </div>
           </div>
         </section>
       ) : null}
@@ -62,7 +55,7 @@ export default async function HomePage() {
       <OpenRoles jobs={jobs.slice(0, 4)} totalOpen={jobs.length} />
 
       {/* Two audiences */}
-      <section className="py-20 md:py-28">
+      <section className="border-t border-line py-20 md:py-28">
         <div className="container-sw">
           <SectionHeading
             eyebrow="Why Sharpe Wysman"
@@ -73,7 +66,7 @@ export default async function HomePage() {
             }
             intro="We care about finding the right fit between employer and candidate. Our recruiters have all worked as accounting professionals, so we understand what you do, what you're aiming for and the challenges you face."
           />
-          <div className="mt-14 grid gap-5 md:grid-cols-2">
+          <div className="audience-grid mt-14 grid gap-5 md:grid-cols-2">
             {[
               {
                 eyebrow: "For employers",
@@ -94,32 +87,14 @@ export default async function HomePage() {
                 image: "/images/candidate-interview.jpg",
               },
             ].map((c, i) => (
-              <article
-                key={c.href}
-                data-reveal
-                style={{ ["--i" as string]: i }}
-                className="group relative flex flex-col overflow-hidden rounded-xl border border-line bg-white transition duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-ink/10"
-              >
-                <div className="relative aspect-[16/8] overflow-hidden">
-                  <Image src={c.image} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="parallax-img object-cover transition duration-700 group-hover:scale-[1.03]" />
-                </div>
-                <div className="flex flex-1 flex-col p-7 md:p-10">
-                  <p className="eyebrow text-maroon">{c.eyebrow}</p>
-                  <h3 className="mt-3 text-3xl md:text-[2.25rem]">{c.title}</h3>
-                  <p className="mt-4 text-muted">{c.body}</p>
-                  <TickList items={c.points} className="mt-6" />
-                  <Link href={c.href} className="link-arrow mt-8 self-start after:absolute after:inset-0">
-                    {c.cta} <Arrow />
-                  </Link>
-                </div>
-              </article>
+              <AudienceCard key={c.href} data={c} index={i} />
             ))}
           </div>
         </div>
       </section>
 
       {/* Services */}
-      <section className="on-dark bg-ink py-20 text-white md:py-28">
+      <section className="on-dark bg-ink py-16 text-white md:py-20">
         <div className="container-sw">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <SectionHeading tone="dark" eyebrow="Client services" title="Three ways to hire with us" />
@@ -127,49 +102,87 @@ export default async function HomePage() {
               Compare services <Arrow />
             </Link>
           </div>
-          <div className="mt-14 grid gap-px overflow-hidden rounded-xl bg-line-dark md:grid-cols-3">
+          <div className="mt-10 grid gap-px overflow-hidden rounded-xl bg-line-dark md:grid-cols-3">
             {services.map((s, i) => (
               <article
                 key={s.slug}
                 data-reveal
-                data-glow
                 style={{ ["--i" as string]: i }}
-                className="group flex flex-col bg-ink-2 p-8 transition duration-500 hover:bg-[#2e2d31] md:p-10"
+                className="group flip-card h-[19rem] transition duration-500 hover:-translate-y-1 md:h-[21rem]"
               >
-                <ServiceMark slug={s.slug} />
-                <h3 className="mt-8 text-[2rem] text-white">{s.title}</h3>
-                <p className="mt-4 font-serif text-lg text-gold">{s.lede}</p>
-                <p className="mt-4 flex-1 text-muted-dark">{s.body}</p>
-                <p className="mt-8 border-t border-white/10 pt-5 font-mono text-xs uppercase tracking-widest text-white/60">Best for: {s.bestFor}</p>
+                <div className="flip-card-inner">
+                  {/* Front: just enough to know what it is */}
+                  <div data-glow className="flip-card-face flex flex-col bg-ink-2 p-6 transition-colors duration-500 group-hover:bg-[#2e2d31] md:p-7">
+                    <ServiceMark slug={s.slug} />
+                    <h3 className="mt-5 text-xl text-white md:text-[1.4rem]">{s.title}</h3>
+                    <p className="mt-2 font-serif text-base text-gold">{s.lede}</p>
+                    <span className="mt-auto flex items-center gap-2 pt-4 font-mono text-[0.65rem] uppercase tracking-widest text-white/40 motion-reduce:hidden">
+                      Hover to read more
+                    </span>
+                  </div>
+
+                  {/* Back: the detail, only on hover/focus */}
+                  <div data-glow className="flip-card-face flip-card-back flex flex-col bg-[#2e2d31] p-6 md:p-7">
+                    <h3 className="text-lg text-white">{s.title}</h3>
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-dark">{s.body}</p>
+                    <p className="mt-4 border-t border-white/10 pt-3 font-mono text-[0.65rem] uppercase tracking-widest text-white/60">Best for: {s.bestFor}</p>
+                    <Link href={`/contact?topic=hire&service=${s.slug}`} className="link-arrow mt-4 text-sm text-gold">
+                      Enquire <Arrow className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </div>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Founder + record */}
+      {/* Record */}
       <section className="py-20 md:py-28">
         <div className="container-sw grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
           <div data-reveal>
-            <p className="eyebrow text-maroon">Our founder</p>
-            <h2 className="mt-4 text-[2.1rem] md:text-5xl">Recruitment with a Chartered Accountant&rsquo;s standards</h2>
-            {founder ? (
-              <div className="mt-8 flex flex-col gap-5 sm:flex-row">
-                {founder.image ? (
-                  <Image src={founder.image} alt={founder.name} width={112} height={112} className="h-24 w-24 shrink-0 rounded-full object-cover md:h-28 md:w-28" />
-                ) : null}
-                <div className="space-y-4 text-muted">
-                  {founder.bio.map((p) => (
-                    <p key={p.slice(0, 24)}>{p}</p>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-            <Link href="/about" className="link-arrow mt-8">
+            <p className="eyebrow text-maroon">By the numbers</p>
+            <h2 className="mt-4 text-[2.1rem] md:text-5xl">Nearly two decades of results, not promises</h2>
+            <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">
+              Every search we run adds to this record — the numbers behind our accounting and finance recruitment in Vancouver since 2008.
+            </p>
+            <Link href="/about" className="btn btn-ink mt-10">
               Our story and values <Arrow />
             </Link>
           </div>
-          <StatsLedger stats={settings.stats} />
+
+          <div>
+            {settings.stats.map((s, i) => {
+              const last = i === settings.stats.length - 1;
+              return (
+                <div
+                  key={s.label}
+                  data-reveal
+                  style={{ ["--i" as string]: i, marginTop: i === 0 ? 0 : -10, marginLeft: `${(settings.stats.length - 1 - i) * 5}%` }}
+                  className={`group/stat relative flex min-h-[7rem] items-center justify-between gap-5 rounded-2xl p-6 transition-all duration-500 hover:-translate-y-0.5 md:min-h-[7.5rem] md:p-7 ${
+                    last
+                      ? "bg-maroon text-white shadow-[0_24px_50px_-20px_rgb(128_25_33/0.45)] hover:shadow-[0_28px_56px_-18px_rgb(128_25_33/0.55)]"
+                      : "border border-line/70 bg-white shadow-[0_18px_36px_-28px_rgb(30_29_31/0.3)] hover:border-line hover:shadow-[0_22px_40px_-24px_rgb(30_29_31/0.18)]"
+                  }`}
+                >
+                  <div className="flex items-baseline gap-4">
+                    <span className={`font-mono text-3xl font-medium tracking-tight tabular-nums md:text-4xl ${last ? "text-gold" : "text-ink"}`}>
+                      <CountUp value={s.value} />
+                    </span>
+                    <span className={`max-w-[11rem] text-sm leading-snug ${last ? "text-white/80" : "text-muted"}`}>
+                      {s.label}
+                      {s.note ? <span className="mt-0.5 block text-xs opacity-70">{s.note}</span> : null}
+                    </span>
+                  </div>
+                  <Tick
+                    animate
+                    delay={0.4 + i * 0.15}
+                    className={`h-4 w-5 shrink-0 transition-transform duration-500 group-hover/stat:scale-110 ${last ? "text-gold" : "text-maroon"}`}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -194,26 +207,27 @@ export default async function HomePage() {
       </section>
 
       {/* Industries */}
-      <section className="py-20 md:py-28">
+      <section className="on-dark bg-ink py-20 text-white md:py-28">
         <div className="container-sw">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <SectionHeading
+              tone="dark"
               eyebrow="Industries we serve"
               title="Deep in accounting. Trusted beyond it."
               intro="Our expertise spans accounting and finance in public practice and industry, plus the specialist teams that work alongside them."
             />
-            <Link href="/industries" className="link-arrow shrink-0">
+            <Link href="/industries" className="link-arrow shrink-0 text-white hover:text-gold">
               All industries <Arrow />
             </Link>
           </div>
-          <div className="mt-12">
-            <IndustryGrid industries={industries} openByIndustry={openByIndustry} />
+          <div className="mt-10">
+            <IndustryCarousel industries={industries} openByIndustry={openByIndustry} />
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="on-dark bg-ink py-20 text-white md:py-28">
+      <section className="on-dark border-t border-white/10 bg-ink py-20 text-white md:py-28">
         <div className="container-sw">
           <SectionHeading tone="dark" eyebrow="In their words" title="Don't take our word for it" />
           <div data-reveal className="mt-10">

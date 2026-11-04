@@ -54,7 +54,7 @@ export default async function JobPage({ params }: Props) {
 
       <section id="job-hero" className="on-dark relative overflow-hidden bg-ink text-white">
         <ArcMotif className="spin-slow pointer-events-none absolute -right-40 -top-24 h-[34rem] w-[34rem] text-gold/[0.06]" />
-        <div className="container-sw relative pb-14 pt-10 md:pb-20 md:pt-14">
+        <div className="container-sw relative pb-14 pt-[7.5rem] md:pb-20 md:pt-[9.25rem]">
           <Breadcrumbs items={[{ name: "Jobs", path: "/jobs" }, { name: job.title }]} />
           <p className="eyebrow mt-10 text-gold">{industry?.name ?? "Current opportunity"}</p>
           <h1 className="hero-title lift mt-4 max-w-4xl text-[2.4rem] md:text-[3.4rem]">{job.title}</h1>

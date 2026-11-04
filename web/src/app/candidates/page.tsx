@@ -47,7 +47,7 @@ export default async function CandidatesPage() {
       {/* Exemplary service */}
       <section className="py-20 md:py-28">
         <div className="container-sw">
-          <SectionHeading eyebrow="Exemplary service" title="What you get when you work with us" intro="It's free for candidates, always confidential, and you'll never be pushed to accept an offer." />
+
           <div className="mt-14 grid gap-5 md:grid-cols-3">
             {[
               ["Exclusive opportunities", "A curated selection of roles matched to your expertise and goals, many of which are never advertised."],

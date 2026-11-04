@@ -128,7 +128,7 @@ export default async function IndustryPage({ params }: Props) {
           </div>
         </section>
       ) : (
-        <section className="py-20 md:py-24">
+        <section className="border-t border-line py-20 md:py-24">
           <div className="container-sw grid gap-10 lg:grid-cols-2 lg:items-center">
             <div data-reveal="clip" className="relative aspect-[16/10] overflow-hidden rounded-xl">
               <Image src="/images/team-collaboration.jpg" alt="" fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />

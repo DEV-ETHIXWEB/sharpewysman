@@ -54,7 +54,7 @@ export function Logo({ variant = "light", className = "", priority = false }: { 
       height={158}
       priority={priority}
       sizes="200px"
-      className={`h-auto w-[172px] md:w-[200px] ${className}`}
+      className={`h-auto w-[200px] md:w-[236px] ${className}`}
     />
   );
 }
@@ -166,7 +166,9 @@ export function PageHero({
   return (
     <section className="on-dark relative overflow-hidden bg-ink text-white">
       <ArcMotif className="spin-slow pointer-events-none absolute -right-40 -top-24 h-[34rem] w-[34rem] text-gold/[0.07] md:-right-24" />
-      <div className={`container-sw relative grid gap-10 pb-16 pt-10 md:pb-24 md:pt-14 ${image ? "lg:grid-cols-[1.2fr_0.8fr] lg:items-end" : ""}`}>
+      <div
+        className={`container-sw relative grid gap-10 pb-16 pt-[7.5rem] md:pb-24 md:pt-[9.25rem] ${image ? "lg:grid-cols-[1.2fr_0.8fr] lg:items-end" : ""}`}
+      >
         <div>
           <Breadcrumbs items={crumbs} />
           <p className="eyebrow mt-10 text-gold">{eyebrow}</p>
