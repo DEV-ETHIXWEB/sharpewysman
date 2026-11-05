@@ -25,7 +25,6 @@ export default async function CaseStudiesPage() {
             How we&rsquo;ve helped businesses <span className="text-gold">like yours hire.</span>
           </>
         }
-        crumbs={[{ name: "Case studies" }]}
       />
       <section className="py-16 md:py-24">
         <div className="container-sw grid gap-6 md:grid-cols-2">

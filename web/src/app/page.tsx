@@ -144,7 +144,7 @@ export default async function HomePage() {
             <p className="eyebrow text-maroon">By the numbers</p>
             <h2 className="mt-4 text-[2.1rem] md:text-5xl">Nearly two decades of results, not promises</h2>
             <p className="mt-5 max-w-md text-lg leading-relaxed text-muted">
-              Every search we run adds to this record — the numbers behind our accounting and finance recruitment in Vancouver since 2008.
+              Every search we run adds to this record: the numbers behind our accounting and finance recruitment in Vancouver since 2008.
             </p>
             <Link href="/about" className="btn btn-ink mt-10">
               Our story and values <Arrow />

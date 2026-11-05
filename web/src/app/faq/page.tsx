@@ -29,7 +29,8 @@ export default async function FaqPage() {
           </>
         }
         intro="Can't find what you're looking for? Call us or send a message. We're happy to help."
-        crumbs={[{ name: "FAQ" }]}
+        image="/images/vancouver-skyline.jpg"
+        caption="Honesty is how we work, every time."
       />
       <section className="py-16 md:py-24">
         <div className="container-sw space-y-16">

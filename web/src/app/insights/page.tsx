@@ -1,7 +1,8 @@
-import { JsonLd, PageHero } from "@/components/ui";
+import Link from "next/link";
+import { Arrow, JsonLd, PageHero } from "@/components/ui";
 import { ArticleCard } from "@/components/ArticleCard";
 import { CtaBand } from "@/components/CtaBand";
-import { getArticles } from "@/lib/wp";
+import { getArticles, getOpenJobs } from "@/lib/wp";
 import { breadcrumbLd, buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -12,7 +13,7 @@ export const metadata = buildMetadata({
 });
 
 export default async function InsightsPage() {
-  const articles = await getArticles();
+  const [articles, jobs] = await Promise.all([getArticles(), getOpenJobs()]);
   return (
     <>
       <JsonLd data={breadcrumbLd([{ name: "Insights", path: "/insights" }])} />
@@ -24,8 +25,16 @@ export default async function InsightsPage() {
           </>
         }
         intro="Practical guidance for CPAs planning their next move, and for the firms hiring them."
-        crumbs={[{ name: "Insights" }]}
-      />
+        image="/images/professional-downtown.jpg"
+        caption="Advice worth pulling up a chair for."
+      >
+        <Link href="/jobs" className="btn btn-gold">
+          Browse {jobs.length} open roles <Arrow />
+        </Link>
+        <Link href="/contact" className="btn btn-ghost-light">
+          Talk to a recruiter
+        </Link>
+      </PageHero>
       <section className="py-16 md:py-24">
         <div className="container-sw grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
           {articles.map((a, i) => (

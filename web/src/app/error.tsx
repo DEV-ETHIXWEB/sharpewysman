@@ -19,7 +19,7 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
       <ArcMotif className="pointer-events-none absolute -right-32 top-0 -z-10 h-[36rem] w-[36rem] text-gold/[0.07]" />
       <div className="container-sw py-28 md:py-40">
         <p className="eyebrow text-gold">Something went wrong</p>
-        <h1 className="hero-title mt-4 max-w-3xl text-[2.6rem] md:text-[4rem]">
+        <h1 className="mt-4 max-w-3xl text-[2.6rem] md:text-[4rem]">
           This page didn&rsquo;t <span className="text-gold">balance.</span>
         </h1>
         <p className="mt-6 max-w-xl text-lg text-muted-dark">

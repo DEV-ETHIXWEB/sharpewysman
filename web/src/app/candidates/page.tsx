@@ -33,7 +33,6 @@ export default async function CandidatesPage() {
           </>
         }
         intro="Your career advancement and wellbeing come first. Our recruiters are all designated accountants, dedicated to connecting you with opportunities that genuinely fit your goals."
-        crumbs={[{ name: "Candidates" }]}
         image="/images/candidate-interview.jpg"
       >
         <Link href="/jobs" className="btn btn-gold">

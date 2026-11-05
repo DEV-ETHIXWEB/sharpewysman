@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { IconArrow } from "./icons";
 
@@ -115,64 +114,38 @@ export function SectionHeading({
   );
 }
 
-/* ---------------------------------------------------------- Breadcrumbs */
-
-export function Breadcrumbs({ items, tone = "dark" }: { items: { name: string; path?: string }[]; tone?: "dark" | "light" }) {
-  const base = tone === "dark" ? "text-muted-dark" : "text-muted";
-  return (
-    <nav aria-label="Breadcrumb" className={`eyebrow ${base}`}>
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <li>
-          <Link href="/" className="hover:text-gold">
-            Home
-          </Link>
-        </li>
-        {items.map((it) => (
-          <li key={it.name} className="flex items-center gap-2">
-            <span aria-hidden>/</span>
-            {it.path ? (
-              <Link href={it.path} className="hover:text-gold">
-                {it.name}
-              </Link>
-            ) : (
-              <span aria-current="page" className={tone === "dark" ? "text-white" : "text-ink"}>
-                {it.name}
-              </span>
-            )}
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
-}
-
 /* ------------------------------------------------------------ PageHero */
 
 export function PageHero({
   eyebrow,
   title,
   intro,
-  crumbs,
   children,
   image,
+  video,
+  caption,
 }: {
   eyebrow: string;
   title: ReactNode;
   intro?: ReactNode;
-  crumbs: { name: string; path?: string }[];
   children?: ReactNode;
   image?: string;
+  /** A short, muted, looping clip in place of the still image. `image` is still required: it's the poster frame, and what shows under prefers-reduced-motion. */
+  video?: string;
+  /** A short line that fades up from the bottom of the image/video on hover, like a caption. */
+  caption?: string;
 }) {
   return (
     <section className="on-dark relative overflow-hidden bg-ink text-white">
       <ArcMotif className="spin-slow pointer-events-none absolute -right-40 -top-24 h-[34rem] w-[34rem] text-gold/[0.07] md:-right-24" />
       <div
-        className={`container-sw relative grid gap-10 pb-16 pt-[7.5rem] md:pb-24 md:pt-[9.25rem] ${image ? "lg:grid-cols-[1.2fr_0.8fr] lg:items-end" : ""}`}
+        className={`container-sw relative grid gap-10 pb-16 pt-[7.5rem] md:pb-24 md:pt-[9.25rem] lg:min-h-[53rem] lg:items-start ${
+          image ? "lg:grid-cols-[1.2fr_0.8fr]" : ""
+        }`}
       >
         <div>
-          <Breadcrumbs items={crumbs} />
-          <p className="eyebrow mt-10 text-gold">{eyebrow}</p>
-          <h1 className="hero-title lift mt-4 max-w-4xl text-[2.4rem] md:text-[3.4rem] lg:text-[3.9rem]">{title}</h1>
+          <p className="eyebrow text-gold">{eyebrow}</p>
+          <h1 className="lift mt-4 max-w-4xl text-[2.4rem] md:text-[3.4rem] lg:text-[3.9rem]">{title}</h1>
           {intro ? (
             <p className="lift mt-6 max-w-2xl text-lg leading-relaxed text-muted-dark md:text-xl" style={{ ["--delay" as string]: "0.08s" }}>
               {intro}
@@ -185,9 +158,36 @@ export function PageHero({
           ) : null}
         </div>
         {image ? (
-          <div className="lift relative hidden aspect-[4/5] overflow-hidden rounded-t-[10rem] lg:block" style={{ ["--delay" as string]: "0.12s" }}>
-            <Image src={image} alt="" fill sizes="(min-width: 1024px) 30vw, 0px" className="parallax-img object-cover" priority />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/50 to-transparent" />
+          <div
+            className="lift group relative hidden aspect-[4/5] overflow-hidden rounded-t-[10rem] lg:block"
+            style={{ ["--delay" as string]: "0.12s" }}
+          >
+            {video ? (
+              <video
+                src={video}
+                poster={image}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                className="absolute inset-0 h-full w-full object-cover motion-reduce:hidden"
+              />
+            ) : null}
+            <Image
+              src={image}
+              alt=""
+              fill
+              sizes="(min-width: 1024px) 30vw, 0px"
+              className={`parallax-img object-cover ${video ? "hidden motion-reduce:block" : ""}`}
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/50 to-transparent transition-opacity duration-500 group-hover:from-ink/85" aria-hidden />
+            {caption ? (
+              <p className="font-display absolute inset-x-0 bottom-0 translate-y-2 px-7 pb-7 text-lg italic leading-snug text-white/90 opacity-0 transition-all duration-500 ease-[var(--ease-out-quart)] group-hover:translate-y-0 group-hover:opacity-100">
+                {caption}
+              </p>
+            ) : null}
           </div>
         ) : null}
       </div>

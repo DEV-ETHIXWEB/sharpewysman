@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Arrow, Breadcrumbs, JsonLd } from "@/components/ui";
+import { Arrow, JsonLd } from "@/components/ui";
 import { ArticleCard, formatDate } from "@/components/ArticleCard";
 import { CtaBand } from "@/components/CtaBand";
 import { cleanHtml } from "@/lib/sanitize";
@@ -51,11 +51,10 @@ export default async function ArticlePage({ params }: Props) {
       <article>
         <header className="on-dark bg-ink text-white">
           <div className="container-sw pb-14 pt-[7.5rem] md:pb-20 md:pt-[9.25rem]">
-            <Breadcrumbs items={[{ name: "Insights", path: "/insights" }, { name: a.title }]} />
-            <p className="eyebrow mt-10 text-gold">
+            <p className="eyebrow text-gold">
               {a.category} · <time dateTime={a.date}>{formatDate(a.date)}</time> · {Math.max(1, Math.round(words / 230))} min read
             </p>
-            <h1 className="hero-title mt-4 max-w-4xl text-[2.2rem] md:text-[3.2rem]">{a.title}</h1>
+            <h1 className="mt-4 max-w-4xl text-[2.2rem] md:text-[3.2rem]">{a.title}</h1>
             <p className="mt-6 max-w-2xl text-lg text-muted-dark md:text-xl">{a.excerpt}</p>
           </div>
         </header>

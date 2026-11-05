@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { ArcMotif, Arrow, Breadcrumbs, JsonLd, TickList } from "@/components/ui";
+import { ArcMotif, Arrow, JsonLd, TickList } from "@/components/ui";
 import { MobileApplyBar } from "@/components/MobileApplyBar";
 import { EnquiryForm } from "@/components/EnquiryForm";
 import { IconBriefcase, IconPin, IconSalary } from "@/components/icons";
@@ -55,9 +55,8 @@ export default async function JobPage({ params }: Props) {
       <section id="job-hero" className="on-dark relative overflow-hidden bg-ink text-white">
         <ArcMotif className="spin-slow pointer-events-none absolute -right-40 -top-24 h-[34rem] w-[34rem] text-gold/[0.06]" />
         <div className="container-sw relative pb-14 pt-[7.5rem] md:pb-20 md:pt-[9.25rem]">
-          <Breadcrumbs items={[{ name: "Jobs", path: "/jobs" }, { name: job.title }]} />
-          <p className="eyebrow mt-10 text-gold">{industry?.name ?? "Current opportunity"}</p>
-          <h1 className="hero-title lift mt-4 max-w-4xl text-[2.4rem] md:text-[3.4rem]">{job.title}</h1>
+          <p className="eyebrow text-gold">{industry?.name ?? "Current opportunity"}</p>
+          <h1 className="lift mt-4 max-w-4xl text-[2.4rem] md:text-[3.4rem]">{job.title}</h1>
           <p className="mt-6 max-w-2xl text-lg text-muted-dark md:text-xl">{job.summary}</p>
           <dl className="mt-10 grid max-w-3xl gap-px overflow-hidden rounded-xl bg-line-dark font-mono text-sm sm:grid-cols-3">
             {(

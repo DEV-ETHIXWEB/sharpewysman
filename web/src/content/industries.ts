@@ -110,7 +110,7 @@ export const industries: Industry[] = [
       "Problem-solving and continuous-improvement mindset",
     ],
     roles: ["Project Engineer", "Engineering Manager", "Project Manager", "Estimator"],
-    image: "/images/candidate-interview.jpg",
+    image: "/images/team-collaboration.jpg",
     order: 5,
   },
 ];

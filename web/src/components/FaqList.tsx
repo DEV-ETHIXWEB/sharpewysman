@@ -1,12 +1,28 @@
+"use client";
+
+import { useId } from "react";
 import type { Faq } from "@/lib/types";
 import { IconPlus } from "./icons";
 
-/** Native <details> accordion: works without JavaScript and is fully accessible. */
+/**
+ * Native <details> accordion: fully accessible, mutually exclusive via the
+ * shared `name` (the browser enforces this even when `open` is set from JS,
+ * so hover-to-open still closes whichever sibling was open). `useId` keeps
+ * each rendered FaqList its own group, so two on one page never cross.
+ */
 export function FaqList({ faqs }: { faqs: Faq[] }) {
+  const groupName = useId();
   return (
     <div data-reveal className="divide-y divide-line border-y border-line">
       {faqs.map((f) => (
-        <details key={f.id} className="group py-1">
+        <details
+          key={f.id}
+          name={groupName}
+          className="group py-1"
+          onMouseEnter={(e) => {
+            e.currentTarget.open = true;
+          }}
+        >
           <summary className="flex items-start justify-between gap-6 py-5 text-left">
             <h3 className="font-display text-xl leading-snug md:text-2xl">{f.question}</h3>
             <span

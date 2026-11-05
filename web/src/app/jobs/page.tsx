@@ -34,13 +34,17 @@ export default async function JobsPage() {
           </>
         }
         intro="Ready for the next challenge? These are some of the roles we're recruiting for now. Many more are confidential, so if you don't see the right fit, register with us."
-        crumbs={[{ name: "Jobs" }]}
+        image="/images/partners-office.jpg"
+        caption="The next step, found with people who know the terrain."
       >
         <Link href="/contact?topic=register" className="btn btn-gold">
           Register your resume <Arrow />
         </Link>
+        <Link href="#jobs" className="btn btn-ghost-light">
+          Browse {jobs.length} open roles
+        </Link>
       </PageHero>
-      <section className="py-16 md:py-24">
+      <section id="jobs" className="scroll-mt-28 py-16 md:py-24">
         <div className="container-sw">
           <JobBoard jobs={jobs} industries={industries.map((i) => ({ slug: i.slug, name: i.name }))} />
         </div>

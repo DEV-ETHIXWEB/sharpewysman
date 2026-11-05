@@ -34,7 +34,7 @@ export default async function CaseStudyPage({ params }: Props) {
           { name: c.title, path: `/case-studies/${c.slug}` },
         ])}
       />
-      <PageHero eyebrow={`${c.industry} · ${c.client}`} title={c.title} intro={c.summary} crumbs={[{ name: "Case studies", path: "/case-studies" }, { name: c.title }]} />
+      <PageHero eyebrow={`${c.industry} · ${c.client}`} title={c.title} intro={c.summary} />
       <section className="py-16 md:py-24">
         <div className="container-sw max-w-3xl space-y-12">
           {[

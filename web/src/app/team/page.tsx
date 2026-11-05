@@ -23,7 +23,8 @@ export default async function TeamPage() {
           </>
         }
         intro="A small, experienced team. When you call, you speak directly to the person running your search."
-        crumbs={[{ name: "Team" }]}
+        image="/images/team-meeting.jpg"
+        caption="Not a call centre. The person running your search."
       />
       <section className="py-16 md:py-24">
         <div className="container-sw">

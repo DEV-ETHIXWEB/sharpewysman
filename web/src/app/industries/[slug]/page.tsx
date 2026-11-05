@@ -57,7 +57,6 @@ export default async function IndustryPage({ params }: Props) {
         eyebrow={ind.primary ? "Our specialty" : "Industries we serve"}
         title={<>{ind.name} recruitment</>}
         intro={ind.tagline}
-        crumbs={[{ name: "Industries", path: "/industries" }, { name: ind.name }]}
         image={ind.image}
       >
         <Link href="/contact?topic=hire" className="btn btn-gold">

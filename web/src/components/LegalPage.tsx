@@ -11,7 +11,7 @@ export async function LegalPage({ slug, name }: { slug: string; name: string }) 
   return (
     <>
       <JsonLd data={breadcrumbLd([{ name, path: `/${slug}` }])} />
-      <PageHero eyebrow="Legal" title={name} crumbs={[{ name }]} intro={page ? `Last updated ${formatDate(page.modified)}` : undefined} />
+      <PageHero eyebrow="Legal" title={name} intro={page ? `Last updated ${formatDate(page.modified)}` : undefined} />
       <section className="py-16 md:py-24">
         <div className="container-sw">
           <div className="prose-sw mx-auto max-w-[46rem]" dangerouslySetInnerHTML={{ __html: html }} />

@@ -31,7 +31,8 @@ export default async function ContactPage() {
           </>
         }
         intro="Hiring, looking for your next role, or just exploring the market? Tell us a little about it and we'll reply within one business day."
-        crumbs={[{ name: "Contact" }]}
+        image="/images/vancouver-skyline.jpg"
+        caption="Vancouver, BC. We reply within one business day."
       />
       <section className="py-16 md:py-24">
         <div className="container-sw grid gap-14 lg:grid-cols-[1.3fr_0.7fr] lg:gap-20">

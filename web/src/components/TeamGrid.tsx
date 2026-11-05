@@ -12,8 +12,14 @@ export function TeamGrid({ team, detailed = false }: { team: TeamMember[]; detai
   return (
     <ul className={`grid gap-6 ${detailed ? "lg:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"}`}>
       {team.map((m, i) => (
-        <li key={m.slug} id={m.slug} data-reveal style={{ ["--i" as string]: i }} className={`overflow-hidden rounded-xl border border-line bg-white ${detailed ? "grid sm:grid-cols-[0.8fr_1.2fr]" : ""}`}>
-          <div className={`relative bg-paper-2 ${detailed ? "aspect-[4/5] sm:aspect-auto sm:min-h-full" : "aspect-[4/4.2]"}`}>
+        <li
+          key={m.slug}
+          id={m.slug}
+          data-reveal
+          style={{ ["--i" as string]: i }}
+          className={`overflow-hidden rounded-xl border border-line bg-white ${detailed ? "grid sm:grid-cols-[0.8fr_1.2fr] sm:items-start" : ""}`}
+        >
+          <div className={`relative bg-paper-2 ${detailed ? "aspect-[4/5]" : "aspect-[4/4.2]"}`}>
             {m.image ? (
               <Image src={m.image} alt={`${m.name}, ${m.role}`} fill sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw" className="object-cover object-top" />
             ) : null}

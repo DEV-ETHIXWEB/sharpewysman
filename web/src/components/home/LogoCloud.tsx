@@ -5,12 +5,12 @@ import { useEffect, useRef, useState } from "react";
 const SWAP_EVERY = 3300;
 const DURATION = 540; // per-item transition duration
 const COLS = 3; // must match the grid-cols-3 below
-const ROW_STAGGER = 620; // delay step between rows — must clear DURATION so row 1 fully finishes before row 2 starts
+const ROW_STAGGER = 620; // delay step between rows: must clear DURATION so row 1 fully finishes before row 2 starts
 
 /**
  * Verified official logo files, pulled from each firm's own site (or, for MNP,
  * Wikimedia Commons). Only companies with a confirmed, usable asset are listed
- * here — anything missing falls back to a quiet text wordmark rather than risk
+ * here; anything missing falls back to a quiet text wordmark rather than risk
  * showing the wrong company's mark.
  */
 const CLIENT_LOGOS: Record<string, { src: string; width: number; height: number; invert?: boolean }> = {
@@ -35,7 +35,7 @@ function shuffledIndices(n: number, avoid?: number[]): number[] {
 }
 
 /**
- * A quiet grid of client marks that periodically reshuffles position — the
+ * A quiet grid of client marks that periodically reshuffles position: the
  * same slide/blur swap-cloud choreography, built with CSS transitions instead
  * of an animation library, to stay consistent with the rest of the site's
  * hand-rolled motion system (and to respect prefers-reduced-motion via the
@@ -51,7 +51,7 @@ export function LogoCloud({ items }: { items: string[] }) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     // The last row's transition starts (rows - 1) * ROW_STAGGER after the first
-    // row, so it must be given that same head start before flipping phase —
+    // row, so it must be given that same head start before flipping phase,
     // otherwise the trailing row gets cut off mid-transition and snaps (the jerk).
     const rows = Math.ceil(items.length / COLS);
     const settle = DURATION + (rows - 1) * ROW_STAGGER;

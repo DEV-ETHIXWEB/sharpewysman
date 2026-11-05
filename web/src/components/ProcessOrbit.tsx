@@ -6,20 +6,18 @@ import { useEffect, useId, useRef, useState } from "react";
 type Step = { title: string; body: string };
 
 const STEP_MS = 2700;
-const SIZE = 540; // ring box, px (desktop only) — generous enough that a 6-step track (candidates) clears the hub with real margin, not just the 4-step one
+const SIZE = 500; // ring box, px (desktop only)
 const CENTER = SIZE / 2;
-const NODE_R = 225;
-const NODE_D = 68;
-const STEM_H = 16;
-const LABEL_W = 130;
-const HUB_W = 180; // fixed, so the centre panel's height is predictable and never reaches the badges
+const NODE_R = 198;
+const NODE_D = 76;
 
 /**
- * A process laid out as a clock face, centred, numbered badges sitting
- * right on a solid ring. Every step's label stays visible under its own
- * badge; only the centre panel (the "tooltip") and the active badge's
- * colour change as it auto-advances. Hovering the ring pauses it.
- * Mobile / no-JS: an ordered list (always rendered for screen readers).
+ * A process laid out as a clock face on the left: numbered badges sitting
+ * right on a solid ring, no text on the ring itself. The active step's
+ * title and body appear in a card to the right, swapping in sync as the
+ * ring auto-advances or a badge is hovered/clicked. Hovering the ring
+ * pauses it. Mobile / no-JS: an ordered list (always rendered for screen
+ * readers).
  */
 export function ProcessOrbit({ tracks }: { tracks: { id: string; label: string; steps: readonly Step[] }[] }) {
   const [trackId, setTrackId] = useState(tracks[0].id);
@@ -50,6 +48,13 @@ export function ProcessOrbit({ tracks }: { tracks: { id: string; label: string; 
   const choose = (i: number) => setActive(i);
   const step = track.steps[active];
 
+  // The highlight arc: a short gold-to-ink segment on the ring, centred on
+  // whichever node is active, that glides around as it changes.
+  const circumference = 2 * Math.PI * NODE_R;
+  const arcFraction = Math.min(0.16, (1 / n) * 0.6);
+  const arcLen = circumference * arcFraction;
+  const arcRotate = (active / n) * 360 - 90 - (arcFraction * 360) / 2;
+
   return (
     <div ref={rootRef} className="flex w-full flex-col items-center">
       {tracks.length > 1 ? (
@@ -76,84 +81,109 @@ export function ProcessOrbit({ tracks }: { tracks: { id: string; label: string; 
       ) : null}
 
       <div id={`${uid}-panel`} role={tracks.length > 1 ? "tabpanel" : undefined} aria-labelledby={tracks.length > 1 ? `${uid}-tab-${trackId}` : undefined} className="mt-12 w-full">
-        {/* Clock (desktop) */}
-        <div
-          className="relative mx-auto hidden lg:block"
-          style={{ width: SIZE, height: SIZE }}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
-          <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="absolute inset-0 h-full w-full" aria-hidden>
-            <circle cx={CENTER} cy={CENTER} r={NODE_R * 0.52} fill="none" stroke="var(--color-line)" strokeWidth="1" strokeDasharray="1 7" strokeLinecap="round" />
-            <circle cx={CENTER} cy={CENTER} r={NODE_R} fill="none" stroke="var(--color-gold)" strokeWidth="6" />
-          </svg>
-
-          {/* Soft backdrop so the centre panel reads as its own place, without a hard box */}
+        {/* Ring + detail card (desktop) */}
+        <div className="hidden items-center gap-20 lg:flex lg:justify-center">
           <div
-            aria-hidden
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-            style={{
-              height: NODE_R * 0.95,
-              width: NODE_R * 0.95,
-              background: "radial-gradient(circle, var(--color-paper-2) 0%, transparent 72%)",
-            }}
-          />
-
-          {/* Centre tooltip: swaps with the active step, replays its pop-in each time. Fixed
-              width and clamped lines keep its height predictable, so it can never grow into
-              the badges above or below it. */}
-          <div
-            key={`${trackId}-${active}`}
-            className="card-pop absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center"
-            style={{ width: HUB_W }}
+            className="relative shrink-0"
+            style={{ width: SIZE, height: SIZE }}
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
           >
-            <Image src="/images/mark.png" alt="" width={32} height={32} className="h-8 w-8" />
-            <h3 className="font-display mt-3 text-xl leading-tight line-clamp-2">{step.title}</h3>
-            <p className="mt-2.5 text-sm leading-relaxed text-muted line-clamp-3">{step.body}</p>
-          </div>
+            <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="absolute inset-0 h-full w-full" aria-hidden>
+              <circle cx={CENTER} cy={CENTER} r={NODE_R * 0.52} fill="none" stroke="var(--color-line)" strokeWidth="1" strokeDasharray="1 7" strokeLinecap="round" />
+              <circle cx={CENTER} cy={CENTER} r={NODE_R} fill="none" stroke="var(--color-gold)" strokeWidth="6" strokeOpacity="0.4" />
+              {/* Progress arc: glides to sit centred on the active node */}
+              <circle
+                className="orbit-arc"
+                cx={CENTER}
+                cy={CENTER}
+                r={NODE_R}
+                fill="none"
+                stroke="var(--color-ink)"
+                strokeWidth="7"
+                strokeLinecap="round"
+                strokeDasharray={`${arcLen} ${circumference - arcLen}`}
+                style={{ transformOrigin: `${CENTER}px ${CENTER}px`, transform: `rotate(${arcRotate}deg)` }}
+              />
+            </svg>
 
-          {track.steps.map((s, i) => {
-            const deg = (i / n) * 360;
-            const angle = (deg * Math.PI) / 180 - Math.PI / 2;
-            const x = CENTER + NODE_R * Math.cos(angle);
-            const y = CENTER + NODE_R * Math.sin(angle);
-            const on = i === active;
+            {/* Soft backdrop behind the centre mark, so the ring's middle doesn't read as dead space */}
+            <div
+              aria-hidden
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+              style={{
+                height: NODE_R * 0.95,
+                width: NODE_R * 0.95,
+                background: "radial-gradient(circle, var(--color-paper-2) 0%, transparent 72%)",
+              }}
+            />
+            <Image
+              src="/images/mark.png"
+              alt=""
+              width={44}
+              height={44}
+              className="absolute left-1/2 top-1/2 h-11 w-11 -translate-x-1/2 -translate-y-1/2 opacity-70"
+            />
 
-            return (
-              <div
-                key={s.title}
-                className="absolute left-0 top-0"
-                style={{ height: NODE_D, width: NODE_D, transform: `translate(${x - NODE_D / 2}px, ${y - NODE_D / 2}px)` }}
-              >
+            {track.steps.map((s, i) => {
+              const deg = (i / n) * 360;
+              const angle = (deg * Math.PI) / 180 - Math.PI / 2;
+              const x = CENTER + NODE_R * Math.cos(angle);
+              const y = CENTER + NODE_R * Math.sin(angle);
+              const on = i === active;
+
+              return (
                 <button
+                  key={s.title}
                   type="button"
                   onClick={() => choose(i)}
                   onMouseEnter={() => choose(i)}
                   onFocus={() => choose(i)}
                   aria-pressed={on}
                   aria-label={s.title}
-                  className="absolute inset-0 flex items-center justify-center rounded-full font-mono text-lg font-bold transition-all duration-300"
+                  className={`absolute left-0 top-0 flex items-center justify-center rounded-full font-mono text-xl font-bold transition-all duration-300 ${on ? "node-pulse" : ""}`}
                   style={{
+                    height: NODE_D,
+                    width: NODE_D,
+                    transform: `translate(${x - NODE_D / 2}px, ${y - NODE_D / 2}px) scale(${on ? 1.14 : 1})`,
                     background: on ? "var(--color-ink)" : "var(--color-gold)",
                     color: on ? "var(--color-gold)" : "var(--color-ink)",
-                    transform: `scale(${on ? 1.1 : 1})`,
-                    boxShadow: on ? "0 12px 30px -8px rgb(30 29 31 / 0.45)" : "0 4px 14px -6px rgb(30 29 31 / 0.3)",
+                    boxShadow: on ? "0 14px 34px -8px rgb(30 29 31 / 0.5)" : "0 4px 14px -6px rgb(30 29 31 / 0.3)",
                     zIndex: on ? 10 : 1,
                   }}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </button>
+              );
+            })}
+          </div>
 
-                <span aria-hidden className="absolute left-1/2 top-full -translate-x-1/2 bg-gold" style={{ height: STEM_H, width: 1 }} />
-                <div
-                  className="absolute left-1/2 -translate-x-1/2 text-center text-sm font-bold leading-snug"
-                  style={{ top: NODE_D + STEM_H, width: LABEL_W, color: on ? "var(--color-ink)" : "var(--color-muted)" }}
-                >
-                  {s.title}
-                </div>
-              </div>
-            );
-          })}
+          {/* Detail card: swaps with the active step, in sync with the ring */}
+          <div className="w-full max-w-lg">
+            <div key={`${trackId}-${active}`} className="card-pop rounded-2xl border border-line bg-white p-12" style={{ minHeight: 300 }}>
+              <p className="font-mono text-xs font-bold uppercase tracking-widest text-maroon">
+                Step {String(active + 1).padStart(2, "0")} <span className="text-muted">/ {String(n).padStart(2, "0")}</span>
+              </p>
+              <h3 className="font-display mt-5 text-4xl leading-snug">{step.title}</h3>
+              <p className="mt-5 text-xl leading-relaxed text-muted">{step.body}</p>
+            </div>
+            <div className="mt-7 flex gap-2.5">
+              {track.steps.map((s, i) => (
+                <button
+                  key={s.title}
+                  type="button"
+                  onClick={() => choose(i)}
+                  aria-label={`Go to step ${i + 1}: ${s.title}`}
+                  aria-current={i === active}
+                  className="h-2 flex-1 rounded-full transition-all duration-300"
+                  style={{
+                    background: i === active ? "var(--color-maroon)" : "var(--color-line)",
+                    transform: i === active ? "scaleY(1.4)" : "none",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* List (mobile & tablet) */}

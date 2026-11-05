@@ -5,6 +5,10 @@ import type { Testimonial } from "@/lib/types";
 import { IconQuote } from "./icons";
 
 const CARD_W = 360;
+const CARD_GAP = 24;
+/** Minimum px-width a single (pre-duplicate) list must reach so the
+ * translateX(-50%) loop never runs out of content on wide viewports. */
+const MIN_LIST_W = 3840;
 
 function initialsOf(name: string) {
   return name
@@ -41,16 +45,23 @@ function Card({ t, dark }: { t: Testimonial; dark: boolean }) {
 }
 
 function Row({ items, dark, reverse, duration, paused }: { items: Testimonial[]; dark: boolean; reverse?: boolean; duration: string; paused: boolean }) {
+  // A short testimonial list (as few as 3) is narrower than most viewports.
+  // The seamless loop needs one full (pre-duplicate) list to be at least as
+  // wide as the viewport, so repeat the set until it comfortably is.
+  const reps = Math.max(1, Math.ceil(MIN_LIST_W / (items.length * (CARD_W + CARD_GAP))));
+
   return (
     <div className="marquee overflow-hidden" data-paused={paused} style={{ ["--marquee-dur" as string]: duration }}>
       <div className={`marquee-track gap-6 ${reverse ? "marquee-track-reverse" : ""}`}>
         {[false, true].map((dup) => (
           <ul key={String(dup)} aria-hidden={dup || undefined} className={`flex shrink-0 items-stretch gap-6 ${dup ? "marquee-dup" : ""}`}>
-            {items.map((t, i) => (
-              <li key={`${t.id}-${i}`}>
-                <Card t={t} dark={dark} />
-              </li>
-            ))}
+            {Array.from({ length: reps }).map((_, rep) =>
+              items.map((t, i) => (
+                <li key={`${t.id}-${rep}-${i}`} aria-hidden={!dup && rep > 0 ? true : undefined}>
+                  <Card t={t} dark={dark} />
+                </li>
+              )),
+            )}
           </ul>
         ))}
       </div>
@@ -62,7 +73,7 @@ function Row({ items, dark, reverse, duration, paused }: { items: Testimonial[];
  * Client and candidate testimonials as a two-row infinite marquee (rows
  * scroll opposite directions, at different speeds). Hovering or focusing
  * either row pauses it; a visible pause control covers everyone else
- * (WCAG 2.2.2 — content that auto-moves for more than five seconds needs
+ * (WCAG 2.2.2: content that auto-moves for more than five seconds needs
  * one). Respects prefers-reduced-motion globally (wraps to a static grid).
  */
 export function Testimonials({ items, tone = "light" }: { items: Testimonial[]; tone?: "light" | "dark" }) {
@@ -123,7 +134,7 @@ export function Testimonials({ items, tone = "light" }: { items: Testimonial[]; 
         </button>
       </div>
 
-      <div key={aud} className="mt-10 space-y-6">
+      <div key={aud} className="relative mx-[calc(50%-50vw)] mt-10 w-screen space-y-6">
         <Row items={list} dark={dark} duration="46s" paused={paused} />
         {rowB.length > 1 ? <Row items={rowB} dark={dark} reverse duration="60s" paused={paused} /> : null}
       </div>

@@ -15,10 +15,10 @@ import { ChatLauncher } from "@/components/assistant/ChatLauncher";
 import { CookieConsent } from "@/components/CookieConsent";
 
 /**
- * Typography — the Geist family (Vercel, OFL) throughout:
+ * Typography: the Geist family (Vercel, OFL) throughout:
  *  - Geist Serif: headings, hero display and accents. A single upright weight (400),
  *    the same restrained role Source Serif 4 held before.
- *  - Geist Sans: body, UI and hero micro-copy, variable weight 100–900.
+ *  - Geist Sans: body, UI and hero micro-copy, variable weight 100 to 900.
  *  - Geist Mono: figures only (statistics, salaries, step numbers), tabular by design.
  */
 

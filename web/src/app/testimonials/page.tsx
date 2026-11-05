@@ -27,7 +27,8 @@ export default async function TestimonialsPage() {
           </>
         }
         intro="Every testimonial here comes from a named professional we've worked with."
-        crumbs={[{ name: "Testimonials" }]}
+        image="/images/partners-office.jpg"
+        caption="Said in their own words, not ours."
       />
       {groups.map((g, gi) => {
         const list = items.filter((t) => t.audience === g.id);

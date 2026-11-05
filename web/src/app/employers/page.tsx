@@ -4,12 +4,14 @@ import { PageHero, SectionHeading, JsonLd, Arrow } from "@/components/ui";
 import { ProcessOrbit } from "@/components/ProcessOrbit";
 import { Testimonials } from "@/components/Testimonials";
 import { FaqList } from "@/components/FaqList";
-import { StatsLedger } from "@/components/StatsLedger";
+import { telHref } from "@/components/TeamGrid";
+import { IconLinkedIn, IconPhone } from "@/components/icons";
+import { CountUp } from "@/components/motion/CountUp";
 import { CtaBand } from "@/components/CtaBand";
-import { TeamGrid } from "@/components/TeamGrid";
 import { ServiceMark } from "@/components/ServiceMark";
+import { IndustryCarousel } from "@/components/IndustryCarousel";
 import { employerProcess, services } from "@/content/company";
-import { getFaqs, getIndustries, getSettings, getTeam, getTestimonials } from "@/lib/wp";
+import { getFaqs, getIndustries, getOpenJobs, getSettings, getTeam, getTestimonials } from "@/lib/wp";
 import { breadcrumbLd, buildMetadata, faqLd } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -20,8 +22,16 @@ export const metadata = buildMetadata({
 });
 
 export default async function EmployersPage() {
-  const [testimonials, faqs, settings, team, industries] = await Promise.all([getTestimonials(), getFaqs(), getSettings(), getTeam(), getIndustries()]);
+  const [testimonials, faqs, settings, team, industries, jobs] = await Promise.all([
+    getTestimonials(),
+    getFaqs(),
+    getSettings(),
+    getTeam(),
+    getIndustries(),
+    getOpenJobs(),
+  ]);
   const employerFaqs = faqs.filter((f) => f.audience !== "candidate");
+  const openByIndustry = jobs.reduce<Record<string, number>>((acc, j) => ({ ...acc, [j.industry]: (acc[j.industry] ?? 0) + 1 }), {});
 
   return (
     <>
@@ -34,7 +44,6 @@ export default async function EmployersPage() {
           </>
         }
         intro="We connect leading companies and CPA firms with professionals who are hard to find on your own, and we only send candidates we've pre-qualified for your role."
-        crumbs={[{ name: "Employers" }]}
         image="/images/team-meeting.jpg"
       >
         <Link href="/contact?topic=hire" className="btn btn-gold">
@@ -46,35 +55,48 @@ export default async function EmployersPage() {
       </PageHero>
 
       {/* Why choose us */}
-      <section className="py-20 md:py-28">
-        <div className="container-sw grid gap-14 lg:grid-cols-2 lg:gap-20">
-          <div>
+      <section className="on-dark border-t border-white/10 bg-ink py-20 text-white md:py-28">
+        <div className="container-sw grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
+          <div data-reveal>
             <SectionHeading
+              tone="dark"
               eyebrow="Why choose us"
               title="Fewer resumes. Better hires."
-              intro="Welcome to Sharpe Wysman, where we specialize in connecting top-tier talent with leading companies. Here's what that means in practice."
+              intro="We connect top-tier accounting talent with leading companies, reaching people who aren't actively looking, screening for cultural fit as well as technical fit, and moving quickly without cutting corners."
             />
-            <dl className="mt-12 space-y-8">
-              {[
-                ["Access to top talent", "Our extensive network gives you access to the best candidates in the market, including people who aren't actively looking."],
-                ["Quick turnarounds", "We understand the urgency of your staffing needs and work to fill positions promptly, without cutting corners on screening."],
-                ["Industry-specific knowledge", "Our team has worked inside the professions we recruit for, so we can judge technical fit as well as cultural fit."],
-              ].map(([t, b], i) => (
-                <div key={t} data-reveal style={{ ["--i" as string]: i }} className="grid gap-2 border-l-2 border-gold pl-6">
-                  <dt className="font-display text-2xl">{t}</dt>
-                  <dd className="text-muted">{b}</dd>
-                </div>
-              ))}
-            </dl>
+            <Link href="/about" className="btn btn-gold mt-10">
+              Know more about us <Arrow />
+            </Link>
           </div>
-          <div className="lg:pt-16">
-            <StatsLedger stats={settings.stats} />
+
+          <div className="grid grid-cols-2 gap-5">
+            {settings.stats.map((s, i) => {
+              const tag = ["Years active", "Placements", "Client firms", "Designated CPAs"][i];
+              return (
+                <div
+                  key={s.label}
+                  data-reveal
+                  style={{ ["--i" as string]: i }}
+                  className="rounded-2xl border border-white/10 bg-white/[0.05] p-6 transition duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.08] md:p-7"
+                >
+                  <p className="font-mono text-4xl font-medium tabular-nums tracking-tight text-white md:text-5xl">
+                    <CountUp value={s.value} />
+                  </p>
+                  {tag ? (
+                    <span className="mt-4 inline-block rounded-full bg-white/10 px-3 py-1 font-mono text-[0.65rem] uppercase tracking-widest text-gold">
+                      {tag}
+                    </span>
+                  ) : null}
+                  <p className="mt-3 text-sm leading-relaxed text-muted-dark">{s.label}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Services */}
-      <section id="services" className="on-dark bg-ink py-20 text-white md:py-28">
+      <section id="services" className="on-dark border-t border-white/10 bg-ink py-20 text-white md:py-28">
         <div className="container-sw">
           <SectionHeading tone="dark" eyebrow="Our services" title="Choose the level of support you need" />
           <div className="mt-14 space-y-px overflow-hidden rounded-xl bg-line-dark">
@@ -109,22 +131,21 @@ export default async function EmployersPage() {
       </section>
 
       {/* Industries */}
-      <section className="border-y border-line bg-white py-20 md:py-24">
-        <div className="container-sw grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-center">
-          <div data-reveal="clip" className="relative aspect-[4/3] overflow-hidden rounded-xl">
-            <Image src="/images/partners-office.jpg" alt="Two professionals reviewing work together in an office" fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
+      <section className="on-dark bg-ink py-20 text-white md:py-28">
+        <div className="container-sw">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <SectionHeading
+              tone="dark"
+              eyebrow="Industries we serve"
+              title="Staffing solutions across five fields"
+              intro="Accounting and finance is our specialism. We also recruit for the teams that work alongside them."
+            />
+            <Link href="/industries" className="link-arrow shrink-0 text-white hover:text-gold">
+              All industries <Arrow />
+            </Link>
           </div>
-          <div>
-            <SectionHeading eyebrow="Industries we serve" title="Staffing solutions across five fields" intro="Accounting and finance is our specialism. We also recruit for the teams that work alongside them." />
-            <ul className="mt-8 grid gap-x-8 gap-y-1 sm:grid-cols-2">
-              {industries.map((i) => (
-                <li key={i.slug}>
-                  <Link href={`/industries/${i.slug}`} className="flex items-center justify-between border-b border-line py-3 font-bold transition hover:text-maroon">
-                    {i.name} <Arrow />
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-10">
+            <IndustryCarousel industries={industries} openByIndustry={openByIndustry} />
           </div>
         </div>
       </section>
@@ -140,20 +161,53 @@ export default async function EmployersPage() {
       </section>
 
       {/* Team */}
-      <section id="team" className="border-t border-line bg-paper-2/60 py-20 md:py-28">
+      <section id="team" className="border-t border-line py-20 md:py-28">
         <div className="container-sw">
-          <SectionHeading eyebrow="Our team" title="The people you'll work with" intro="Speak directly to an experienced recruiter, not a call centre." />
-          <div className="mt-12">
-            <TeamGrid team={team} />
+          <SectionHeading align="center" eyebrow="Our team" title="Meet the recruiters" intro="Every search is led personally, start to finish, by one of these two." />
+          <div className="mt-14 grid gap-8 lg:grid-cols-2">
+            {team.map((m, i) => (
+              <div
+                key={m.slug}
+                data-reveal
+                style={{ ["--i" as string]: i }}
+                className="grid overflow-hidden rounded-2xl border border-line bg-white transition duration-300 sm:grid-cols-[0.85fr_1.15fr] sm:items-stretch hover:-translate-y-1 hover:border-maroon/30 hover:shadow-xl hover:shadow-ink/10"
+              >
+                <div className="relative aspect-[4/5] bg-paper-2 sm:aspect-auto">
+                  {m.image ? <Image src={m.image} alt={`${m.name}, ${m.role}`} fill sizes="(min-width: 1024px) 22vw, (min-width: 640px) 35vw, 90vw" className="object-cover" /> : null}
+                </div>
+                <div className="flex flex-col justify-center p-8 md:p-10">
+                  <p className="font-mono text-xs font-bold uppercase tracking-widest text-maroon">{m.role}</p>
+                  <h3 className="font-display mt-2 text-3xl">{m.name}</h3>
+                  <p className="mt-4 text-muted">{m.bio[0]}</p>
+                  <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-bold">
+                    {m.phone ? (
+                      <a href={telHref(m.phone)} className="icon-inline hover:text-maroon">
+                        <IconPhone className="h-4 w-4 text-maroon" />
+                        {m.phone}
+                      </a>
+                    ) : null}
+                    {m.linkedin ? (
+                      <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="icon-inline hover:text-maroon">
+                        <IconLinkedIn className="h-4 w-4 text-maroon" />
+                        LinkedIn
+                        <span className="sr-only">(opens in a new tab)</span>
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* FAQ */}
       <section className="py-20 md:py-28">
-        <div className="container-sw grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-          <SectionHeading eyebrow="Employer FAQ" title="Before you call" />
-          <FaqList faqs={employerFaqs} />
+        <div className="container-sw">
+          <SectionHeading align="center" eyebrow="Employer FAQ" title="Before you call" />
+          <div className="mx-auto mt-12 max-w-4xl">
+            <FaqList faqs={employerFaqs} />
+          </div>
         </div>
       </section>
 
