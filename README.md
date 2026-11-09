@@ -15,6 +15,24 @@ sharpewysman/
 └── _source/images/                   Original images downloaded from the old site
 ```
 
+## Client design review (Option 1 / Option 2)
+
+The site currently carries two complete designs on the same URLs, so the client can compare them from one link.
+
+* **Switching:** the small *Option 1 / Option 2* control at the top left of the homepage hero. The choice is remembered
+  for 30 days and applies to every page. Direct links: add `?option=1` or `?option=2` to any URL.
+* **How it works:** `web/src/middleware.ts` reads the `sw-design` cookie. Option 2 pages live in
+  `web/src/app/option-2` and `web/src/option-2`, and are served on the normal URLs. Forms, the assistant, WordPress, SEO
+  and security code are shared (`web/src/lib`, `web/src/app/api`).
+* **Search engines** send no cookie, so they only see Option 1. Option 2 is also marked `noindex`.
+* **Option 1** is `web/src/app/(option-1)` plus `web/src/components`.
+
+**After the client chooses, before launch,** remove the review layer:
+1. Delete `web/src/middleware.ts`, `web/src/review/OptionSwitch.tsx` and the `<OptionSwitch>` line in the chosen hero.
+2. If Option 1 wins: delete `web/src/app/option-2`, `web/src/option-2` and the `geist` dependency.
+3. If Option 2 wins: replace `(option-1)` and `components` with the Option 2 files, then point imports back to `@/components` and `@/lib/wp`.
+4. If the client wants sections from each, move those sections across first, then do step 2 or 3.
+
 ## How it fits together
 
 ```

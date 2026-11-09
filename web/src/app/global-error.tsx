@@ -1,6 +1,6 @@
 "use client";
 
-import "./globals.css";
+import "./(option-1)/globals.css";
 import { DEFAULT_SETTINGS } from "@/lib/site";
 
 /**

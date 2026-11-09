@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@source not "../option-2";
+@source not "../../option-2";
 
 /*
  * Sharpe Wysman design tokens

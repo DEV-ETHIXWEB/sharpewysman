@@ -6,6 +6,7 @@ import { formatSalary } from "../JobBits";
 import { Tilt } from "../motion/Tilt";
 import { HeroVideo } from "./HeroVideo";
 import { QuickEnquiry } from "./QuickEnquiry";
+import { OptionSwitch } from "@/review/OptionSwitch";
 
 /**
  * Feathered edges so the film dissolves into the charcoal and reads as part of the background.
@@ -35,11 +36,12 @@ export function Hero({ totalOpen }: { totalOpen: number }) {
   return (
     <section className="on-dark relative isolate overflow-hidden bg-ink text-white">
       <ArcMotif className="spin-slow pointer-events-none absolute -left-56 top-10 -z-10 h-[46rem] w-[46rem] text-white/[0.03]" />
+      <OptionSwitch current={1} className="top-2.5" />
 
       {/* Film, large desktops: full height on the right */}
       <HeroVideo className="absolute inset-y-0 right-0 -z-10 hidden w-[64%] xl:block" style={FEATHER_DESKTOP} />
 
-      <div className="container-sw pb-16 pt-12 md:pb-20 md:pt-16 xl:flex xl:min-h-[min(46rem,calc(100svh-5rem))] xl:items-center xl:pb-24">
+      <div className="container-sw pb-16 pt-[4.5rem] md:pb-20 md:pt-20 xl:flex xl:min-h-[min(46rem,calc(100svh-5rem))] xl:items-center xl:pb-24">
         <div className="xl:max-w-[40rem]">
           <h1>
             <span className="eyebrow block text-gold">Accounting &amp; finance recruiters · Vancouver, BC</span>
