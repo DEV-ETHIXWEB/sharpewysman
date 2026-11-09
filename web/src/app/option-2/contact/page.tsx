@@ -40,7 +40,7 @@ export default async function ContactPage() {
             <EnquiryForm mode="contact" phone={settings.phone} phoneHref={settings.phoneHref} />
           </Suspense>
 
-          <aside className="space-y-10">
+          <div className="space-y-10">
             <div data-reveal className="rounded-xl bg-ink p-7 text-white">
               <h2 className="eyebrow text-gold">What happens next</h2>
               <ol className="mt-5 space-y-5">
@@ -109,7 +109,7 @@ export default async function ContactPage() {
                 <span className="sr-only">(opens in a new tab)</span>
               </a>
             </div>
-          </aside>
+          </div>
         </div>
       </section>
     </>

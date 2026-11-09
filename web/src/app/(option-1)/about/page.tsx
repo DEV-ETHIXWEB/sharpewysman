@@ -12,7 +12,7 @@ import { FOUNDED_YEAR } from "@/lib/site";
 export const metadata = buildMetadata({
   title: "About Us: Our Story & Values",
   description:
-    "Founded in 2008 by Chartered Accountant Sukhjit Singh Lalli (PwC London, EY), Sharpe Wysman is a Vancouver recruitment firm built on integrity, expertise and professionalism.",
+    "Founded in 2008 by Chartered Accountant Sukhjit Singh Lalli (PwC London, EY), Sharpe Wysman is a Vancouver recruitment firm built on integrity and expertise.",
   path: "/about",
   image: "/images/team-sukhjit-lalli.jpg",
 });

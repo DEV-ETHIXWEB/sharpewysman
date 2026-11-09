@@ -63,7 +63,7 @@ export function Hero({ totalOpen }: { totalOpen: number; stats: Stat[] }) {
       {/* Scroll cue: a quiet hint there's more, for tall viewports where the hero fills the screen */}
       <div
         aria-hidden
-        className="pulse-cue pointer-events-none absolute inset-x-0 bottom-7 flex flex-col items-center gap-1.5 text-white/45"
+        className="pulse-cue pointer-events-none absolute inset-x-0 bottom-7 flex flex-col items-center gap-1.5 text-white/65"
       >
         <span className="eyebrow text-[0.65rem] tracking-[0.25em]">Scroll</span>
         <IconChevronDown className="h-3.5 w-3.5" strokeWidth={2} />

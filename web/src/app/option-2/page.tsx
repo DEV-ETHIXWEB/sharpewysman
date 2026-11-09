@@ -18,7 +18,7 @@ import { buildMetadata, faqLd } from "@/lib/seo";
 export const metadata = buildMetadata({
   title: "Accounting & Finance Recruiters in Vancouver | Sharpe Wysman",
   description:
-    "Vancouver accounting and finance recruitment by designated accountants. Since 2008 Sharpe Wysman has placed CPAs, tax and audit managers, controllers and CFOs across Greater Vancouver.",
+    "Accounting and finance recruitment in Vancouver by designated accountants. Since 2008 we have placed CPAs, tax and audit managers, controllers and CFOs.",
   path: "/",
 });
 
@@ -171,7 +171,7 @@ export default async function HomePage() {
                     </span>
                     <span className={`max-w-[11rem] text-sm leading-snug ${last ? "text-white/80" : "text-muted"}`}>
                       {s.label}
-                      {s.note ? <span className="mt-0.5 block text-xs opacity-70">{s.note}</span> : null}
+                      {s.note ? <span className="mt-0.5 block text-xs">{s.note}</span> : null}
                     </span>
                   </div>
                   <Tick

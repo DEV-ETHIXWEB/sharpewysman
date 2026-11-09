@@ -24,7 +24,7 @@ The site currently carries two complete designs on the same URLs, so the client 
 * **How it works:** `web/src/middleware.ts` reads the `sw-design` cookie. Option 2 pages live in
   `web/src/app/option-2` and `web/src/option-2`, and are served on the normal URLs. Forms, the assistant, WordPress, SEO
   and security code are shared (`web/src/lib`, `web/src/app/api`).
-* **Search engines** send no cookie, so they only see Option 1. Option 2 is also marked `noindex`.
+* **Search engines** send no cookie, so they only see Option 1. Option 2 is also marked `noindex`, and any deployment on a `*.vercel.app` or `*.netlify.app` address sends `X-Robots-Tag: noindex`, so review links never appear in Google.
 * **Option 1** is `web/src/app/(option-1)` plus `web/src/components`.
 
 **After the client chooses, before launch,** remove the review layer:
@@ -237,13 +237,16 @@ The homepage hero plays a gold handshake film (generated, then AI-upscaled 4x fr
 * A dynamic `sitemap.xml` built from WordPress content, `robots.txt` (preview deployments are never
   indexed), and `llms.txt` for AI search assistants.
 * One H1 per page, a semantic heading order, and alt text on every image.
-* Lighthouse (mobile, production build, 3 November 2026): Performance 94 to 95, Accessibility 100, Best Practices 100, SEO 100, CLS 0.
+* Lighthouse (mobile, production build, 9 November 2026): Option 1 home 92, job page 95; Option 2 home 89, job page 95. Accessibility 100, Best Practices 100 and CLS 0 on both. SEO 100 on Option 1 (Option 2 is deliberately `noindex`).
 
 ## Launch punch list (what is still needed, and who owns it)
 
 | Item | Status | Owner |
 |---|---|---|
-| Netlify site + the 4 required environment variables | Pending | Ethixweb |
+| Client review currently runs on `sharpewysman.vercel.app`, built from the `Official-Ethixweb` fork. Vercel's free plan does not allow commercial sites, so launch on Netlify (or a paid Vercel plan) | Decision needed | Ethixweb |
+| Hosting + the 4 required environment variables, confirmed in the host's dashboard | Pending | Ethixweb |
+| Client logos in Option 2 ("Recommended by professionals at"): written permission to display them | Pending | Client |
+| Client chooses a design; review layer removed (see above) | Pending | Client / Ethixweb |
 | `cms.sharpewysman.com` DNS record + SSL on Cloudways | Pending | Client (Namecheap) / Ethixweb |
 | Plugin installed, `wp-config.php` constants added | Pending | Ethixweb |
 | Enquiry inbox set in Settings → Sharpe Wysman, WP Mail SMTP sending verified | Pending | Client / Ethixweb |

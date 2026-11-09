@@ -26,7 +26,9 @@ export default async function TeamPage() {
         crumbs={[{ name: "Team" }]}
       />
       <section className="py-12 md:py-16">
+        <h2 className="sr-only">Our recruiters</h2>
         <div className="container-sw">
+          <h2 className="sr-only">Our recruiters</h2>
           <TeamGrid team={team} detailed />
         </div>
       </section>

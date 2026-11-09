@@ -36,6 +36,7 @@ export default async function InsightsPage() {
         </Link>
       </PageHero>
       <section className="py-12 md:py-16">
+        <h2 className="sr-only">Latest articles</h2>
         <div className="container-sw grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
           {articles.map((a, i) => (
             <ArticleCard key={a.slug} article={a} index={i} />

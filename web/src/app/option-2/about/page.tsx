@@ -12,7 +12,7 @@ import { breadcrumbLd, buildMetadata, personLd } from "@/lib/seo";
 export const metadata = buildMetadata({
   title: "About Us: Our Story & Values",
   description:
-    "Founded in 2008 by Chartered Accountant Sukhjit Singh Lalli (PwC London, EY), Sharpe Wysman is a Vancouver recruitment firm built on integrity, expertise and professionalism.",
+    "Founded in 2008 by Chartered Accountant Sukhjit Singh Lalli (PwC London, EY), Sharpe Wysman is a Vancouver recruitment firm built on integrity and expertise.",
   path: "/about",
   image: "/images/team-sukhjit-lalli.jpg",
 });
@@ -123,7 +123,7 @@ export default async function AboutPage() {
                   <CountUp value={s.value} />
                 </p>
                 <p className="mt-3 text-sm leading-snug text-muted">{s.label}</p>
-                {s.note ? <p className="mt-1 font-mono text-xs text-muted/70">{s.note}</p> : null}
+                {s.note ? <p className="mt-1 font-mono text-xs text-muted">{s.note}</p> : null}
               </div>
             ))}
           </div>

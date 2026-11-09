@@ -317,17 +317,6 @@ export const IconOffer = (p: IconProps) => (
   </Industry>
 );
 
-export const PROCESS_ICONS: Record<string, (p: IconProps) => ReactNode> = {
-  "Initial consultation": IconChat,
-  "Sourcing and vetting": IconSearchCheck,
-  "Curated shortlist": IconShortlist,
-  "Placement and follow-up": IconOffer,
-  "Resume refinement": IconDocEdit,
-  "Screening and interviews": IconTwoPeople,
-  "Job matching": IconFit,
-  "Interview coordination": IconCalendar,
-  "Offer and placement": IconOffer,
-};
 
 /* --------------------------------------------------------------- quote */
 

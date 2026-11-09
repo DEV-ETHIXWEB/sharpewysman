@@ -91,6 +91,8 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
+      // Review deployments on platform domains must never appear in search results.
+      { source: "/:path*", has: [{ type: "host", value: ".*\\.(vercel|netlify)\\.app" }], headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
       // Large media: cached for a week, refreshed in the background (file names change when the film changes).
       { source: "/video/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=2592000" }] },
       { source: "/images/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=2592000" }] },

@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { GeistSans } from "geist/font/sans";
-import { GeistSerif } from "geist/font/serif";
-import { GeistMono } from "geist/font/mono";
+import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Header } from "@/option-2/components/Header";
 import { Footer } from "@/option-2/components/Footer";
@@ -21,6 +20,17 @@ import { CookieConsent } from "@/option-2/components/CookieConsent";
  *  - Geist Sans: body, UI and hero micro-copy, variable weight 100 to 900.
  *  - Geist Mono: figures only (statistics, salaries, step numbers), tabular by design.
  */
+const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans", display: "swap" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap", preload: false });
+// Loaded directly: importing "geist/font/serif" also bundles and preloads four unused decorative cuts.
+const geistSerif = localFont({
+  src: "../../../node_modules/geist/dist/fonts/geist-serif/GeistSerifVF.woff2",
+  variable: "--font-geist-serif",
+  weight: "400",
+  display: "swap",
+  fallback: ["Times New Roman", "Times", "serif"],
+  adjustFontFallback: "Times New Roman",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -52,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang="en-CA"
-      className={`${GeistSans.variable} ${GeistSerif.variable} ${GeistMono.variable}`}
+      className={`${geistSans.variable} ${geistSerif.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
       <head>

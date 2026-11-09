@@ -13,7 +13,7 @@ export function OptionSwitch({ current, className = "" }: { current: 1 | 2; clas
             <a
               key={n}
               href={`/?option=${n}`}
-              aria-current={current === n ? "page" : undefined}
+              aria-current={current === n ? "true" : undefined}
               className={`flex h-7 items-center rounded-full px-3 transition-colors ${current === n ? "bg-gold text-ink" : "text-white/75 hover:text-white"}`}
             >
               Option {n}

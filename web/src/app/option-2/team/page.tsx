@@ -27,6 +27,7 @@ export default async function TeamPage() {
         caption="Not a call centre. The person running your search."
       />
       <section className="py-12 md:py-16">
+        <h2 className="sr-only">Our recruiters</h2>
         <div className="container-sw">
           <TeamGrid team={team} detailed />
         </div>

@@ -17,7 +17,7 @@ import { breadcrumbLd, buildMetadata, faqLd } from "@/lib/seo";
 export const metadata = buildMetadata({
   title: "Hire Accountants & Finance Professionals in Vancouver",
   description:
-    "Retained search, contingency search and workplace consulting for accounting and finance hires in Vancouver. Pre-qualified shortlists from recruiters who are designated accountants.",
+    "Retained search, contingency search and consulting for accounting and finance hires in Vancouver. Shortlists from recruiters who are designated accountants.",
   path: "/employers",
 });
 

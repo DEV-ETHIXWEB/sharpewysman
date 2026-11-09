@@ -6,10 +6,10 @@ export * from "@/lib/wp";
 
 /** Option 2 uses its own industry photography; everything else comes from the shared WordPress client. */
 const IMAGES: Record<string, string> = {
-  accounting: "/images/industry-accounting-finance.png",
-  legal: "/images/industry-legal.png",
-  "information-technology": "/images/industry-information-technology.png",
-  "human-resources": "/images/industry-human-resources.png",
+  accounting: "/images/industry-accounting-finance.jpg",
+  legal: "/images/industry-legal.jpg",
+  "information-technology": "/images/industry-information-technology.jpg",
+  "human-resources": "/images/industry-human-resources.jpg",
   engineering: "/images/team-collaboration.jpg",
 };
 

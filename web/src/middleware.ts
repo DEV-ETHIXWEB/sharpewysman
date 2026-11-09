@@ -10,8 +10,8 @@ import { NextResponse, type NextRequest } from "next/server";
 const COOKIE = "sw-design";
 const PREFIX = "/option-2";
 
-function remember(res: NextResponse, option: "1" | "2") {
-  res.cookies.set(COOKIE, option, { path: "/", maxAge: 60 * 60 * 24 * 30, sameSite: "lax", httpOnly: true });
+function remember(req: NextRequest, res: NextResponse, option: "1" | "2") {
+  res.cookies.set(COOKIE, option, { path: "/", maxAge: 60 * 60 * 24 * 30, sameSite: "lax", httpOnly: true, secure: req.nextUrl.protocol === "https:" });
   return res;
 }
 
@@ -22,14 +22,14 @@ export function middleware(req: NextRequest) {
   if (asked === "1" || asked === "2") {
     const clean = url.clone();
     clean.searchParams.delete("option");
-    return remember(NextResponse.redirect(clean, 307), asked);
+    return remember(req, NextResponse.redirect(clean, 307), asked);
   }
 
   // The prefix is internal: a direct visit lands on the normal URL with Option 2 selected.
   if (url.pathname === PREFIX || url.pathname.startsWith(`${PREFIX}/`)) {
     const clean = url.clone();
     clean.pathname = url.pathname.slice(PREFIX.length) || "/";
-    return remember(NextResponse.redirect(clean, 307), "2");
+    return remember(req, NextResponse.redirect(clean, 307), "2");
   }
 
   if (req.cookies.get(COOKIE)?.value === "2") {

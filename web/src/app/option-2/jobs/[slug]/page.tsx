@@ -115,7 +115,7 @@ export default async function JobPage({ params }: Props) {
           </article>
 
           {isOpen ? (
-            <aside id="apply" className="lg:sticky lg:top-28 lg:self-start">
+            <div id="apply" className="lg:sticky lg:top-28 lg:self-start">
               <h2 className="text-3xl">Apply for this role</h2>
               <p className="mt-2 text-muted">
                 Prefer to talk first? Call{" "}
@@ -129,7 +129,7 @@ export default async function JobPage({ params }: Props) {
                   <EnquiryForm mode="apply" job={{ slug: job.slug, title: job.title }} phone={settings.phone} phoneHref={settings.phoneHref} />
                 </Suspense>
               </div>
-            </aside>
+            </div>
           ) : null}
         </div>
       </section>

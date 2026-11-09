@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ind) return {};
   return buildMetadata({
     title: `${ind.name} Recruitment Agency in Vancouver`,
-    description: `${ind.name} recruiters in Vancouver. ${ind.tagline} Hire ${ind.roles.slice(0, 3).join(", ")} and more with Sharpe Wysman.`.slice(0, 300),
+    description: `${ind.name} recruiters in Vancouver. Hire ${ind.roles.slice(0, 3).join(", ")} and more with Sharpe Wysman, recruiting locally since 2008.`,
     path: `/industries/${ind.slug}`,
     image: ind.image,
   });
@@ -83,10 +83,10 @@ export default async function IndustryPage({ params }: Props) {
               ))}
             </ul>
           </div>
-          <aside data-reveal data-glow className="self-start rounded-xl bg-ink p-8 text-white md:p-10">
+          <div data-reveal data-glow className="self-start rounded-xl bg-ink p-8 text-white md:p-10">
             <p className="eyebrow text-gold">Key skills &amp; qualifications we look for</p>
             <TickList items={ind.skills} tone="dark" className="mt-6 text-white/90" />
-          </aside>
+          </div>
         </div>
       </section>
 

@@ -45,6 +45,7 @@ export default async function CandidatesPage() {
 
       {/* Exemplary service */}
       <section className="py-12 md:py-16">
+        <h2 className="sr-only">What we offer candidates</h2>
         <div className="container-sw">
 
           <div className="mt-14 grid gap-5 md:grid-cols-3">

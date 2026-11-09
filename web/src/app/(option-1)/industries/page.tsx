@@ -29,7 +29,9 @@ export default async function IndustriesPage() {
         crumbs={[{ name: "Industries" }]}
       />
       <section className="py-12 md:py-16">
+        <h2 className="sr-only">Industries we recruit for</h2>
         <div className="container-sw">
+          <h2 className="sr-only">Industries we recruit for</h2>
           <IndustryGrid industries={industries} openByIndustry={openByIndustry} />
         </div>
       </section>

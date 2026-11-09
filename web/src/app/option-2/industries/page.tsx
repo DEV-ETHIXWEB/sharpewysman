@@ -27,7 +27,7 @@ export default async function IndustriesPage() {
           </>
         }
         intro="We specialize in mid-level to leadership positions in accounting and finance, in public practice and industry, and we recruit for the specialist teams that work alongside them."
-        image="/images/industry-accounting-finance.png"
+        image="/images/industry-accounting-finance.jpg"
         caption="Five fields, one standard of care."
       >
         <Link href="/jobs" className="btn btn-gold">
@@ -38,6 +38,7 @@ export default async function IndustriesPage() {
         </Link>
       </PageHero>
       <section className="py-12 md:py-16">
+        <h2 className="sr-only">Industries we recruit for</h2>
         <div className="container-sw">
           <IndustryGrid industries={industries} openByIndustry={openByIndustry} />
         </div>

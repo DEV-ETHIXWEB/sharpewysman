@@ -37,13 +37,20 @@ export function HeroVideo({
     return () => window.clearTimeout(t);
   }, [mode]);
 
-  // Decide once, on the client, what this device should get.
+  // Decide on the client what this device should get. The film waits for the page to finish
+  // loading, so it never competes with the poster, fonts and scripts.
   useEffect(() => {
-    // Only the layout that is actually visible (mobile or desktop) loads anything.
     if (!wrapRef.current || wrapRef.current.offsetParent === null) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-    setMode(reduce || conn?.saveData ? "still" : "video");
+    if (reduce || conn?.saveData) {
+      setMode("still");
+      return;
+    }
+    const start = () => setMode("video");
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+    return () => window.removeEventListener("load", start);
   }, []);
 
   // Start playback; fall back to the still if the browser refuses autoplay.
@@ -59,15 +66,9 @@ export function HeroVideo({
   return (
     <div ref={wrapRef} className={`pointer-events-none select-none ${blend ? "mix-blend-screen" : ""} ${className}`} style={style} aria-hidden>
       <div className="absolute inset-0">
-        {mode === "still" ? (
-          <Image
-            src="/video/hero-skyline-poster.jpg"
-            alt=""
-            fill
-            sizes="100vw"
-            className="object-cover"
-          />
-        ) : mode === "video" ? (
+        {/* The poster is in the first HTML response, so the hero paints immediately */}
+        <Image src="/video/hero-skyline-poster.jpg" alt="" fill sizes="100vw" priority className="object-cover" />
+        {mode === "video" ? (
           <video
             ref={videoRef}
             muted
@@ -77,7 +78,6 @@ export function HeroVideo({
             preload="auto"
             disablePictureInPicture
             disableRemotePlayback
-            poster="/video/hero-skyline-poster.jpg"
             onError={() => setMode("still")}
             className="absolute inset-0 h-full w-full object-cover"
           >
