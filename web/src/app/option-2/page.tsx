@@ -108,7 +108,7 @@ export default async function HomePage() {
                 key={s.slug}
                 data-reveal
                 style={{ ["--i" as string]: i }}
-                className="group flip-card h-[19rem] transition duration-500 hover:-translate-y-1 md:h-[21rem]"
+                className="group flip-card h-[19rem] md:h-[21rem]"
               >
                 <div className="flip-card-inner">
                   {/* Front: just enough to know what it is */}

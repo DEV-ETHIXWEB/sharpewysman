@@ -7,6 +7,8 @@ import { Arrow } from "../ui";
 import { IconPin, IconSalary } from "../icons";
 import { formatSalary } from "../JobBits";
 
+const EMPLOYMENT: Record<string, string> = { FULL_TIME: "Full-time", PART_TIME: "Part-time", CONTRACTOR: "Contract", TEMPORARY: "Temporary" };
+
 /**
  * Horizontal, snap-scrolling row of open roles. Manual only, the arrow
  * controls (bottom-right) and native touch/trackpad scroll are the only way
@@ -58,7 +60,7 @@ export function JobCarousel({ jobs, totalOpen }: { jobs: Job[]; totalOpen: numbe
           className={`pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-paper to-transparent transition-opacity duration-300 ${canRight ? "opacity-100" : "opacity-0"}`}
         />
 
-        <div ref={trackRef} className="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-2">
+        <div ref={trackRef} className="no-scrollbar -mb-8 -mt-3 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-10 pt-3">
           {jobs.map((job) => {
             const salary = formatSalary(job);
             return (
@@ -68,7 +70,7 @@ export function JobCarousel({ jobs, totalOpen }: { jobs: Job[]; totalOpen: numbe
                 data-reveal="fade"
                 className="group flex w-[320px] shrink-0 snap-start flex-col rounded-2xl border border-line bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-maroon/30 hover:shadow-xl hover:shadow-ink/10 sm:w-[360px] sm:p-8"
               >
-                <p className="font-mono text-xs uppercase tracking-widest text-muted">{job.employmentType}</p>
+                <p className="font-mono text-xs uppercase tracking-widest text-muted">{EMPLOYMENT[job.employmentType] ?? job.employmentType}</p>
                 <h3 className="font-display mt-3 text-2xl leading-snug text-ink transition group-hover:text-maroon">{job.title}</h3>
                 <p className="mt-3 line-clamp-2 flex-1 text-base leading-relaxed text-muted">{job.summary}</p>
                 <dl className="mt-5 space-y-2 font-mono text-sm text-muted">
