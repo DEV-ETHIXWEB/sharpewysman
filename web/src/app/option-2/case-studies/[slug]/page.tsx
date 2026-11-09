@@ -35,7 +35,7 @@ export default async function CaseStudyPage({ params }: Props) {
         ])}
       />
       <PageHero eyebrow={`${c.industry} · ${c.client}`} title={c.title} intro={c.summary} />
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw max-w-3xl space-y-12">
           {[
             ["The challenge", c.challenge],

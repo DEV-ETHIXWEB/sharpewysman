@@ -46,7 +46,7 @@ export default async function EmployersPage() {
       </PageHero>
 
       {/* Why choose us */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw grid gap-14 lg:grid-cols-2 lg:gap-20">
           <div>
             <SectionHeading
@@ -74,7 +74,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* Services */}
-      <section id="services" className="on-dark bg-ink py-20 text-white md:py-28">
+      <section id="services" className="on-dark bg-ink py-12 text-white md:py-16">
         <div className="container-sw">
           <SectionHeading tone="dark" eyebrow="Our services" title="Choose the level of support you need" />
           <div className="mt-14 space-y-px overflow-hidden rounded-xl bg-line-dark">
@@ -99,7 +99,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* Process */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading align="center" eyebrow="Our process" title="Four steps to the right hire" intro="A collaborative approach that keeps our search aligned with your vision, from first call to long after the start date." />
           <div data-reveal className="mt-12">
@@ -109,7 +109,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* Industries */}
-      <section className="border-y border-line bg-white py-20 md:py-24">
+      <section className="border-y border-line bg-white py-12 md:py-16">
         <div className="container-sw grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-center">
           <div data-reveal="clip" className="relative aspect-[4/3] overflow-hidden rounded-xl">
             <Image src="/images/partners-office.jpg" alt="Two professionals reviewing work together in an office" fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
@@ -130,7 +130,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading eyebrow="Client testimonials" title="What hiring managers say" />
           <div data-reveal className="mt-10">
@@ -140,7 +140,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* Team */}
-      <section id="team" className="border-t border-line bg-paper-2/60 py-20 md:py-28">
+      <section id="team" className="border-t border-line bg-paper-2/60 py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading eyebrow="Our team" title="The people you'll work with" intro="Speak directly to an experienced recruiter, not a call centre." />
           <div className="mt-12">
@@ -150,7 +150,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
           <SectionHeading eyebrow="Employer FAQ" title="Before you call" />
           <FaqList faqs={employerFaqs} />

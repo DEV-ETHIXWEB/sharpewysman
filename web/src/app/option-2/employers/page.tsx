@@ -55,7 +55,7 @@ export default async function EmployersPage() {
       </PageHero>
 
       {/* Why choose us */}
-      <section className="on-dark border-t border-white/10 bg-ink py-20 text-white md:py-28">
+      <section className="on-dark border-t border-white/10 bg-ink py-12 text-white md:py-16">
         <div className="container-sw grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
           <div data-reveal>
             <SectionHeading
@@ -96,7 +96,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* Services */}
-      <section id="services" className="on-dark border-t border-white/10 bg-ink py-20 text-white md:py-28">
+      <section id="services" className="on-dark border-t border-white/10 bg-ink py-12 text-white md:py-16">
         <div className="container-sw">
           <SectionHeading tone="dark" eyebrow="Our services" title="Choose the level of support you need" />
           <div className="mt-14 space-y-px overflow-hidden rounded-xl bg-line-dark">
@@ -121,7 +121,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* Process */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading align="center" eyebrow="Our process" title="Four steps to the right hire" intro="A collaborative approach that keeps our search aligned with your vision, from first call to long after the start date." />
           <div data-reveal className="mt-12">
@@ -131,7 +131,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* Industries */}
-      <section className="on-dark bg-ink py-20 text-white md:py-28">
+      <section className="on-dark bg-ink py-12 text-white md:py-16">
         <div className="container-sw">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <SectionHeading
@@ -151,7 +151,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading eyebrow="Client testimonials" title="What hiring managers say" />
         </div>
@@ -162,7 +162,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* Team */}
-      <section id="team" className="border-t border-line py-20 md:py-28">
+      <section id="team" className="border-t border-line py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading align="center" eyebrow="Our team" title="Meet the recruiters" intro="Every search is led personally, start to finish, by one of these two." />
           <div className="mt-14 grid gap-8 lg:grid-cols-2">
@@ -203,7 +203,7 @@ export default async function EmployersPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading align="center" eyebrow="Employer FAQ" title="Before you call" />
           <div className="mx-auto mt-12 max-w-4xl">

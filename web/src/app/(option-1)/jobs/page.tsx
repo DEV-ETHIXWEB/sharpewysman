@@ -40,7 +40,7 @@ export default async function JobsPage() {
           Register your resume <Arrow />
         </Link>
       </PageHero>
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <JobBoard jobs={jobs} industries={industries.map((i) => ({ slug: i.slug, name: i.name }))} />
         </div>

@@ -31,7 +31,7 @@ export default async function FaqPage() {
         intro="Can't find what you're looking for? Call us or send a message. We're happy to help."
         crumbs={[{ name: "FAQ" }]}
       />
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw space-y-16">
           {groups.map((g) => {
             const list = faqs.filter((f) => f.audience === g.id);

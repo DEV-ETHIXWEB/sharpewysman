@@ -139,7 +139,7 @@ export function PageHero({
     <section className="on-dark relative overflow-hidden bg-ink text-white">
       <ArcMotif className="spin-slow pointer-events-none absolute -right-40 -top-24 h-[34rem] w-[34rem] text-gold/[0.07] md:-right-24" />
       <div
-        className={`container-sw relative grid gap-10 pb-16 pt-[7.5rem] md:pb-24 md:pt-[9.25rem] lg:min-h-[53rem] lg:items-start ${
+        className={`container-sw relative grid gap-10 pb-12 pt-[7.5rem] md:pb-16 md:pt-[9.25rem] lg:items-start ${
           image ? "lg:grid-cols-[1.2fr_0.8fr]" : ""
         }`}
       >

@@ -62,7 +62,7 @@ export default async function HomePage() {
       <OpenRoles jobs={jobs.slice(0, 4)} totalOpen={jobs.length} />
 
       {/* Two audiences */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading
             eyebrow="Why Sharpe Wysman"
@@ -119,7 +119,7 @@ export default async function HomePage() {
       </section>
 
       {/* Services */}
-      <section className="on-dark bg-ink py-20 text-white md:py-28">
+      <section className="on-dark bg-ink py-12 text-white md:py-16">
         <div className="container-sw">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <SectionHeading tone="dark" eyebrow="Client services" title="Three ways to hire with us" />
@@ -148,7 +148,7 @@ export default async function HomePage() {
       </section>
 
       {/* Founder + record */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
           <div data-reveal>
             <p className="eyebrow text-maroon">Our founder</p>
@@ -174,7 +174,7 @@ export default async function HomePage() {
       </section>
 
       {/* Process */}
-      <section className="border-y border-line bg-paper-2/60 py-20 md:py-28">
+      <section className="border-y border-line bg-paper-2/60 py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading
             align="center"
@@ -194,7 +194,7 @@ export default async function HomePage() {
       </section>
 
       {/* Industries */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <SectionHeading
@@ -213,7 +213,7 @@ export default async function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="on-dark bg-ink py-20 text-white md:py-28">
+      <section className="on-dark bg-ink py-12 text-white md:py-16">
         <div className="container-sw">
           <SectionHeading tone="dark" eyebrow="In their words" title="Don't take our word for it" />
           <div data-reveal className="mt-10">
@@ -223,7 +223,7 @@ export default async function HomePage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
           <div>
             <SectionHeading eyebrow="Questions" title="Good questions, straight answers" intro="Honesty is how we work. Here are the questions we hear most." />
@@ -237,7 +237,7 @@ export default async function HomePage() {
 
       {/* Insights */}
       {articles.length ? (
-        <section className="border-t border-line bg-white py-20 md:py-28">
+        <section className="border-t border-line bg-white py-12 md:py-16">
           <div className="container-sw">
             <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <SectionHeading eyebrow="Insights" title="Advice for accounting careers and hiring" />

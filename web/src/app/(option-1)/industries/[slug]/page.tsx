@@ -68,7 +68,7 @@ export default async function IndustryPage({ params }: Props) {
         </Link>
       </PageHero>
 
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw grid gap-14 lg:grid-cols-[1.2fr_0.8fr] lg:gap-20">
           <div>
             <SectionHeading eyebrow={`Why ${ind.navLabel.toLowerCase()} matters`} title={`The importance of ${ind.name.toLowerCase()}`} />
@@ -90,7 +90,7 @@ export default async function IndustryPage({ params }: Props) {
         </div>
       </section>
 
-      <section id="roles" className="border-t border-line bg-white py-20 md:py-28">
+      <section id="roles" className="border-t border-line bg-white py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading eyebrow="Current opportunities" title={roles.length ? `Open ${ind.navLabel.toLowerCase()} roles` : "No advertised roles right now"} />
           {roles.length ? (
@@ -119,7 +119,7 @@ export default async function IndustryPage({ params }: Props) {
       </section>
 
       {ind.primary ? (
-        <section className="on-dark bg-ink py-20 text-white md:py-28">
+        <section className="on-dark bg-ink py-12 text-white md:py-16">
           <div className="container-sw">
             <SectionHeading tone="dark" eyebrow="Testimonials" title="Trusted by accounting leaders" />
             <div data-reveal className="mt-10">
@@ -128,7 +128,7 @@ export default async function IndustryPage({ params }: Props) {
           </div>
         </section>
       ) : (
-        <section className="py-20 md:py-24">
+        <section className="py-12 md:py-16">
           <div className="container-sw grid gap-10 lg:grid-cols-2 lg:items-center">
             <div data-reveal="clip" className="relative aspect-[16/10] overflow-hidden rounded-xl">
               <Image src="/images/team-collaboration.jpg" alt="" fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
@@ -147,7 +147,7 @@ export default async function IndustryPage({ params }: Props) {
         </section>
       )}
 
-      <section className="border-t border-line py-16">
+      <section className="border-t border-line py-12">
         <div className="container-sw">
           <p className="eyebrow text-muted">Other industries</p>
           <ul className="mt-5 flex flex-wrap gap-3">

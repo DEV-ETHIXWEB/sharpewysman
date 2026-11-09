@@ -37,12 +37,12 @@ export default async function IndustriesPage() {
           Discuss your search
         </Link>
       </PageHero>
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <IndustryGrid industries={industries} openByIndustry={openByIndustry} />
         </div>
       </section>
-      <section className="border-t border-line bg-white py-16 md:py-24">
+      <section className="border-t border-line bg-white py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading eyebrow="At a glance" title="Roles we recruit for" />
           <div className="mt-10">

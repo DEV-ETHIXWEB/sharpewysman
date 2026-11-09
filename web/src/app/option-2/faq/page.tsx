@@ -32,7 +32,7 @@ export default async function FaqPage() {
         image="/images/vancouver-skyline.jpg"
         caption="Honesty is how we work, every time."
       />
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw space-y-16">
           {groups.map((g) => {
             const list = faqs.filter((f) => f.audience === g.id);

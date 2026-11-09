@@ -45,7 +45,7 @@ export default async function CandidatesPage() {
       </PageHero>
 
       {/* Exemplary service */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading eyebrow="Exemplary service" title="What you get when you work with us" intro="It's free for candidates, always confidential, and you'll never be pushed to accept an offer." />
           <div className="mt-14 grid gap-5 md:grid-cols-3">
@@ -71,7 +71,7 @@ export default async function CandidatesPage() {
       </section>
 
       {/* Process */}
-      <section className="border-y border-line bg-paper-2/60 py-20 md:py-28">
+      <section className="border-y border-line bg-paper-2/60 py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading align="center" eyebrow="Our process" title="Six steps to your next role" intro="Ready to make your aspirations a reality? Here's exactly what happens after you get in touch." />
           <div data-reveal className="mt-12">
@@ -81,7 +81,7 @@ export default async function CandidatesPage() {
       </section>
 
       {/* Latest jobs */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <SectionHeading eyebrow="Current opportunities" title="Latest roles" />
@@ -98,7 +98,7 @@ export default async function CandidatesPage() {
       </section>
 
       {/* Interview prep */}
-      <section className="on-dark bg-ink py-20 text-white md:py-28">
+      <section className="on-dark bg-ink py-12 text-white md:py-16">
         <div className="container-sw grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-20">
           <div>
             <SectionHeading
@@ -128,7 +128,7 @@ export default async function CandidatesPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading eyebrow="Candidate testimonials" title="Careers we've helped move forward" />
           <div data-reveal className="mt-10">
@@ -138,7 +138,7 @@ export default async function CandidatesPage() {
       </section>
 
       {/* FAQ */}
-      <section className="border-t border-line bg-white py-20 md:py-28">
+      <section className="border-t border-line bg-white py-12 md:py-16">
         <div className="container-sw grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
           <div>
             <SectionHeading eyebrow="Candidate FAQ" title="Your questions, answered" />

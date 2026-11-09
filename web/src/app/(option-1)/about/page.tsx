@@ -39,7 +39,7 @@ export default async function AboutPage() {
 
       {/* Founder */}
       {founder ? (
-        <section id="founder" className="py-20 md:py-28">
+        <section id="founder" className="py-12 md:py-16">
           <div className="container-sw grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:gap-20">
             <div data-reveal="clip" className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-t-[12rem] rounded-b-xl">
               {founder.image ? <Image src={founder.image} alt={`${founder.name}, founder of Sharpe Wysman`} fill sizes="(min-width: 1024px) 35vw, 90vw" className="object-cover" /> : null}
@@ -71,7 +71,7 @@ export default async function AboutPage() {
       ) : null}
 
       {/* Core values */}
-      <section className="on-dark bg-ink py-20 text-white md:py-28">
+      <section className="on-dark bg-ink py-12 text-white md:py-16">
         <div className="container-sw">
           <SectionHeading
             tone="dark"
@@ -92,7 +92,7 @@ export default async function AboutPage() {
       </section>
 
       {/* Who we are */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw grid gap-14 lg:grid-cols-2 lg:gap-20">
           <div>
             <SectionHeading
@@ -116,7 +116,7 @@ export default async function AboutPage() {
       </section>
 
       {/* Team */}
-      <section className="border-t border-line bg-paper-2/60 py-20 md:py-28">
+      <section className="border-t border-line bg-paper-2/60 py-12 md:py-16">
         <div className="container-sw">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <SectionHeading eyebrow="Our team" title="Meet the recruiters" />

@@ -28,12 +28,12 @@ export default async function IndustriesPage() {
         intro="We specialize in mid-level to leadership positions in accounting and finance, in public practice and industry, and we recruit for the specialist teams that work alongside them."
         crumbs={[{ name: "Industries" }]}
       />
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <IndustryGrid industries={industries} openByIndustry={openByIndustry} />
         </div>
       </section>
-      <section className="border-t border-line bg-white py-16 md:py-24">
+      <section className="border-t border-line bg-white py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading eyebrow="At a glance" title="Roles we recruit for" />
           <div className="mt-10 grid gap-x-10 gap-y-10 md:grid-cols-2 lg:grid-cols-3">

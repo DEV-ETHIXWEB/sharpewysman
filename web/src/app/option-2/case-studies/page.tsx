@@ -26,7 +26,7 @@ export default async function CaseStudiesPage() {
           </>
         }
       />
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw grid gap-6 md:grid-cols-2">
           {items.map((c) => (
             <article key={c.slug} className="group relative rounded-xl border border-line bg-white p-8 transition hover:border-ink md:p-10">

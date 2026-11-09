@@ -25,7 +25,7 @@ export default async function TeamPage() {
         intro="A small, experienced team. When you call, you speak directly to the person running your search."
         crumbs={[{ name: "Team" }]}
       />
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <TeamGrid team={team} detailed />
         </div>

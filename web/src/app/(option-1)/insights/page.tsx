@@ -26,7 +26,7 @@ export default async function InsightsPage() {
         intro="Practical guidance for CPAs planning their next move, and for the firms hiring them."
         crumbs={[{ name: "Insights" }]}
       />
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
           {articles.map((a, i) => (
             <ArticleCard key={a.slug} article={a} index={i} />

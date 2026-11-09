@@ -42,7 +42,7 @@ export function AudienceCard({ data, index }: { data: Audience; index: number })
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
-          className="audience-toggle relative z-10 mt-3 flex items-center gap-1.5 self-start text-sm font-bold text-ink/60 transition hover:text-maroon"
+          className="audience-toggle relative z-10 mt-3 flex min-h-6 items-center gap-1.5 self-start text-sm font-bold text-ink/60 transition hover:text-maroon"
         >
           {open ? "Show less" : "Read more"}
           <IconChevronDown className={`h-3.5 w-3.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`} strokeWidth={2} />

@@ -34,7 +34,7 @@ export default async function ContactPage() {
         image="/images/vancouver-skyline.jpg"
         caption="Vancouver, BC. We reply within one business day."
       />
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw grid gap-14 lg:grid-cols-[1.3fr_0.7fr] lg:gap-20">
           <Suspense fallback={<div className="h-[40rem] rounded-xl border border-line bg-white" />}>
             <EnquiryForm mode="contact" phone={settings.phone} phoneHref={settings.phoneHref} />

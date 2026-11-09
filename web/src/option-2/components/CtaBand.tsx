@@ -30,7 +30,7 @@ export function CtaBand({
         />
       </div>
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#050505] via-[#050505]/85 to-transparent md:via-[#050505]/60" />
-      <div className="container-sw py-20 md:py-32">
+      <div className="container-sw py-14 md:py-20">
         <div data-reveal className="max-w-xl">
           <p className="eyebrow text-gold">Vancouver · Since 2008</p>
           <h2 className="mt-4 text-4xl md:text-[3.5rem]">{title}</h2>

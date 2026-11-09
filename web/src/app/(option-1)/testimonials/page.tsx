@@ -33,7 +33,7 @@ export default async function TestimonialsPage() {
         const list = items.filter((t) => t.audience === g.id);
         if (!list.length) return null;
         return (
-          <section key={g.id} className={`py-16 md:py-24 ${gi % 2 ? "border-t border-line bg-white" : ""}`}>
+          <section key={g.id} className={`py-12 md:py-16 ${gi % 2 ? "border-t border-line bg-white" : ""}`}>
             <div className="container-sw">
               <p className="eyebrow text-maroon">{g.intro}</p>
               <h2 className="mt-3 text-4xl md:text-5xl">{g.title}</h2>

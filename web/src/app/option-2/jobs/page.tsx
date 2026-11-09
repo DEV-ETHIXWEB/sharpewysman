@@ -44,7 +44,7 @@ export default async function JobsPage() {
           Browse {jobs.length} open roles
         </Link>
       </PageHero>
-      <section id="jobs" className="scroll-mt-28 py-16 md:py-24">
+      <section id="jobs" className="scroll-mt-28 py-12 md:py-16">
         <div className="container-sw">
           <JobBoard jobs={jobs} industries={industries.map((i) => ({ slug: i.slug, name: i.name }))} />
         </div>

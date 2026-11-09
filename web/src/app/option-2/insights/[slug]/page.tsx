@@ -76,7 +76,7 @@ export default async function ArticlePage({ params }: Props) {
         </div>
       </article>
       {more.length ? (
-        <section className="border-t border-line bg-white py-16 md:py-24">
+        <section className="border-t border-line bg-white py-12 md:py-16">
           <div className="container-sw">
             <h2 className="text-3xl md:text-4xl">More insights</h2>
             <div className="mt-10 grid gap-8 md:grid-cols-3">

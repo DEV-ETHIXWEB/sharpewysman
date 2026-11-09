@@ -77,7 +77,7 @@ export function Hero({ totalOpen }: { totalOpen: number; stats: Stat[] }) {
  */
 export function OpenRoles({ jobs, totalOpen }: { jobs: Job[]; totalOpen: number }) {
   return (
-    <section className="py-20 md:py-28">
+    <section className="py-12 md:py-16">
       <div className="container-sw">
         <div data-reveal>
           <p className="eyebrow text-maroon">

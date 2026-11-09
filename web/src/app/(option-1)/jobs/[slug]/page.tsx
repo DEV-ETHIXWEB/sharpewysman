@@ -84,7 +84,7 @@ export default async function JobPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw grid gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
           <article data-reveal>
             {!isOpen ? (
@@ -138,7 +138,7 @@ export default async function JobPage({ params }: Props) {
       {isOpen ? <MobileApplyBar title={job.title} salary={salary} /> : null}
 
       {related.length ? (
-        <section className="border-t border-line bg-white py-16 md:py-24">
+        <section className="border-t border-line bg-white py-12 md:py-16">
           <div className="container-sw">
             <div className="flex items-end justify-between gap-6">
               <h2 className="text-3xl md:text-4xl">Similar roles</h2>

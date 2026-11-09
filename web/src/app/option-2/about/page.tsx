@@ -47,7 +47,7 @@ export default async function AboutPage() {
 
       {/* Founder */}
       {founder ? (
-        <section id="founder" className="py-20 md:py-28">
+        <section id="founder" className="py-12 md:py-16">
           <div className="container-sw">
             <SectionHeading align="center" eyebrow="Our founder" title="The person behind Sharpe Wysman" />
             <div className="mx-auto mt-16 max-w-6xl">
@@ -58,7 +58,7 @@ export default async function AboutPage() {
       ) : null}
 
       {/* Core values */}
-      <section className="on-dark bg-ink py-20 text-white md:py-28">
+      <section className="on-dark bg-ink py-12 text-white md:py-16">
         <div className="container-sw">
           <SectionHeading
             tone="dark"
@@ -94,7 +94,7 @@ export default async function AboutPage() {
       </section>
 
       {/* Who we are */}
-      <section className="py-20 md:py-28">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading
             eyebrow="Who we are"
@@ -131,7 +131,7 @@ export default async function AboutPage() {
       </section>
 
       {/* Team */}
-      <section className="border-t border-line bg-paper-2/60 py-20 md:py-28">
+      <section className="border-t border-line bg-paper-2/60 py-12 md:py-16">
         <div className="container-sw">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <SectionHeading eyebrow="Our team" title="Meet the recruiters" />

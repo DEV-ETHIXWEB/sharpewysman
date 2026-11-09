@@ -26,7 +26,7 @@ export default async function TeamPage() {
         image="/images/team-meeting.jpg"
         caption="Not a call centre. The person running your search."
       />
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-16">
         <div className="container-sw">
           <TeamGrid team={team} detailed />
         </div>

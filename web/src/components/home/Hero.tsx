@@ -107,7 +107,7 @@ export function Hero({ totalOpen }: { totalOpen: number }) {
 export function OpenRoles({ jobs, totalOpen }: { jobs: Job[]; totalOpen: number }) {
   const month = new Date().toLocaleDateString("en-CA", { month: "short", year: "numeric" });
   return (
-    <section className="py-20 md:py-28">
+    <section className="py-12 md:py-16">
       <div className="container-sw grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-20">
         <div data-reveal>
           <p className="eyebrow text-maroon">
