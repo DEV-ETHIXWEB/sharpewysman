@@ -154,9 +154,10 @@ export default async function EmployersPage() {
       <section className="py-20 md:py-28">
         <div className="container-sw">
           <SectionHeading eyebrow="Client testimonials" title="What hiring managers say" />
-          <div data-reveal className="mt-10">
-            <Testimonials items={testimonials.filter((t) => t.audience === "client")} />
-          </div>
+        </div>
+        {/* Outside the container so the rows run to both screen edges */}
+        <div data-reveal className="mt-10">
+          <Testimonials items={testimonials.filter((t) => t.audience === "client")} />
         </div>
       </section>
 

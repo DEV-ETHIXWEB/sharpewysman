@@ -130,9 +130,10 @@ export default async function CandidatesPage() {
       <section className="py-20 md:py-28">
         <div className="container-sw">
           <SectionHeading eyebrow="Candidate testimonials" title="Careers we've helped move forward" />
-          <div data-reveal className="mt-10">
-            <Testimonials items={testimonials.filter((t) => t.audience === "candidate")} />
-          </div>
+        </div>
+        {/* Outside the container so the rows run to both screen edges */}
+        <div data-reveal className="mt-10">
+          <Testimonials items={testimonials.filter((t) => t.audience === "candidate")} />
         </div>
       </section>
 

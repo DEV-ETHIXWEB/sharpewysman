@@ -51,7 +51,12 @@ function Row({ items, dark, reverse, duration, paused }: { items: Testimonial[];
   const reps = Math.max(1, Math.ceil(MIN_LIST_W / (items.length * (CARD_W + CARD_GAP))));
 
   return (
-    <div className="marquee overflow-hidden" data-paused={paused} style={{ ["--marquee-dur" as string]: duration }}>
+    <div
+      className="marquee overflow-hidden motion-reduce:px-5"
+      data-paused={paused}
+      // No edge fade here: the cards run all the way to the screen edges.
+      style={{ ["--marquee-dur" as string]: duration, maskImage: "none", WebkitMaskImage: "none" }}
+    >
       <div className={`marquee-track gap-6 ${reverse ? "marquee-track-reverse" : ""}`}>
         {[false, true].map((dup) => (
           <ul key={String(dup)} aria-hidden={dup || undefined} className={`flex shrink-0 items-stretch gap-6 ${dup ? "marquee-dup" : ""}`}>
@@ -91,7 +96,7 @@ export function Testimonials({ items, tone = "light" }: { items: Testimonial[]; 
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="container-sw flex flex-wrap items-center justify-between gap-4">
         {groups.length > 1 ? (
           <div role="tablist" aria-label="Testimonials from" className={`inline-flex rounded-full border p-1 ${dark ? "border-white/15" : "border-line bg-white"}`}>
             {groups.map((g) => (
@@ -134,7 +139,7 @@ export function Testimonials({ items, tone = "light" }: { items: Testimonial[]; 
         </button>
       </div>
 
-      <div key={aud} className="relative mx-[calc(50%-50vw)] mt-10 w-screen space-y-6">
+      <div key={aud} className="mt-10 space-y-6">
         <Row items={list} dark={dark} duration="46s" paused={paused} />
         {rowB.length > 1 ? <Row items={rowB} dark={dark} reverse duration="60s" paused={paused} /> : null}
       </div>

@@ -230,9 +230,10 @@ export default async function HomePage() {
       <section className="on-dark border-t border-white/10 bg-ink py-20 text-white md:py-28">
         <div className="container-sw">
           <SectionHeading tone="dark" eyebrow="In their words" title="Don't take our word for it" />
-          <div data-reveal className="mt-10">
-            <Testimonials items={testimonials} tone="dark" />
-          </div>
+        </div>
+        {/* Outside the container so the rows run to both screen edges */}
+        <div data-reveal className="mt-10">
+          <Testimonials items={testimonials} tone="dark" />
         </div>
       </section>
 

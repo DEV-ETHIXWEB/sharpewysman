@@ -121,9 +121,10 @@ export default async function IndustryPage({ params }: Props) {
         <section className="on-dark bg-ink py-20 text-white md:py-28">
           <div className="container-sw">
             <SectionHeading tone="dark" eyebrow="Testimonials" title="Trusted by accounting leaders" />
-            <div data-reveal className="mt-10">
-              <Testimonials items={testimonials} tone="dark" />
-            </div>
+          </div>
+          {/* Outside the container so the rows run to both screen edges */}
+          <div data-reveal className="mt-10">
+            <Testimonials items={testimonials} tone="dark" />
           </div>
         </section>
       ) : (
