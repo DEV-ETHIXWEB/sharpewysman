@@ -8,7 +8,7 @@ export function StatsLedger({ stats, title = "Statement of record" }: { stats: S
     <div data-reveal data-glow className="rounded-xl border border-line bg-white p-6 [--glow:rgb(128_25_33/0.05)] md:p-10">
       <div className="flex items-baseline justify-between border-b-2 border-ink pb-3">
         <p className="font-display text-xl md:text-2xl">{title}</p>
-        <p className="font-mono text-xs uppercase tracking-widest text-muted">Sharpe Wysman</p>
+        <p className="hidden font-mono text-xs uppercase tracking-widest text-muted sm:block">Sharpe Wysman</p>
       </div>
       <dl>
         {stats.map((s, i) => (

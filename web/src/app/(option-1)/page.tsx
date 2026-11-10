@@ -9,7 +9,7 @@ import { IndustryGrid } from "@/components/IndustryGrid";
 import { CtaBand } from "@/components/CtaBand";
 import { ArticleCard } from "@/components/ArticleCard";
 import { Marquee } from "@/components/motion/Marquee";
-import { Arrow, JsonLd, SectionHeading, TickList } from "@/components/ui";
+import { Arrow, JsonLd, SectionHeading, TickList, maskWords } from "@/components/ui";
 import { ServiceMark } from "@/components/ServiceMark";
 import { candidateProcess, employerProcess, services } from "@/content/company";
 import { getArticles, getFaqs, getIndustries, getOpenJobs, getSettings, getTeam, getTestimonials } from "@/lib/wp";
@@ -127,14 +127,12 @@ export default async function HomePage() {
               Compare services <Arrow />
             </Link>
           </div>
-          <div className="mt-14 grid gap-px overflow-hidden rounded-xl bg-line-dark md:grid-cols-3">
-            {services.map((s, i) => (
+          <div data-reveal className="mt-14 grid gap-px overflow-hidden rounded-xl bg-line-dark md:grid-cols-3">
+            {services.map((s) => (
               <article
                 key={s.slug}
-                data-reveal
                 data-glow
-                style={{ ["--i" as string]: i }}
-                className="group flex flex-col bg-ink-2 p-8 transition duration-500 hover:bg-[#2e2d31] md:p-10"
+                className="rule-hover group flex flex-col bg-ink-2 p-8 transition-colors duration-300 hover:bg-[#2e2d31] md:p-10"
               >
                 <ServiceMark slug={s.slug} />
                 <h3 className="mt-8 text-[2rem] text-white">{s.title}</h3>
@@ -152,7 +150,7 @@ export default async function HomePage() {
         <div className="container-sw grid gap-14 lg:grid-cols-2 lg:items-center lg:gap-20">
           <div data-reveal>
             <p className="eyebrow text-maroon">Our founder</p>
-            <h2 className="mt-4 text-[2.1rem] md:text-5xl">Recruitment with a Chartered Accountant&rsquo;s standards</h2>
+            <h2 className="mt-4 text-[2.1rem] md:text-5xl">{maskWords("Recruitment with a Chartered Accountant\u2019s standards")}</h2>
             {founder ? (
               <div className="mt-8 flex flex-col gap-5 sm:flex-row">
                 {founder.image ? (
@@ -182,7 +180,7 @@ export default async function HomePage() {
             title="A clear process, from first call to first day"
             intro="Whichever side of the hire you're on, you'll always know what happens next."
           />
-          <div data-reveal className="mt-12 flex flex-col items-center">
+          <div className="mt-12">
             <ProcessOrbit
               tracks={[
                 { id: "employers", label: "For employers", steps: employerProcess },

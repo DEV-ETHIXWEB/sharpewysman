@@ -46,11 +46,6 @@ export function Testimonials({ items, tone = "light" }: { items: Testimonial[]; 
   }, [running, idx, list.length]);
 
   if (!featured) return null;
-  const initials = featured.name
-    .split(" ")
-    .map((p) => p[0])
-    .join("");
-
   return (
     <div ref={rootRef} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocusCapture={() => setHovered(true)} onBlurCapture={() => setHovered(false)}>
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -103,23 +98,38 @@ export function Testimonials({ items, tone = "light" }: { items: Testimonial[]; 
       </div>
 
       <div id={`${uid}-panel`} role="tabpanel" className="mt-10 grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
-        <figure key={`${aud}-${featured.id}`} className="quote-in" aria-live={running ? "off" : "polite"}>
-          <IconQuote className={`h-9 w-14 ${dark ? "text-gold" : "text-maroon"}`} />
-          <blockquote className={`mt-6 font-serif text-[1.4rem] leading-[1.5] md:text-[1.75rem] ${dark ? "text-white" : "text-ink"}`}>
-            <p>{featured.quote}</p>
-          </blockquote>
-          <figcaption className="mt-8 flex items-center gap-4">
-            <span className={`flex h-12 w-12 items-center justify-center rounded-full font-display text-lg ${dark ? "bg-gold text-ink" : "bg-ink text-gold"}`}>
-              {initials}
-            </span>
-            <span>
-              <span className="block font-bold">{featured.name}</span>
-              <span className={`block text-sm ${dark ? "text-muted-dark" : "text-muted"}`}>
-                {featured.role}, {featured.company}
-              </span>
-            </span>
-          </figcaption>
-        </figure>
+        {/* All quotes share one grid cell: the tallest sets the height, so rotating never moves the page */}
+        <div className="grid" aria-live={running ? "off" : "polite"}>
+          {items.map((t) => {
+            const on = t.id === featured.id && t.audience === aud;
+            return (
+              <figure
+                key={t.id}
+                aria-hidden={!on}
+                className={`col-start-1 row-start-1 transition-[opacity,translate,visibility] duration-500 ease-[var(--ease-out-quart)] ${on ? "visible translate-y-0 opacity-100" : "invisible translate-y-2 opacity-0"}`}
+              >
+                <IconQuote className={`h-9 w-14 ${dark ? "text-gold" : "text-maroon"}`} />
+                <blockquote className={`mt-6 font-serif text-[1.4rem] leading-[1.5] md:text-[1.75rem] ${dark ? "text-white" : "text-ink"}`}>
+                  <p>{t.quote}</p>
+                </blockquote>
+                <figcaption className="mt-8 flex items-center gap-4">
+                  <span className={`flex h-12 w-12 items-center justify-center rounded-full font-display text-lg ${dark ? "bg-gold text-ink" : "bg-ink text-gold"}`}>
+                    {t.name
+                      .split(" ")
+                      .map((p) => p[0])
+                      .join("")}
+                  </span>
+                  <span>
+                    <span className="block font-bold">{t.name}</span>
+                    <span className={`block text-sm ${dark ? "text-muted-dark" : "text-muted"}`}>
+                      {t.role}, {t.company}
+                    </span>
+                  </span>
+                </figcaption>
+              </figure>
+            );
+          })}
+        </div>
 
         <ul className={`divide-y self-start border-y ${dark ? "divide-white/10 border-white/10" : "divide-line border-line"}`}>
           {list.map((t, i) => (

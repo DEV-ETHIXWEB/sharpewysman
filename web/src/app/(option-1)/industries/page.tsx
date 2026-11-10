@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { Arrow, JsonLd, PageHero, SectionHeading } from "@/components/ui";
+import { JsonLd, PageHero, SectionHeading } from "@/components/ui";
 import { IndustryGrid } from "@/components/IndustryGrid";
+import { RoleCategoryCards } from "@/components/RoleCategoryCards";
 import { CtaBand } from "@/components/CtaBand";
 import { getIndustries, getOpenJobs } from "@/lib/wp";
 import { breadcrumbLd, buildMetadata } from "@/lib/seo";
@@ -38,21 +38,8 @@ export default async function IndustriesPage() {
       <section className="border-t border-line bg-white py-12 md:py-16">
         <div className="container-sw">
           <SectionHeading eyebrow="At a glance" title="Roles we recruit for" />
-          <div className="mt-10 grid gap-x-10 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
-            {industries.map((i, n) => (
-              <div key={i.slug} data-reveal style={{ ["--i" as string]: n % 3 }}>
-                <h3 className="border-b border-ink pb-3 text-2xl">
-                  <Link href={`/industries/${i.slug}`} className="flex items-center justify-between hover:text-maroon">
-                    {i.name} <Arrow />
-                  </Link>
-                </h3>
-                <ul className="mt-4 space-y-2 text-muted">
-                  {i.roles.map((r) => (
-                    <li key={r}>{r}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+          <div className="mt-10">
+            <RoleCategoryCards categories={industries.map(({ slug, name, roles }) => ({ slug, name, roles }))} />
           </div>
         </div>
       </section>

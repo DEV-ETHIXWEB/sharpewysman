@@ -1,7 +1,44 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Children, cloneElement, isValidElement, type ReactNode } from "react";
 import { IconArrow } from "./icons";
+
+/* ---------------------------------------------------------- maskWords */
+
+/** Wraps each word of a headline so it can rise from behind its baseline (see .mw/.mi). Spacing and nested colour spans are kept. */
+/** Typographic apostrophes for display copy. */
+export const typo = (s: string) => s.replace(/'/g, "’");
+function typoNode(x: ReactNode): ReactNode {
+  if (typeof x === "string") return typo(x);
+  if (Array.isArray(x)) return Children.toArray(x).map(typoNode);
+  if (isValidElement<{ children?: ReactNode }>(x) && x.props.children !== undefined) return cloneElement(x, undefined, typoNode(x.props.children));
+  return x;
+}
+
+export function maskWords(node: ReactNode): ReactNode {
+  let n = 0;
+  const walk = (x: ReactNode): ReactNode => {
+    if (typeof x === "string") {
+      return typo(x).split(/(\s+)/).map((part, i) =>
+        !part.trim() ? (
+          part
+        ) : (
+          <span key={i} className="mw">
+            <span className="mi" style={{ ["--w" as string]: n++ }}>
+              {part}
+            </span>
+          </span>
+        ),
+      );
+    }
+    if (Array.isArray(x)) return Children.toArray(x).map(walk);
+    if (isValidElement<{ children?: ReactNode }>(x) && x.props.children !== undefined) {
+      return cloneElement(x, undefined, walk(x.props.children));
+    }
+    return x;
+  };
+  return walk(node);
+}
 
 /* --------------------------------------------------------------- Tick */
 
@@ -105,10 +142,10 @@ export function SectionHeading({
           {eyebrow}
         </p>
       ) : null}
-      <As className={`text-[2.1rem] leading-[1.08] md:text-5xl ${dark ? "text-white" : "text-ink"}`}>{title}</As>
+      <As className={`text-[2.1rem] leading-[1.08] md:text-5xl ${dark ? "text-white" : "text-ink"}`}>{maskWords(title)}</As>
       {intro ? (
         <p className={`mt-5 text-lg leading-relaxed ${dark ? "text-muted-dark" : "text-muted"} ${align === "center" ? "mx-auto max-w-2xl" : "max-w-2xl"}`}>
-          {intro}
+          {typoNode(intro)}
         </p>
       ) : null}
     </div>
@@ -170,10 +207,10 @@ export function PageHero({
         <div>
           <Breadcrumbs items={crumbs} />
           <p className="eyebrow mt-10 text-gold">{eyebrow}</p>
-          <h1 className="hero-title lift mt-4 max-w-4xl text-[2.4rem] md:text-[3.4rem] lg:text-[3.9rem]">{title}</h1>
+          <h1 className="hero-title lift mt-4 max-w-4xl text-[2.4rem] md:text-[3.4rem] lg:text-[3.9rem]">{typoNode(title)}</h1>
           {intro ? (
             <p className="lift mt-6 max-w-2xl text-lg leading-relaxed text-muted-dark md:text-xl" style={{ ["--delay" as string]: "0.08s" }}>
-              {intro}
+              {typoNode(intro)}
             </p>
           ) : null}
           {children ? (

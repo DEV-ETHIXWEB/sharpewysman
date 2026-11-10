@@ -12,7 +12,7 @@ type Topic = "hire" | "register";
 /**
  * Pull-tab enquiry drawer on the right edge of the screen.
  *  - A gold tab ("Start a conversation") is always attached to the edge.
- *  - When the hero film settles, the drawer slides out once per visit on larger screens.
+ *  - When the hero film settles, the drawer slides out once per visit where it has room (1280px and up).
  *    On phones it only nudges the tab (no auto-opening overlay: Google penalises
  *    intrusive interstitials on mobile).
  *  - Click/tap the tab to pull it open or push it closed; Escape closes it.
@@ -35,7 +35,7 @@ export function QuickEnquiry() {
         sessionStorage.setItem(SEEN_KEY, "1");
       } catch {}
       if (seen) return;
-      if (window.matchMedia("(min-width: 768px)").matches) setOpen(true);
+      if (window.matchMedia("(min-width: 1280px)").matches) setOpen(true);
       else {
         setNudge(true);
         window.setTimeout(() => setNudge(false), 2400);

@@ -11,13 +11,13 @@ export function ArticleCard({ article, index = 0 }: { article: Article; index?: 
     <article data-reveal style={{ ["--i" as string]: index }} className="group relative flex flex-col">
       {article.image ? (
         <div className="relative aspect-[3/2] overflow-hidden rounded-xl bg-paper-2">
-          <Image src={article.image} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition duration-700 group-hover:scale-[1.03]" />
+          <Image src={article.image} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition-transform duration-500 ease-[var(--ease-out-quart)] group-hover:scale-[1.04]" />
         </div>
       ) : null}
       <p className="mt-6 font-mono text-xs uppercase tracking-widest text-maroon">
         {article.category} · <time dateTime={article.date}>{formatDate(article.date)}</time>
       </p>
-      <h3 className="mt-3 text-2xl leading-snug group-hover:text-maroon">
+      <h3 className="mt-3 text-2xl leading-snug transition-colors duration-200 group-hover:text-maroon">
         <Link href={`/insights/${article.slug}`} className="after:absolute after:inset-0">
           {article.title}
         </Link>

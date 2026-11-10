@@ -1,12 +1,12 @@
 import type { Faq } from "@/lib/types";
 import { IconPlus } from "./icons";
 
-/** Native <details> accordion: works without JavaScript and is fully accessible. */
+/** Native <details> accordion: works without JavaScript, fully accessible, one answer open at a time. */
 export function FaqList({ faqs }: { faqs: Faq[] }) {
   return (
     <div data-reveal className="divide-y divide-line border-y border-line">
       {faqs.map((f) => (
-        <details key={f.id} className="group py-1">
+        <details key={f.id} name={`faq-${faqs[0]?.id}`} className="faq group py-1">
           <summary className="flex items-start justify-between gap-6 py-5 text-left">
             <h3 className="font-display text-xl leading-snug md:text-2xl">{f.question}</h3>
             <span

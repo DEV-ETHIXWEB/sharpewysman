@@ -207,6 +207,16 @@ To re-run the upscaler on a new image:
   pill-style topic selectors. All of them keep native inputs underneath for accessibility.
 * **Menu button:** two ledger rules of unequal length that fold into a cross.
 
+## Motion system (Option 1)
+
+Motion is deliberately quiet, with one strong moment per page. Rules in `(option-1)/globals.css` and `components/motion/`:
+
+* **Reveals** (`data-reveal`): 0.7s ease-out, 16px travel, stagger capped at five items. Never leaves a `clip-path` behind, so hover shadows are not cut off.
+* **Headlines** (`maskWords` in `ui.tsx`): each word rises from behind its baseline. Below-the-fold only; the page's main heading uses a transform-only lift so it never delays loading.
+* **Process**: follows the visitor's own scrolling. Every step is always readable, nothing autoplays, and scrolling is never taken over.
+* **Scroll-linked effects** use CSS `animation-timeline` inside `@supports`, so browsers without it simply show the finished state.
+* **Page changes**: a 280ms fade, never on first load. `prefers-reduced-motion` turns all of it off.
+
 ## Hero film
 
 The homepage hero plays a gold handshake film (generated, then AI-upscaled 4x frame by frame with Upscayl and trimmed at the strongest resting frame).

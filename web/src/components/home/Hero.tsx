@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Fragment, type CSSProperties } from "react";
 import type { Job } from "@/lib/types";
-import { ArcMotif, Arrow, Tick } from "../ui";
+import { ArcMotif, Arrow, maskWords, Tick } from "../ui";
 import { formatSalary } from "../JobBits";
 import { Tilt } from "../motion/Tilt";
 import { HeroVideo } from "./HeroVideo";
@@ -39,7 +39,7 @@ export function Hero({ totalOpen }: { totalOpen: number }) {
       <OptionSwitch current={1} className="top-2.5" />
 
       {/* Film, large desktops: full height on the right */}
-      <HeroVideo className="absolute inset-y-0 right-0 -z-10 hidden w-[64%] xl:block" style={FEATHER_DESKTOP} />
+      <HeroVideo className="hero-exit absolute inset-y-0 right-0 -z-10 hidden w-[64%] xl:block" style={FEATHER_DESKTOP} />
 
       <div className="container-sw pb-16 pt-[4.5rem] md:pb-20 md:pt-20 xl:flex xl:min-h-[min(46rem,calc(100svh-5rem))] xl:items-center xl:pb-24">
         <div className="xl:max-w-[40rem]">
@@ -72,7 +72,7 @@ export function Hero({ totalOpen }: { totalOpen: number }) {
             style={FEATHER_INLINE}
           />
 
-          <p className="max-w-xl text-lg leading-relaxed text-muted-dark md:text-xl xl:mt-8">
+          <p className="lift max-w-xl text-lg leading-relaxed text-muted-dark md:text-xl xl:mt-8" style={{ ["--delay" as string]: "0.06s" }}>
             Sharpe Wysman was founded in 2008 by a Chartered Accountant, and every recruiter on our team is a designated accountant. We place CPAs,
             tax and audit professionals, controllers and finance leaders across Greater Vancouver.
           </p>
@@ -114,7 +114,7 @@ export function OpenRoles({ jobs, totalOpen }: { jobs: Job[]; totalOpen: number 
             <span className="eyebrow-rule" aria-hidden />
             Recruiting now
           </p>
-          <h2 className="mt-4 text-[2.1rem] md:text-5xl">This month&rsquo;s open roles</h2>
+          <h2 className="mt-4 text-[2.1rem] md:text-5xl">{maskWords("This month's open roles".replace("'", "\u2019"))}</h2>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
             Every role is briefed and screened by a recruiter who has worked in the profession. Many of our searches are confidential, so this is
             only part of the picture.
@@ -135,7 +135,7 @@ export function OpenRoles({ jobs, totalOpen }: { jobs: Job[]; totalOpen: number 
             aria-hidden
           />
           <Tilt>
-            <div className="relative overflow-hidden rounded-xl bg-paper text-ink shadow-2xl shadow-ink/25">
+            <div className="relative overflow-hidden rounded-xl bg-white text-ink shadow-2xl shadow-ink/25">
               <div className="flex items-baseline justify-between border-b-2 border-ink px-6 pb-3 pt-5 md:px-8">
                 <h3 className="font-display text-2xl">Open roles</h3>
                 <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted">
@@ -143,9 +143,10 @@ export function OpenRoles({ jobs, totalOpen }: { jobs: Job[]; totalOpen: number 
                   Live · {month}
                 </p>
               </div>
+              <div className="relative">
               {/* Red margin rule, as on ledger paper */}
-              <div className="absolute bottom-0 left-[2.6rem] top-[4.1rem] w-px bg-maroon/40 md:left-[3.1rem]" aria-hidden />
-              <ul className="ledger-ruled">
+              <div className="pointer-events-none absolute inset-y-0 left-[2.75rem] w-px bg-maroon/35 md:left-[3.25rem]" aria-hidden />
+              <ul className="divide-y divide-line/70">
                 {jobs.map((job, i) => {
                   const salary = formatSalary(job);
                   return (
@@ -167,9 +168,10 @@ export function OpenRoles({ jobs, totalOpen }: { jobs: Job[]; totalOpen: number 
                   );
                 })}
               </ul>
+              </div>
               <Link
                 href="/jobs"
-                className="flex items-center justify-between border-t border-line bg-white px-6 py-4 text-sm font-bold transition hover:text-maroon md:px-8"
+                className="flex items-center justify-between border-t border-line bg-paper px-6 py-4 text-sm font-bold transition-colors hover:text-maroon md:px-8"
               >
                 View all {totalOpen} roles
                 <Arrow />

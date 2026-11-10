@@ -35,6 +35,7 @@
   --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
 
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
@@ -112,16 +113,6 @@
   }
 
   /* Ledger rule: faint horizontal ruling like accounting paper */
-  .ledger-ruled {
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent calc(2.75rem - 1px),
-      color-mix(in srgb, var(--color-line) 70%, transparent) calc(2.75rem - 1px),
-      color-mix(in srgb, var(--color-line) 70%, transparent) 2.75rem
-    );
-  }
-
   /* Dotted leader between a label and its figure, as in a financial statement */
   .leader {
     flex: 1;
@@ -129,6 +120,11 @@
     border-bottom: 1px dotted currentColor;
     opacity: 0.35;
     transform: translateY(-0.35em);
+    transform-origin: left center;
+    transition: transform 1s var(--ease-out-expo) 0.3s;
+  }
+  .js [data-reveal]:not(.is-in) .leader {
+    transform: translateY(-0.35em) scaleX(0);
   }
 
   /*
@@ -271,11 +267,16 @@
     text-decoration-thickness: 1px;
     text-underline-offset: 0.3em;
     text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
-    transition: text-decoration-color 0.2s, gap 0.2s var(--ease-out-quart);
+    transition: text-decoration-color 0.2s;
+  }
+  .link-arrow > svg {
+    transition: translate 0.3s var(--ease-out-quart);
   }
   .link-arrow:hover {
     text-decoration-color: currentColor;
-    gap: 0.65rem;
+  }
+  .link-arrow:hover > svg {
+    translate: 0.25rem 0;
   }
 
   /* Form fields */
@@ -461,45 +462,65 @@
  * JavaScript is unavailable, and everything is disabled for reduced motion.
  * ==================================================================== */
 
-/* Scroll reveal: data-reveal="up" (default) | "fade" | "clip" (images) | "left" */
+/* Scroll reveal: data-reveal="up" (default) | "fade" | "clip" (images) | "left"
+ * Short, soft and only ever slightly staggered. Default reveals never use clip-path,
+ * so hover shadows and lifted cards are not cut off afterwards. */
 .js [data-reveal] {
   opacity: 0;
-  transform: translate3d(0, 26px, 0);
-  --reveal-delay: calc(var(--i, 0) * 90ms);
-  /* Reveal properties are staggered; hover properties keep their own quick timing. */
+  transform: translate3d(0, 16px, 0);
+  --reveal-delay: calc(min(var(--i, 0), 5) * 70ms);
   transition:
-    opacity 0.9s var(--ease-out-quart) var(--reveal-delay),
-    transform 1s var(--ease-out-quart) var(--reveal-delay),
-    clip-path 1.2s var(--ease-out-quart) var(--reveal-delay),
-    translate 0.5s var(--ease-out-quart),
-    box-shadow 0.5s var(--ease-out-quart),
-    border-color 0.3s,
-    background-color 0.5s,
-    color 0.3s;
+    opacity 0.7s var(--ease-out-expo) var(--reveal-delay),
+    transform 0.8s var(--ease-out-expo) var(--reveal-delay),
+    clip-path 1s var(--ease-out-expo) var(--reveal-delay),
+    translate 0.35s var(--ease-out-quart),
+    box-shadow 0.35s var(--ease-out-quart),
+    border-color 0.25s,
+    background-color 0.3s,
+    color 0.2s;
   will-change: opacity, transform;
 }
 .js [data-reveal="fade"] {
   transform: none;
 }
 .js [data-reveal="left"] {
-  transform: translate3d(-26px, 0, 0);
+  transform: translate3d(-16px, 0, 0);
 }
 .js [data-reveal="clip"] {
   opacity: 1;
   transform: none;
-  clip-path: inset(14% 0 0 0 round 0.75rem);
+  clip-path: inset(12% 0 0 0 round 0.75rem);
 }
 .js [data-reveal="clip"] img {
-  transform: scale(1.12);
-  transition: transform 1.6s var(--ease-out-quart);
+  transform: scale(1.08);
+  transition: transform 1.2s var(--ease-out-expo);
 }
 .js [data-reveal].is-in {
   opacity: 1;
   transform: none;
+}
+.js [data-reveal="clip"].is-in {
   clip-path: inset(0 0 0 0 round 0.75rem);
 }
 .js [data-reveal="clip"].is-in img {
   transform: scale(1);
+}
+
+/* Section headlines: each word rises from behind its own baseline */
+.mw {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.08em 0.06em 0.16em;
+  margin: -0.08em -0.06em -0.16em;
+}
+.mi {
+  display: inline-block;
+  transition: transform 0.85s var(--ease-out-expo);
+  transition-delay: calc(min(var(--w, 0), 14) * 26ms + var(--reveal-delay, 0ms));
+}
+.js [data-reveal]:not(.is-in) .mi {
+  transform: translate3d(0, 108%, 0);
 }
 
 /* Above-the-fold entrance: transform only, so LCP is never delayed */
@@ -626,8 +647,89 @@
 }
 
 /* Header state once the page has scrolled */
+.site-header {
+  transition: background-color 0.35s, box-shadow 0.35s, border-color 0.35s;
+}
 html[data-scrolled="true"] .site-header {
-  box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.55);
+  background: rgb(30 29 31 / 0.93);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 10px 30px -14px rgb(0 0 0 / 0.5);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html[data-scrolled="true"] .site-header {
+    background: var(--color-ink);
+  }
+}
+
+/* Main navigation: the highlight that glides between items */
+.nav-glide {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 2.5rem;
+  margin-top: -1.25rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.08);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.35s var(--ease-out-expo), width 0.35s var(--ease-out-expo), opacity 0.2s;
+}
+
+/* FAQ answers open smoothly where the browser can animate to auto height */
+details.faq {
+  interpolate-size: allow-keywords;
+}
+details.faq::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition: block-size 0.4s var(--ease-out-expo), content-visibility 0.4s allow-discrete;
+}
+details.faq[open]::details-content {
+  block-size: auto;
+}
+
+/* Panels: a gold rule draws across the top on hover, the same gesture as the eyebrow rules */
+.rule-hover::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: 2px;
+  background: var(--color-gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s var(--ease-out-expo);
+}
+@media (hover: hover) {
+  .rule-hover:hover::before {
+    transform: scaleX(1);
+  }
+}
+
+/* Job rows: a gold rule draws in and the text steps aside */
+.job-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.5rem;
+  bottom: 1.5rem;
+  width: 2px;
+  background: var(--color-gold);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.35s var(--ease-out-expo);
+}
+.job-row-text {
+  transition: translate 0.35s var(--ease-out-expo);
+}
+@media (hover: hover) {
+  .job-row:hover::before {
+    transform: scaleY(1);
+  }
+  .job-row:hover .job-row-text {
+    translate: 0.85rem 0;
+  }
 }
 
 /* Lists that re-render (job filter) */
@@ -774,6 +876,18 @@ html[data-scrolled="true"] .site-header {
 /* Scroll-linked parallax (progressive enhancement; uses `translate` so hover transforms still work) */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
+    /* The hero film drifts and dims as it leaves, so the page hands over rather than cuts */
+    .hero-exit {
+      animation: hero-exit linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+    @keyframes hero-exit {
+      to {
+        translate: 0 9%;
+        opacity: 0.4;
+      }
+    }
     .parallax-img {
       animation: parallax linear both;
       animation-timeline: view();
@@ -836,6 +950,7 @@ html[data-scrolled="true"] .site-header {
 }
 .quick-drawer.is-away {
   transform: translate3d(calc(100% + 1rem), -50%, 0);
+  transition-duration: 0.3s;
 }
 @keyframes drawer-nudge {
   0%, 100% { transform: translate3d(calc(100% - 3rem), -50%, 0); }

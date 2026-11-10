@@ -4,6 +4,7 @@ import { NAV } from "@/lib/site";
 import { Logo } from "./ui";
 import { MobileNav } from "./MobileNav";
 import { NavLink } from "./NavLink";
+import { NavGlide } from "./NavGlide";
 import { IconArrow, IconChevronDown, IconPhone, INDUSTRY_ICONS } from "./icons";
 
 export async function Header() {
@@ -24,7 +25,8 @@ export async function Header() {
         </Link>
 
         <nav aria-label="Main" className="hidden lg:block">
-          <ul className="flex items-center gap-1 text-[0.95rem]">
+          <NavGlide>
+            <ul className="relative flex items-center gap-1 text-[0.95rem]">
             {NAV.map((item) =>
               item.href === "/industries" ? (
                 <li key={item.href} className="group relative">
@@ -65,10 +67,11 @@ export async function Header() {
               ),
             )}
           </ul>
+          </NavGlide>
         </nav>
 
         <div className="hidden items-center gap-5 lg:flex">
-          <a href={`tel:${settings.phoneHref}`} className="icon-inline text-sm font-bold tabular-nums tracking-wide text-white/75 transition hover:text-gold">
+          <a href={`tel:${settings.phoneHref}`} className="!hidden whitespace-nowrap xl:!inline-flex icon-inline text-sm font-bold tabular-nums tracking-wide text-white/75 transition hover:text-gold">
             <IconPhone className="h-4 w-4 text-gold" />
             {settings.phone}
           </a>

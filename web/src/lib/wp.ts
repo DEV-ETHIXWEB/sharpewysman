@@ -209,7 +209,7 @@ export const getArticles = cache(async (): Promise<Article[]> => {
       date: p.date.slice(0, 10),
       modified: p.modified.slice(0, 10),
       author: p.sw?.author ?? "Sharpe Wysman",
-      category: p.sw?.category ?? "Insights",
+      category: p.sw?.category && p.sw.category !== "Uncategorized" ? p.sw.category : "Insights",
       html: p.content.rendered,
       image: p.sw?.image,
     }));

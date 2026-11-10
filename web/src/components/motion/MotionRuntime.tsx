@@ -85,9 +85,16 @@ export function MotionRuntime() {
     };
   }, []);
 
-  // Recalculate progress after navigation
+  // Recalculate progress after navigation, and fade the new page in (never on first load).
+  const firstRoute = useRef(true);
   useEffect(() => {
     window.dispatchEvent(new Event("scroll"));
+    if (firstRoute.current) {
+      firstRoute.current = false;
+      return;
+    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    document.getElementById("main")?.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 280, easing: "cubic-bezier(0.16, 1, 0.3, 1)" });
   }, [pathname]);
 
   return (

@@ -52,14 +52,14 @@ export default async function AboutPage() {
                   <p key={p.slice(0, 30)}>{p}</p>
                 ))}
               </div>
-              <ol className="mt-10 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-4">
+              <ol data-reveal className="mt-10 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-4">
                 {[
                   ["London", "Qualified as a Chartered Accountant with PwC"],
                   ["Industry", "Tenure with EY and British Aerospace"],
                   [String(FOUNDED_YEAR), "Founded Sharpe Wysman in Vancouver"],
                   ["Today", "Recruiting accounting and finance leaders"],
-                ].map(([k, v], i) => (
-                  <li key={k} data-reveal style={{ ["--i" as string]: i }} className="bg-white p-5">
+                ].map(([k, v]) => (
+                  <li key={k} className="bg-white p-5">
                     <p className="font-mono text-sm font-medium text-maroon">{k}</p>
                     <p className="mt-2 text-sm leading-snug">{v}</p>
                   </li>
@@ -79,9 +79,9 @@ export default async function AboutPage() {
             title="Three cornerstones"
             intro="Sharpe Wysman knows the accounting industry, has a vast network, and excels at recruitment. These principles shape every search."
           />
-          <div className="mt-14 grid gap-px overflow-hidden rounded-xl bg-line-dark md:grid-cols-3">
+          <div data-reveal className="mt-14 grid gap-px overflow-hidden rounded-xl bg-line-dark md:grid-cols-3">
             {core.map((v, i) => (
-              <article key={v.title} data-reveal data-glow style={{ ["--i" as string]: i }} className="bg-ink-2 p-8 md:p-10">
+              <article key={v.title} data-glow className="rule-hover bg-ink-2 p-8 md:p-10">
                 <Tick animate delay={0.3 + i * 0.15} className="h-6 w-8 text-gold" />
                 <h3 className="mt-6 text-[2.2rem] text-white">{v.title}</h3>
                 <p className="mt-4 text-muted-dark">{v.body}</p>

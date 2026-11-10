@@ -59,7 +59,7 @@ export function MobileNav({ nav, industries, phone, phoneHref }: { nav: L[]; ind
       <div
         id="mobile-menu"
         hidden={!open}
-        className="fixed inset-x-0 bottom-0 top-[4.5rem] z-40 overflow-y-auto border-t border-white/10 bg-ink"
+        className="absolute inset-x-0 top-full z-40 h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-white/10 bg-ink md:h-[calc(100dvh-5rem)]"
       >
         <nav aria-label="Mobile" className="container-sw py-6">
           <ul className="divide-y divide-white/10">
