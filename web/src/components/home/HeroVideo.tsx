@@ -4,39 +4,42 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 /**
- * The gold handshake film (AI-upscaled 4x, then encoded per device).
+ * The skyline film: a looping full-bleed background behind the hero copy.
  *
- *  - Resolution: picks 1440p or 1080p from the real rendered size x device pixel ratio.
- *  - Codec: AV1 → HEVC → H.264; the browser plays the first one it supports.
- *  - Plays once, then rests on the final frame with a breathing gold glow.
- *  - Reduced motion, Save-Data or blocked autoplay → a crisp still of the final frame.
- *  - mix-blend-mode: screen on the (masked) wrapper makes the film's black vanish into the charcoal hero;
- *    it must sit on the wrapper, because a mask isolates its children from the backdrop.
+ *  - Codec: AV1 → H.264; the browser plays the first one it supports.
+ *  - Loops continuously, muted.
+ *  - Reduced motion, Save-Data or blocked autoplay → a crisp still frame instead.
  */
 
-const SRC = (h: 1080 | 1440) => [
-  { src: `/video/hero-handshake-${h}.av1.mp4`, type: 'video/mp4; codecs="av01.0.08M.08"' },
-  { src: `/video/hero-handshake-${h}.hevc.mp4`, type: `video/mp4; codecs="hvc1.1.6.L${h === 1440 ? 150 : 120}.90"` },
-  { src: `/video/hero-handshake-${h}.h264.mp4`, type: 'video/mp4; codecs="avc1.640033"' },
+const SRC = [
+  { src: "/video/hero-skyline-1080.av1.mp4", type: 'video/mp4; codecs="av01.0.08M.08"' },
+  { src: "/video/hero-skyline-1080.h264.mp4", type: 'video/mp4; codecs="avc1.640033"' },
 ];
 
-export function HeroVideo({ className = "", style }: { className?: string; style?: CSSProperties }) {
+export function HeroVideo({
+  className = "",
+  style,
+  blend = true,
+}: {
+  className?: string;
+  style?: CSSProperties;
+  /** Screen-blends the film into the charcoal background. Turn off for a full-bleed background video. */
+  blend?: boolean;
+}) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [mode, setMode] = useState<"pending" | "video" | "still">("pending");
-  const [tier, setTier] = useState<1080 | 1440>(1080);
-  const [ended, setEnded] = useState(false);
 
   // Tell the page the film has settled (the enquiry card listens for this).
   useEffect(() => {
-    if (!ended && mode !== "still") return;
-    const t = window.setTimeout(() => window.dispatchEvent(new Event("sw:film-settled")), mode === "still" ? 1200 : 250);
+    if (mode === "pending") return;
+    const t = window.setTimeout(() => window.dispatchEvent(new Event("sw:film-settled")), mode === "still" ? 1200 : 600);
     return () => window.clearTimeout(t);
-  }, [ended, mode]);
+  }, [mode]);
 
-  // Decide once, on the client, what this device should get.
+  // Decide on the client what this device should get. The film waits for the page to finish
+  // loading, so it never competes with the poster, fonts and scripts.
   useEffect(() => {
-    // Only the layout that is actually visible (mobile or desktop) loads anything.
     if (!wrapRef.current || wrapRef.current.offsetParent === null) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
@@ -44,12 +47,10 @@ export function HeroVideo({ className = "", style }: { className?: string; style
       setMode("still");
       return;
     }
-    const w = wrapRef.current?.getBoundingClientRect().width ?? window.innerWidth;
-    const h = wrapRef.current?.getBoundingClientRect().height ?? 0;
-    // object-cover may scale the 16:9 film beyond the box width; account for that.
-    const coverWidth = Math.max(w, (h * 16) / 9);
-    setTier(coverWidth * Math.min(window.devicePixelRatio || 1, 3) > 2000 ? 1440 : 1080);
-    setMode("video");
+    const start = () => setMode("video");
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+    return () => window.removeEventListener("load", start);
   }, []);
 
   // Start playback; fall back to the still if the browser refuses autoplay.
@@ -60,45 +61,31 @@ export function HeroVideo({ className = "", style }: { className?: string; style
     v.load();
     const p = v.play();
     if (p) p.catch(() => setMode("still"));
-  }, [mode, tier]);
+  }, [mode]);
 
   return (
-    <div ref={wrapRef} className={`pointer-events-none select-none mix-blend-screen ${className}`} style={style} aria-hidden>
+    <div ref={wrapRef} className={`pointer-events-none select-none ${blend ? "mix-blend-screen" : ""} ${className}`} style={style} aria-hidden>
       <div className="absolute inset-0">
-      {mode === "still" ? (
-        <Image
-          src="/video/hero-handshake-end-2560.jpg"
-          alt=""
-          fill
-          sizes="(min-width: 1024px) 64vw, 100vw"
-          className="object-cover"
-        />
-      ) : mode === "video" ? (
-        <video
-          ref={videoRef}
-          muted
-          playsInline
-          autoPlay
-          preload="auto"
-          disablePictureInPicture
-          disableRemotePlayback
-          poster="/video/hero-handshake-poster.jpg"
-          onEnded={() => setEnded(true)}
-          onError={() => setMode("still")}
-          className="absolute inset-0 h-full w-full object-cover"
-        >
-          {SRC(tier).map((s) => (
-            <source key={s.src} src={s.src} type={s.type} />
-          ))}
-        </video>
-      ) : null}
-
-      {/* Breathing glow around the ring once the film has settled (or on the still) */}
-      <div
-        className={`hero-glow absolute left-[50.5%] top-1/2 aspect-square h-[71%] rounded-full transition-opacity duration-1000 ${
-          ended || mode === "still" ? "opacity-100" : "opacity-0"
-        }`}
-      />
+        {/* The poster is in the first HTML response, so the hero paints immediately */}
+        <Image src="/video/hero-skyline-poster.jpg" alt="" fill sizes="100vw" priority className="object-cover" />
+        {mode === "video" ? (
+          <video
+            ref={videoRef}
+            muted
+            loop
+            playsInline
+            autoPlay
+            preload="auto"
+            disablePictureInPicture
+            disableRemotePlayback
+            onError={() => setMode("still")}
+            className="absolute inset-0 h-full w-full object-cover"
+          >
+            {SRC.map((s) => (
+              <source key={s.src} src={s.src} type={s.type} />
+            ))}
+          </video>
+        ) : null}
       </div>
     </div>
   );

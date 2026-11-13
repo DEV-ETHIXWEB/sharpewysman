@@ -134,6 +134,18 @@ export const getTeam = cache(async (): Promise<TeamMember[]> => {
 
 /* ------------------------------------------------------------ industries */
 
+/**
+ * Industry photography is part of the design, not the content: editors choose the
+ * copy in WordPress, the site supplies the matching image for each known industry.
+ */
+const INDUSTRY_IMAGES: Record<string, string> = {
+  accounting: "/images/industry-accounting-finance.jpg",
+  legal: "/images/industry-legal.jpg",
+  "information-technology": "/images/industry-information-technology.jpg",
+  "human-resources": "/images/industry-human-resources.jpg",
+  engineering: "/images/team-collaboration.jpg",
+};
+
 export const getIndustries = cache(async (): Promise<Industry[]> => {
   const data = await wpList<WPItem<Omit<Industry, "slug" | "name" | "intro">>>(
     "/wp/v2/sw-industries?per_page=100",
@@ -149,7 +161,9 @@ export const getIndustries = cache(async (): Promise<Industry[]> => {
           name: decodeEntities(d.title.rendered),
           intro: stripTags(d.content.rendered),
         }));
-  return [...list].sort((a, b) => a.order - b.order);
+  return [...list]
+    .map((i) => ({ ...i, image: INDUSTRY_IMAGES[i.slug] ?? i.image }))
+    .sort((a, b) => a.order - b.order);
 });
 
 export async function getIndustry(slug: string): Promise<Industry | undefined> {

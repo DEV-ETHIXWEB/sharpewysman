@@ -33,6 +33,7 @@ export async function Footer() {
         ...(caseStudies.length ? [{ href: "/case-studies", label: "Case studies" }] : []),
         { href: "/insights", label: "Insights" },
         { href: "/faq", label: "FAQ" },
+        { href: "/contact", label: "Contact us" },
       ],
     },
   ];

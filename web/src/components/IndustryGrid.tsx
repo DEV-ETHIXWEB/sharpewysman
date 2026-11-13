@@ -23,8 +23,8 @@ export function IndustryGrid({ industries, openByIndustry }: { industries: Indus
             className="parallax-img -z-10 object-cover opacity-45 transition duration-700 group-hover:scale-[1.03]"
           />
           <div className="absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/70 to-ink/10" />
-          <span className="mb-auto flex h-14 w-14 items-center justify-center rounded-full border border-gold/40 text-gold">
-            <IconLedger className="h-7 w-7" />
+          <span className="mb-auto flex h-16 w-16 items-center justify-center text-gold">
+            <IconLedger className="h-11 w-11" />
           </span>
           <p className="eyebrow mt-10 text-gold">Our specialty</p>
           <h3 className="mt-3 text-4xl md:text-5xl">{primary.name}</h3>
@@ -42,16 +42,16 @@ export function IndustryGrid({ industries, openByIndustry }: { industries: Indus
           href={`/industries/${ind.slug}`}
           data-reveal
           data-glow
-          style={{ ["--i" as string]: i + 1, ["--glow" as string]: "rgb(128 25 33 / 0.06)" }}
+          style={{ ["--i" as string]: i + 1, ["--glow" as string]: "rgb(122 94 0 / 0.07)" }}
           className="group flex min-h-[15rem] flex-col justify-between rounded-xl border border-line bg-white p-7 transition hover:-translate-y-0.5 hover:border-ink hover:shadow-lg hover:shadow-ink/5"
         >
           <div>
             {Icon ? (
-              <span className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-paper text-maroon transition duration-300 group-hover:bg-ink group-hover:text-gold">
-                <Icon className="h-6 w-6" />
+              <span className="mb-6 flex h-14 w-14 items-center justify-center text-accent transition duration-300 group-hover:text-ink">
+                <Icon className="h-10 w-10" />
               </span>
             ) : null}
-            <h3 className="text-[1.75rem] group-hover:text-maroon">{ind.name}</h3>
+            <h3 className="text-[1.75rem] group-hover:text-accent">{ind.name}</h3>
             <p className="mt-3 text-[0.95rem] text-muted">{ind.tagline}</p>
           </div>
           <p className="mt-6 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-muted">

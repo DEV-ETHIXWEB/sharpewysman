@@ -23,7 +23,9 @@ const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}${ga ? " https://www.googletagmanager.com" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob: https://${wpHost} https://sharpewysman.com https://cms.sharpewysman.com${ga ? " https://*.google-analytics.com https://*.googletagmanager.com" : ""}`,
+  // De-duplicated: wpHost is usually one of the two below, and a repeated source
+  // makes the header harder to read when auditing it.
+  `img-src 'self' data: blob: ${[...new Set([`https://${wpHost}`, "https://sharpewysman.com", "https://cms.sharpewysman.com"])].join(" ")}${ga ? " https://*.google-analytics.com https://*.googletagmanager.com" : ""}`,
   "font-src 'self'",
   "media-src 'self'",
   `connect-src 'self'${ga ? " https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com" : ""}${isDev ? " ws: wss:" : ""}`,

@@ -204,7 +204,7 @@ export function ChatPanel({ open, onClose }: { open: boolean; onClose: () => voi
             <Avatar />
             <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-md border border-line bg-white px-4 py-3.5 shadow-sm">
               {[0, 1, 2].map((i) => (
-                <span key={i} className="typing-dot h-1.5 w-1.5 rounded-full bg-maroon" style={{ animationDelay: `${i * 0.16}s` }} />
+                <span key={i} className="typing-dot h-1.5 w-1.5 rounded-full bg-accent" style={{ animationDelay: `${i * 0.16}s` }} />
               ))}
             </div>
           </div>
@@ -329,7 +329,7 @@ function BotMessage({
             return (
               <div key={i} className="rounded-2xl rounded-bl-md border border-line bg-white px-4 py-3 text-[0.95rem] leading-relaxed text-ink shadow-sm">
                 <RichText text={words.slice(0, n).join(" ")} />
-                {n < words.length ? <span className="ml-0.5 inline-block h-4 w-[2px] translate-y-0.5 animate-pulse bg-maroon" aria-hidden /> : null}
+                {n < words.length ? <span className="ml-0.5 inline-block h-4 w-[2px] translate-y-0.5 animate-pulse bg-accent" aria-hidden /> : null}
               </div>
             );
           }
@@ -407,15 +407,15 @@ function RichBlock({ block, onNavigate }: { block: Block; onNavigate: () => void
                   className="group flex items-center gap-3 rounded-xl border border-line bg-white p-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-ink hover:shadow-md"
                 >
                   <span className="min-w-0 flex-1">
-                    <span className="block font-display text-[1.05rem] leading-snug text-ink group-hover:text-maroon">{j.title}</span>
+                    <span className="block font-display text-[1.05rem] leading-snug text-ink group-hover:text-accent">{j.title}</span>
                     <span className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted">
                       <span className="icon-inline !gap-1">
-                        <IconPin className="h-3 w-3 text-maroon" />
+                        <IconPin className="h-3 w-3 text-accent" />
                         {j.location}
                       </span>
                       {sal ? (
                         <span className="icon-inline !gap-1 font-bold text-ink">
-                          <IconSalary className="h-3 w-3 text-maroon" />
+                          <IconSalary className="h-3 w-3 text-accent" />
                           {sal}
                         </span>
                       ) : null}
@@ -438,7 +438,7 @@ function RichBlock({ block, onNavigate }: { block: Block; onNavigate: () => void
               {s.body ? (
                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-gold font-mono text-[10px] text-gold-ink">{i + 1}</span>
               ) : (
-                <Tick className="mt-1 h-3 w-3.5 shrink-0 text-maroon" />
+                <Tick className="mt-1 h-3 w-3.5 shrink-0 text-accent" />
               )}
               <span>
                 <span className="font-bold text-ink">{s.title}</span>

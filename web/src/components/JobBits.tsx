@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Job } from "@/lib/types";
+import { Arrow } from "./ui";
 import { IconPin, IconSalary } from "./icons";
 
 export function formatSalary(job: Job): string | null {
@@ -12,10 +13,10 @@ export function formatSalary(job: Job): string | null {
 export function JobRow({ job, industryName, index }: { job: Job; industryName?: string; index?: number }) {
   const salary = formatSalary(job);
   return (
-    <li className={`job-row group relative border-b border-line ${index !== undefined ? "row-in" : ""}`} style={index !== undefined ? { ["--i" as string]: index } : undefined}>
+    <li className={`group relative border-b border-line ${index !== undefined ? "row-in" : ""}`} style={index !== undefined ? { ["--i" as string]: index } : undefined}>
       <div className="grid gap-2 py-6 md:grid-cols-[1fr_auto] md:items-center md:gap-8">
-        <div className="job-row-text">
-          <h3 className="font-display text-2xl text-ink transition group-hover:text-maroon md:text-[1.7rem]">
+        <div>
+          <h3 className="font-display text-2xl text-ink transition group-hover:text-accent md:text-[1.7rem]">
             <Link href={`/jobs/${job.slug}`} className="after:absolute after:inset-0">
               {job.title}
             </Link>
@@ -26,7 +27,7 @@ export function JobRow({ job, industryName, index }: { job: Job; industryName?: 
           <div>
             <dt className="sr-only">Location</dt>
             <dd className="icon-inline">
-              <IconPin className="h-3.5 w-3.5 text-maroon" />
+              <IconPin className="h-3.5 w-3.5 text-accent" />
               {job.location}
             </dd>
           </div>
@@ -40,13 +41,14 @@ export function JobRow({ job, industryName, index }: { job: Job; industryName?: 
             <div>
               <dt className="sr-only">Salary</dt>
               <dd className="icon-inline font-medium text-ink">
-                <IconSalary className="h-3.5 w-3.5 text-maroon" />
+                <IconSalary className="h-3.5 w-3.5 text-accent" />
                 {salary}
               </dd>
             </div>
           ) : null}
         </dl>
       </div>
+      <Arrow className="pointer-events-none absolute right-0 top-7 hidden h-4 w-4 -translate-x-2 text-accent opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100 md:block" />
     </li>
   );
 }

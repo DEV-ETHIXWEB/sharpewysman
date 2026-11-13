@@ -2,6 +2,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { getOpenJobs, WP_URL } from "./wp";
 import { SITE_URL } from "./site";
+import { services } from "@/content/company";
 
 /**
  * Server-side handling for the contact and job application forms.
@@ -113,6 +114,13 @@ export async function handleEnquiry(req: Request, kind: "contact" | "apply") {
     jobTitle: "",
     consent: line(fd, "consent") === "yes",
   };
+
+  // Which service the visitor clicked "Enquire" on. Only ever one of our own slugs,
+  // and it is prefixed to the message so the team sees it in the notification email.
+  const service = services.find((s) => s.slug === line(fd, "service", 60));
+  if (service && data.topic === "hire") {
+    data.message = `Service of interest: ${service.title}\n\n${data.message}`.slice(0, 5000);
+  }
 
   if (!data.name) return fail("Enter your name.", 422);
   if (!/^[^\s@<>"',;]+@[^\s@<>"',;]+\.[^\s@<>"',;]{2,}$/.test(data.email)) return fail("Enter a valid email address.", 422);

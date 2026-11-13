@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Tick } from "./ui";
 import { IconArrow, IconDocument, IconUpload } from "./icons";
 import { trackLead } from "@/lib/analytics";
+import { services } from "@/content/company";
 
 type Topic = "hire" | "register" | "general";
 
@@ -37,6 +38,9 @@ export function EnquiryForm({
 }) {
   const params = useSearchParams();
   const fromUrl = params.get("topic") as Topic | null;
+  // "Enquire" links on the service cards carry ?service=<slug>; name it back to the
+  // visitor so the form clearly continues the card they clicked, and send it with the enquiry.
+  const service = services.find((s) => s.slug === params.get("service"));
   const [topic, setTopic] = useState<Topic>(
     mode === "apply" ? "register" : fromUrl && TOPICS.some((t) => t.id === fromUrl) ? fromUrl : defaultTopic,
   );
@@ -44,7 +48,21 @@ export function EnquiryForm({
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const formRef = useRef<HTMLFormElement>(null);
+  const sentRef = useRef<HTMLDivElement>(null);
   const showCv = mode === "apply" || topic === "register";
+
+  // An error that stays on screen while you fix it reads as though the fix didn't count.
+  const clearError = (k: string) =>
+    setFieldErrors((prev) => {
+      if (!prev[k]) return prev;
+      const next = { ...prev };
+      delete next[k];
+      return next;
+    });
+
+  useEffect(() => {
+    if (status === "sent") sentRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [status]);
   const showCompany = mode === "contact" && topic === "hire";
 
   function validate(fd: FormData) {
@@ -71,6 +89,7 @@ export function EnquiryForm({
       return;
     }
     fd.set("topic", topic);
+    if (service && topic === "hire") fd.set("service", service.slug);
     if (job) {
       fd.set("jobSlug", job.slug);
       fd.set("jobTitle", job.title);
@@ -98,8 +117,8 @@ export function EnquiryForm({
 
   if (status === "sent") {
     return (
-      <div role="status" className="rounded-xl border border-line bg-white p-8 md:p-10">
-        <Tick animate className="h-10 w-12 text-maroon" />
+      <div ref={sentRef} role="status" className="rounded-xl border border-line bg-white p-8 md:p-10">
+        <Tick animate className="h-10 w-12 text-accent" />
         <h2 className="mt-5 text-3xl">{mode === "apply" ? "Application sent" : "Message sent"}</h2>
         <p className="mt-3 text-muted">
           {mode === "apply"
@@ -120,14 +139,24 @@ export function EnquiryForm({
 
   const err = (k: string) =>
     fieldErrors[k] ? (
-      <p id={`${k}-error`} className="mt-1.5 text-sm font-bold text-maroon">
+      <p id={`${k}-error`} className="mt-1.5 text-sm font-bold text-danger">
         {fieldErrors[k]}
       </p>
     ) : null;
-  const a11y = (k: string) => ({ "aria-invalid": !!fieldErrors[k], "aria-describedby": fieldErrors[k] ? `${k}-error` : undefined });
+  const a11y = (k: string) => ({
+    "aria-invalid": !!fieldErrors[k],
+    "aria-describedby": fieldErrors[k] ? `${k}-error` : undefined,
+    onInput: () => clearError(k),
+  });
 
   return (
     <form ref={formRef} onSubmit={onSubmit} noValidate className="relative rounded-xl border border-line bg-white p-6 md:p-10">
+      {service && topic === "hire" && mode === "contact" ? (
+        <p className="mb-6 rounded-lg border border-gold/40 bg-gold-soft/60 px-4 py-3 text-sm">
+          <span className="font-bold">About: {service.title}.</span> <span className="text-muted">{service.lede}</span>
+        </p>
+      ) : null}
+
       {mode === "contact" ? (
         <fieldset>
           <legend className="label">What can we help with?</legend>
@@ -135,7 +164,7 @@ export function EnquiryForm({
             {TOPICS.map((t) => (
               <label
                 key={t.id}
-                className={`cursor-pointer rounded-full border px-4 py-2 text-sm font-bold transition has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-maroon ${
+                className={`cursor-pointer rounded-full border px-4 py-2 text-sm font-bold transition has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent ${
                   topic === t.id ? "border-ink bg-ink text-white" : "border-line hover:border-ink"
                 }`}
               >
@@ -208,7 +237,7 @@ export function EnquiryForm({
           <p id="cv-label" className="label">
             Resume {mode === "contact" ? <span className="font-normal text-muted">(optional)</span> : null}
           </p>
-          <ResumeDrop invalid={!!fieldErrors.cv} />
+          <ResumeDrop invalid={!!fieldErrors.cv} onPick={() => clearError("cv")} />
           {err("cv")}
         </div>
       ) : null}
@@ -221,7 +250,7 @@ export function EnquiryForm({
 
       <div className="mt-6">
         <label className="flex items-start gap-3 text-sm text-muted">
-          <input type="checkbox" name="consent" value="yes" className="check" {...a11y("consent")} />
+          <input type="checkbox" name="consent" value="yes" className="check" {...a11y("consent")} onChange={() => clearError("consent")} />
           <span>
             I agree that Sharpe Wysman may store my details and contact me about this enquiry, as described in the{" "}
             <Link href="/privacy-policy" className="font-bold text-ink underline underline-offset-2">
@@ -234,7 +263,7 @@ export function EnquiryForm({
       </div>
 
       {status === "error" ? (
-        <div role="alert" className="mt-6 rounded-lg border border-maroon/30 bg-maroon-soft p-4 text-sm text-maroon-deep">
+        <div role="alert" className="mt-6 rounded-lg border border-danger/30 bg-danger-soft p-4 text-sm text-danger-deep">
           {error || "Your message wasn't sent because of a connection problem."} Try again, or call us on{" "}
           <a href={`tel:${phoneHref}`} className="font-bold underline">
             {phone}
@@ -255,7 +284,7 @@ export function EnquiryForm({
  * Custom resume drop zone. A real <input type="file"> stays in the form
  * (visually hidden, still keyboard-focusable), so it submits normally.
  */
-function ResumeDrop({ invalid }: { invalid: boolean }) {
+function ResumeDrop({ invalid, onPick }: { invalid: boolean; onPick: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<{ name: string; size: number } | null>(null);
   const [over, setOver] = useState(false);
@@ -263,6 +292,7 @@ function ResumeDrop({ invalid }: { invalid: boolean }) {
   const pick = (files: FileList | null) => {
     const f = files?.[0];
     setFile(f ? { name: f.name, size: f.size } : null);
+    if (f) onPick();
   };
 
   return (
@@ -280,8 +310,8 @@ function ResumeDrop({ invalid }: { invalid: boolean }) {
           pick(e.dataTransfer.files);
         }
       }}
-      className={`relative rounded-xl border-[1.5px] border-dashed transition has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-maroon ${
-        over ? "border-ink bg-gold-soft" : invalid ? "border-maroon bg-maroon-soft/40" : "border-[#b9b7b1] bg-paper hover:border-ink"
+      className={`relative rounded-xl border-[1.5px] border-dashed transition has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${
+        over ? "border-ink bg-gold-soft" : invalid ? "border-danger bg-danger-soft/40" : "border-[#b9b7b1] bg-paper hover:border-ink"
       }`}
     >
       <input
@@ -311,19 +341,19 @@ function ResumeDrop({ invalid }: { invalid: boolean }) {
               if (inputRef.current) inputRef.current.value = "";
               setFile(null);
             }}
-            className="pointer-events-auto relative z-10 rounded-full px-3 py-1.5 text-sm font-bold text-maroon hover:bg-maroon-soft"
+            className="pointer-events-auto relative z-10 rounded-full px-3 py-1.5 text-sm font-bold text-accent hover:bg-accent-soft"
           >
             Remove
           </button>
         </div>
       ) : (
         <div className="pointer-events-none flex items-center gap-4 p-5">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-white text-maroon">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-white text-accent">
             <IconUpload className="h-5 w-5" />
           </span>
           <span>
             <span className="block font-bold">
-              Drop your resume here or <span className="text-maroon underline underline-offset-2">browse</span>
+              Drop your resume here or <span className="text-accent underline underline-offset-2">browse</span>
             </span>
             <span id="cv-hint" className="text-sm text-muted">
               PDF or Word, up to {MAX_MB} MB

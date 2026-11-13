@@ -22,21 +22,8 @@ export function ChatLauncher() {
       seen = sessionStorage.getItem(TEASER_KEY) === "1";
     } catch {}
     if (seen) return;
-    // Never alongside the hero's enquiry drawer: on the homepage, wait until the visitor has moved on from it.
-    const inHero = () => !!document.querySelector(".quick-drawer") && window.scrollY < window.innerHeight * 0.6;
-    const onScroll = () => {
-      if (inHero()) return;
-      window.removeEventListener("scroll", onScroll);
-      setTeaser(true);
-    };
-    const t = window.setTimeout(() => {
-      if (inHero()) window.addEventListener("scroll", onScroll, { passive: true });
-      else setTeaser(true);
-    }, 9000);
-    return () => {
-      window.clearTimeout(t);
-      window.removeEventListener("scroll", onScroll);
-    };
+    const t = window.setTimeout(() => setTeaser(true), 9000);
+    return () => window.clearTimeout(t);
   }, []);
 
   const dismissTeaser = useCallback(() => {

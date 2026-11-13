@@ -15,24 +15,6 @@ sharpewysman/
 └── _source/images/                   Original images downloaded from the old site
 ```
 
-## Client design review (Option 1 / Option 2)
-
-The site currently carries two complete designs on the same URLs, so the client can compare them from one link.
-
-* **Switching:** the small *Option 1 / Option 2* control at the top left of the homepage hero. The choice is remembered
-  for 30 days and applies to every page. Direct links: add `?option=1` or `?option=2` to any URL.
-* **How it works:** `web/src/middleware.ts` reads the `sw-design` cookie. Option 2 pages live in
-  `web/src/app/option-2` and `web/src/option-2`, and are served on the normal URLs. Forms, the assistant, WordPress, SEO
-  and security code are shared (`web/src/lib`, `web/src/app/api`).
-* **Search engines** send no cookie, so they only see Option 1. Option 2 is also marked `noindex`, and any deployment on a `*.vercel.app` or `*.netlify.app` address sends `X-Robots-Tag: noindex`, so review links never appear in Google.
-* **Option 1** is `web/src/app/(option-1)` plus `web/src/components`.
-
-**After the client chooses, before launch,** remove the review layer:
-1. Delete `web/src/middleware.ts`, `web/src/review/OptionSwitch.tsx` and the `<OptionSwitch>` line in the chosen hero.
-2. If Option 1 wins: delete `web/src/app/option-2`, `web/src/option-2` and the `geist` dependency.
-3. If Option 2 wins: replace `(option-1)` and `components` with the Option 2 files, then point imports back to `@/components` and `@/lib/wp`.
-4. If the client wants sections from each, move those sections across first, then do step 2 or 3.
-
 ## How it fits together
 
 ```
@@ -198,7 +180,7 @@ To re-run the upscaler on a new image:
 
 ## Custom UI
 
-* **Icons:** a bespoke set (navigation, contact, job details, five industries, three services, quote mark)
+* **Icons:** a bespoke set of 22 (navigation, contact, job details, five industries, three services, quote mark)
   drawn on a 24/32 px grid with calligraphic, pen-tick strokes. Open crescents echo the logo.
   Only the LinkedIn mark uses the official glyph, as LinkedIn's brand rules require.
 * **Buttons:** an ink-sweep fill on hover, an arrow "chip" that nudges forward and changes colour,
@@ -207,9 +189,9 @@ To re-run the upscaler on a new image:
   pill-style topic selectors. All of them keep native inputs underneath for accessibility.
 * **Menu button:** two ledger rules of unequal length that fold into a cross.
 
-## Motion system (Option 1)
+## Motion system
 
-Motion is deliberately quiet, with one strong moment per page. Rules in `(option-1)/globals.css` and `components/motion/`:
+Motion is deliberately quiet, with one strong moment per page. Rules live in `web/src/app/globals.css` and `web/src/components/motion/`:
 
 * **Reveals** (`data-reveal`): 0.7s ease-out, 16px travel, stagger capped at five items. Never leaves a `clip-path` behind, so hover shadows are not cut off.
 * **Headlines** (`maskWords` in `ui.tsx`): each word rises from behind its baseline. Below-the-fold only; the page's main heading uses a transform-only lift so it never delays loading.
@@ -219,11 +201,12 @@ Motion is deliberately quiet, with one strong moment per page. Rules in `(option
 
 ## Hero film
 
-The homepage hero plays a gold handshake film (generated, then AI-upscaled 4x frame by frame with Upscayl and trimmed at the strongest resting frame).
+The homepage hero plays a full-bleed Vancouver skyline film behind the copy.
 
-* `web/public/video/`: 1440p and 1080p in AV1, HEVC and H.264 (SSIM 0.996+ against the master), plus stills.
-* `HeroVideo.tsx` chooses the resolution from the real rendered size x pixel ratio, and the browser picks the best codec.
-* It plays once, then rests on the final frame with a breathing glow. With reduced motion or Save-Data, or if autoplay is blocked, visitors see a crisp still instead.
+* `web/public/video/`: 1080p in AV1 and H.264, plus a poster still. The About page uses a shorter handshake film.
+* `HeroVideo.tsx` paints the poster first (so the hero never waits on the film), then loads the video after the page's own `load` event; the browser picks the best codec it supports.
+* With reduced motion, Save-Data, or autoplay blocked, visitors see the crisp still instead.
+* The retired design's separate handshake hero films were removed with it (6.3 MB of unused video).
 
 ## Website assistant (no LLM)
 
@@ -247,16 +230,18 @@ The homepage hero plays a gold handshake film (generated, then AI-upscaled 4x fr
 * A dynamic `sitemap.xml` built from WordPress content, `robots.txt` (preview deployments are never
   indexed), and `llms.txt` for AI search assistants.
 * One H1 per page, a semantic heading order, and alt text on every image.
-* Lighthouse (mobile, production build, 9 November 2026): Option 1 home 92, job page 95; Option 2 home 89, job page 95. Accessibility 100, Best Practices 100 and CLS 0 on both. SEO 100 on Option 1 (Option 2 is deliberately `noindex`).
+* `security.txt` at `/.well-known/security.txt` (RFC 9116), with an expiry regenerated on every build.
+* Lighthouse (mobile, production build, 9 November 2026, measured on this design): home 89, job page 95, Accessibility 100, Best Practices 100, CLS 0. Re-measure after launch on the production domain.
 
 ## Launch punch list (what is still needed, and who owns it)
 
 | Item | Status | Owner |
 |---|---|---|
-| Client review currently runs on `sharpewysman.vercel.app`, built from the `Official-Ethixweb` fork. Vercel's free plan does not allow commercial sites, so launch on Netlify (or a paid Vercel plan) | Decision needed | Ethixweb |
+| Client chose this design; the review layer, the other design and the `?option=` switch were removed | **Done** | Ethixweb |
+| The retired logo's maroon was removed everywhere; the second accent is now bronze, a deep shade of the brand gold | **Done** | Ethixweb |
+| Review ran on `sharpewysman.vercel.app`. Vercel's free plan does not allow commercial sites, so launch on Netlify (`netlify.toml` is ready) | Decision needed | Ethixweb |
 | Hosting + the 4 required environment variables, confirmed in the host's dashboard | Pending | Ethixweb |
-| Client logos in Option 2 ("Recommended by professionals at"): written permission to display them | Pending | Client |
-| Client chooses a design; review layer removed (see above) | Pending | Client / Ethixweb |
+| Client logos in the homepage "Recommended by professionals at" band: written permission to display them | Pending | Client |
 | `cms.sharpewysman.com` DNS record + SSL on Cloudways | Pending | Client (Namecheap) / Ethixweb |
 | Plugin installed, `wp-config.php` constants added | Pending | Ethixweb |
 | Enquiry inbox set in Settings → Sharpe Wysman, WP Mail SMTP sending verified | Pending | Client / Ethixweb |
@@ -268,6 +253,21 @@ The homepage hero plays a gold handshake film (generated, then AI-upscaled 4x fr
 | Netlify account ownership transferred to the client, or documented as Ethixweb-owned | Pending | Client / Ethixweb |
 | Content approvals below | Pending | Client |
 | Post-launch check 24 to 48 hours later: leads arriving, no errors, analytics sane | Scheduled after launch | Ethixweb |
+
+## Pre-deployment check (run before every launch)
+
+```bash
+cd web
+npm run typecheck && npm run lint && npm run build
+npm run start                       # then, in another shell:
+curl -s localhost:3000/robots.txt
+curl -s localhost:3000/sitemap.xml | head
+curl -s localhost:3000/.well-known/security.txt
+```
+
+Then confirm on the deployed site: `/robots.txt` allows crawling (it disallows everything on a
+preview deploy), `/sitemap.xml` lists every page, each page returns one `<h1>` and a canonical URL,
+the security headers are present, and a real enquiry and a real job application both arrive by email.
 
 ## Content to confirm with the client before launch
 

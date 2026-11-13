@@ -41,7 +41,7 @@ export function MobileNav({ nav, industries, phone, phoneHref }: { nav: L[]; ind
         aria-controls="mobile-menu"
         aria-label={open ? "Close menu" : "Open menu"}
         onClick={() => setOpen((o) => !o)}
-        className="group relative -mr-2 flex h-11 w-11 items-center justify-center rounded-full text-white"
+        className="glass-chip group relative -mr-2 flex h-11 w-11 items-center justify-center rounded-full text-white"
       >
         {/* Two ledger rules of unequal length; they fold into a cross when open. */}
         <span
@@ -59,7 +59,7 @@ export function MobileNav({ nav, industries, phone, phoneHref }: { nav: L[]; ind
       <div
         id="mobile-menu"
         hidden={!open}
-        className="absolute inset-x-0 top-full z-40 h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-white/10 bg-ink md:h-[calc(100dvh-5rem)]"
+        className="absolute inset-x-0 top-full z-40 h-[calc(100dvh-5rem)] overflow-y-auto border-t border-white/10 bg-[#141315]/[0.97] md:h-[calc(100dvh-5.75rem)]"
       >
         <nav aria-label="Mobile" className="container-sw py-6">
           <ul className="divide-y divide-white/10">

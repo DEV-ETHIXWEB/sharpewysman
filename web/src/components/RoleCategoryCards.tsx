@@ -33,7 +33,7 @@ export function RoleCategoryCards({ categories }: { categories: Category[] }) {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute left-0 top-0 rounded-xl border-2 border-maroon transition-[transform,width,height,opacity] duration-300 ease-[var(--ease-out-quart)]"
+        className="pointer-events-none absolute left-0 top-0 rounded-2xl border-2 border-accent transition-[transform,width,height,opacity] duration-300 ease-[var(--ease-out-quart)]"
         style={{
           opacity: active ? 1 : 0,
           transform: `translate(${(active?.x ?? 0) - 2}px, ${(active?.y ?? 0) - 2}px)`,
@@ -50,11 +50,11 @@ export function RoleCategoryCards({ categories }: { categories: Category[] }) {
           style={{ ["--i" as string]: i % 3 }}
           onMouseEnter={(e) => measure(i, e.currentTarget)}
           onFocus={(e) => measure(i, e.currentTarget)}
-          className="group relative z-10 rounded-xl border border-line bg-white p-7 transition-shadow duration-300 hover:shadow-lg hover:shadow-ink/5"
+          className="group relative z-10 rounded-2xl border border-line bg-white p-7 transition-shadow duration-300 hover:shadow-lg hover:shadow-ink/5"
         >
           <h3 className="flex items-center justify-between border-b border-line pb-3 text-2xl text-ink">
             {c.name}
-            <Arrow className="h-4 w-4 transition duration-300 group-hover:translate-x-1 group-hover:text-maroon" />
+            <Arrow className="h-4 w-4 transition duration-300 group-hover:translate-x-1 group-hover:text-accent" />
           </h3>
           <ul className="mt-4 space-y-2 text-muted">
             {c.roles.map((r) => (

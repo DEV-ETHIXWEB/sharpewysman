@@ -28,10 +28,14 @@ function sw_email_tokens() {
 		'muted'   => '#5b595e',
 		'gold'    => '#fdc705',
 		'goldInk' => '#8a6a00',
-		'maroon'  => '#801921',
-		'serif'   => "'Libre Caslon Text', Georgia, 'Times New Roman', serif",
-		'sans'    => "Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif",
-		'mono'    => "'IBM Plex Mono', Menlo, Consolas, monospace",
+		// Bronze: the site's second accent. The retired maroon logo colour is not used.
+		'accent'  => '#7a5e00',
+		// Email clients cannot load the site's Geist family, so these are the
+		// closest stacks every inbox already has: a transitional serif for
+		// headings, the system UI sans for text, and a ledger mono for labels.
+		'serif'   => "Georgia, 'Times New Roman', Times, serif",
+		'sans'    => "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif",
+		'mono'    => "Menlo, Consolas, 'Courier New', monospace",
 	);
 }
 
@@ -134,7 +138,7 @@ function sw_email_layout( $args ) {
 <!--[if mso]><style>table,td,div,p,a{font-family:Arial,sans-serif!important;}</style><![endif]-->
 <style>
   @media (max-width:620px){ .sw-card{padding:32px 24px!important;} .sw-h1{font-size:28px!important;} .sw-pad{padding-left:16px!important;padding-right:16px!important;} }
-  a{color:<?php echo esc_attr( $t['maroon'] ); ?>;}
+  a{color:<?php echo esc_attr( $t['accent'] ); ?>;}
 </style>
 </head>
 <body style="margin:0;padding:0;background:<?php echo esc_attr( $t['paper'] ); ?>;-webkit-text-size-adjust:100%;">
@@ -155,7 +159,7 @@ function sw_email_layout( $args ) {
 
     <!-- Card -->
     <tr><td class="sw-card" bgcolor="#ffffff" style="background:#ffffff;padding:44px 48px;border-radius:0 0 14px 14px;">
-      <p style="margin:0 0 14px;font-family:<?php echo esc_attr( $t['mono'] ); ?>;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:<?php echo esc_attr( $t['maroon'] ); ?>;"><?php echo esc_html( $args['eyebrow'] ); ?></p>
+      <p style="margin:0 0 14px;font-family:<?php echo esc_attr( $t['mono'] ); ?>;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:<?php echo esc_attr( $t['accent'] ); ?>;"><?php echo esc_html( $args['eyebrow'] ); ?></p>
       <h1 class="sw-h1" style="margin:0 0 22px;font-family:<?php echo esc_attr( $t['serif'] ); ?>;font-size:32px;line-height:1.15;font-weight:400;color:<?php echo esc_attr( $t['ink'] ); ?>;"><?php echo wp_kses( $args['title'], array( 'em' => array( 'style' => array() ) ) ); ?></h1>
       <?php echo $args['body_html']; // phpcs:ignore -- composed from escaped parts ?>
     </td></tr>
@@ -207,11 +211,11 @@ function sw_render_email( $template, $data ) {
 			$subject  = $is_apply ? sprintf( 'Application: %s, from %s', $data['jobTitle'], $data['name'] ) : sprintf( '%s from %s', $type, $data['name'] );
 			$fields   = array(
 				'Name'     => esc_html( $data['name'] ),
-				'Email'    => '<a href="mailto:' . esc_attr( $data['email'] ) . '" style="color:' . $t['maroon'] . ';">' . esc_html( $data['email'] ) . '</a>',
+				'Email'    => '<a href="mailto:' . esc_attr( $data['email'] ) . '" style="color:' . $t['accent'] . ';">' . esc_html( $data['email'] ) . '</a>',
 				'Phone'    => $data['phone'] ? '<a href="tel:' . esc_attr( preg_replace( '/[^\d+]/', '', $data['phone'] ) ) . '" style="color:' . $t['ink'] . ';text-decoration:none;">' . esc_html( $data['phone'] ) . '</a>' : '',
 				'Company'  => esc_html( $data['company'] ),
-				'LinkedIn' => $data['linkedin'] ? '<a href="' . esc_url( $data['linkedin'] ) . '" style="color:' . $t['maroon'] . ';">View profile</a>' : '',
-				'Role'     => $is_apply ? '<a href="' . esc_url( sw_email_frontend_url( '/jobs/' . $data['jobSlug'] ) ) . '" style="color:' . $t['maroon'] . ';">' . esc_html( $data['jobTitle'] ) . '</a>' : '',
+				'LinkedIn' => $data['linkedin'] ? '<a href="' . esc_url( $data['linkedin'] ) . '" style="color:' . $t['accent'] . ';">View profile</a>' : '',
+				'Role'     => $is_apply ? '<a href="' . esc_url( sw_email_frontend_url( '/jobs/' . $data['jobSlug'] ) ) . '" style="color:' . $t['accent'] . ';">' . esc_html( $data['jobTitle'] ) . '</a>' : '',
 				'Resume'   => ! empty( $data['has_cv'] ) ? '&#10003; Attached to this email' : '',
 			);
 			$body  = $p( 'A new ' . strtolower( $type ) . ' just came in through the website.' );
@@ -255,7 +259,7 @@ function sw_render_email( $template, $data ) {
 					array(
 						'preheader'   => 'Thanks, ' . $first . '. A recruiter will review your application, usually within two business days.',
 						'eyebrow'     => 'Application received',
-						'title'       => 'Thank you, ' . $first . '.<br><em style="font-style:italic;color:' . $t['maroon'] . ';">It\'s in good hands.</em>',
+						'title'       => 'Thank you, ' . $first . '.<br><em style="font-style:italic;color:' . $t['accent'] . ';">It\'s in good hands.</em>',
 						'body_html'   => $body,
 						'footer_note' => 'You\'re receiving this because you applied for a role at sharpewysman.com.',
 					)
@@ -284,7 +288,7 @@ function sw_render_email( $template, $data ) {
 					array(
 						'preheader'   => 'A senior recruiter will reply within one business day.',
 						'eyebrow'     => 'Hiring enquiry received',
-						'title'       => 'Let\'s find the right person, <em style="font-style:italic;color:' . $t['maroon'] . ';">together.</em>',
+						'title'       => 'Let\'s find the right person, <em style="font-style:italic;color:' . $t['accent'] . ';">together.</em>',
 						'body_html'   => $body,
 						'footer_note' => 'You\'re receiving this because you contacted Sharpe Wysman through sharpewysman.com.',
 					)
@@ -316,7 +320,7 @@ function sw_render_email( $template, $data ) {
 					array(
 						'preheader'   => $register ? 'Your details are with our team, and they stay confidential.' : 'We\'ll reply within one business day.',
 						'eyebrow'     => $register ? 'Registration received' : 'Message received',
-						'title'       => $register ? 'Welcome, ' . $first . '. <em style="font-style:italic;color:' . $t['maroon'] . ';">Let\'s find your next move.</em>' : 'Thank you, ' . $first . '.',
+						'title'       => $register ? 'Welcome, ' . $first . '. <em style="font-style:italic;color:' . $t['accent'] . ';">Let\'s find your next move.</em>' : 'Thank you, ' . $first . '.',
 						'body_html'   => $body,
 						'footer_note' => 'You\'re receiving this because you contacted Sharpe Wysman through sharpewysman.com.',
 					)
