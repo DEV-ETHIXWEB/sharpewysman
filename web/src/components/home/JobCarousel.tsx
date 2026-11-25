@@ -103,7 +103,7 @@ export function JobCarousel({ jobs, totalOpen }: { jobs: Job[]; totalOpen: numbe
             data-reveal="fade"
             className="group flex w-[320px] shrink-0 snap-start flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-line bg-paper-2/60 p-7 text-center transition duration-300 hover:-translate-y-1 hover:border-accent sm:w-[360px] sm:p-8"
           >
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-ink text-gold transition duration-300 group-hover:scale-110 group-hover:bg-accent">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-ink text-gold transition duration-300 group-hover:scale-110 group-hover:bg-gold group-hover:text-ink">
               <Arrow className="h-5 w-5" />
             </span>
             <span className="font-display text-xl text-ink">View all {totalOpen} roles</span>

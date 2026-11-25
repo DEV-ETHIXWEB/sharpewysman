@@ -161,7 +161,7 @@ export default async function HomePage() {
                   style={{ ["--i" as string]: i, marginTop: i === 0 ? 0 : -10, marginLeft: `${(settings.stats.length - 1 - i) * 5}%` }}
                   className={`group/stat relative flex min-h-[7rem] items-center justify-between gap-5 rounded-2xl p-6 transition-all duration-500 hover:-translate-y-0.5 md:min-h-[7.5rem] md:p-7 ${
                     last
-                      ? "bg-accent text-white shadow-[0_24px_50px_-20px_rgb(122_94_0/0.45)] hover:shadow-[0_28px_56px_-18px_rgb(122_94_0/0.55)]"
+                      ? "bg-ink text-white shadow-[0_24px_50px_-20px_rgb(30_29_31/0.55)] hover:shadow-[0_28px_56px_-18px_rgb(30_29_31/0.6)]"
                       : "border border-line/70 bg-white shadow-[0_18px_36px_-28px_rgb(30_29_31/0.3)] hover:border-line hover:shadow-[0_22px_40px_-24px_rgb(30_29_31/0.18)]"
                   }`}
                 >

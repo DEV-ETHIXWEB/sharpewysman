@@ -222,8 +222,8 @@
     --b-sweep: #ffdb4d;
     --b-chip: var(--color-ink);
     --b-chip-fg: var(--color-gold);
-    --b-chip-hover: var(--color-accent);
-    --b-chip-hover-fg: #fff;
+    --b-chip-hover: var(--color-ink);
+    --b-chip-hover-fg: var(--color-gold);
     box-shadow:
       inset 0 -2px 0 rgb(0 0 0 / 0.14),
       inset 0 1px 0 rgb(255 255 255 / 0.45);
@@ -231,9 +231,12 @@
   .btn-ink {
     --b-bg: var(--color-ink);
     --b-fg: #fff;
-    --b-sweep: var(--color-accent);
+    --b-sweep: var(--color-gold);
+    --b-sweep-fg: var(--color-ink);
     --b-chip: var(--color-gold);
     --b-chip-fg: var(--color-ink);
+    --b-chip-hover: var(--color-ink);
+    --b-chip-hover-fg: var(--color-gold);
     box-shadow:
       inset 0 -2px 0 rgb(0 0 0 / 0.35),
       inset 0 1px 0 rgb(255 255 255 / 0.08);

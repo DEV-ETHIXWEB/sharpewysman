@@ -59,14 +59,14 @@ export function IndustryCarousel({ industries, openByIndustry }: { industries: I
             href={`/industries/${primary.slug}`}
             data-reveal="fade"
             style={{ height: CARD_H }}
-            className="group flex w-[280px] shrink-0 snap-start flex-col justify-between rounded-2xl bg-accent p-7 text-white sm:w-[320px] md:w-[340px] md:p-9"
+            className="group flex w-[280px] shrink-0 snap-start flex-col justify-between rounded-2xl bg-gold p-7 text-ink transition-colors duration-300 hover:bg-[#ffd21f] sm:w-[320px] md:w-[340px] md:p-9"
           >
             <div>
-              <p className="eyebrow text-gold">Our specialty</p>
+              <p className="eyebrow text-ink/70">Our specialty</p>
               <h3 className="font-display mt-4 text-3xl leading-tight md:text-4xl">{primary.name}</h3>
-              <p className="mt-4 text-white/80">{primary.tagline}</p>
+              <p className="mt-4 text-ink/80">{primary.tagline}</p>
             </div>
-            <span className="btn btn-gold self-start">
+            <span className="btn btn-ink self-start">
               Explore more <Arrow />
             </span>
           </Link>

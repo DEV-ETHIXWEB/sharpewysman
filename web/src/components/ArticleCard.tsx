@@ -33,7 +33,7 @@ export function ArticleCard({ article, index = 0 }: { article: Article; index?: 
           <time dateTime={article.date} className="font-mono text-xs uppercase tracking-widest text-muted">
             {formatDate(article.date)}
           </time>
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink text-gold transition duration-300 group-hover:scale-110 group-hover:bg-accent">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink text-gold transition duration-300 group-hover:scale-110 group-hover:bg-gold group-hover:text-ink">
             <IconArrowUpRight className="h-4 w-4" strokeWidth={1.8} />
           </span>
         </div>

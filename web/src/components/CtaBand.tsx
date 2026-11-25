@@ -18,7 +18,7 @@ export function CtaBand({
   secondary?: { href: string; label: string };
 }) {
   return (
-    <section className="group/cta on-dark relative isolate overflow-hidden border-t-2 border-accent bg-[#050505] text-white">
+    <section className="group/cta on-dark relative isolate overflow-hidden border-t-2 border-gold/60 bg-[#050505] text-white">
       <div className="absolute inset-y-0 right-0 -z-10 w-full md:w-[68%]">
         <Image
           src="/images/handshake.jpg"
