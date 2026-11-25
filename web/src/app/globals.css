@@ -517,6 +517,9 @@
 .js [data-reveal].is-in {
   opacity: 1;
   transform: none;
+}
+/* Only image reveals use a clip; a clip left on other elements would cut off hover shadows. */
+.js [data-reveal="clip"].is-in {
   clip-path: inset(0 0 0 0 round 0.75rem);
 }
 .js [data-reveal="clip"].is-in img {
@@ -855,9 +858,9 @@
   filter: drop-shadow(0 1px 3px rgb(0 0 0 / 0.45));
 }
 html[data-scrolled="true"] .site-header {
-  /* Opacity is set by contrast, not taste: below ~0.56 the white nav text drops under
-     WCAG AA once the header sits over a light section. 0.72 matches .glass-panel. */
-  background: rgb(20 19 21 / 0.72);
+  /* Opaque enough to stay charcoal over light sections (it read as washed-out grey at 0.72),
+     while keeping a trace of the blur. */
+  background: rgb(20 19 21 / 0.9);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
   backdrop-filter: blur(18px) saturate(140%);
   border-bottom-color: rgb(255 255 255 / 0.07);
@@ -1146,4 +1149,45 @@ html[data-scrolled="true"] .site-header {
   .link-arrow {
     min-height: 1.5rem;
   }
+}
+
+/* Focal points: computed from every size each photo is shown at, so main faces are always whole
+ * and no one at the edge is cut in half. Matched on the file name, so it
+ * also applies to optimised /_next/image URLs. */
+img[src*="candidate-interview.jpg"] {
+  object-position: 50% 28%;
+}
+img[src*="industry-accounting-finance.jpg"] {
+  object-position: 50% 22%;
+}
+img[src*="industry-human-resources.jpg"] {
+  object-position: 10% 34%;
+}
+img[src*="industry-information-technology.jpg"] {
+  object-position: 50% 34%;
+}
+img[src*="industry-legal.jpg"] {
+  object-position: 84% 34%;
+}
+img[src*="partners-office.jpg"] {
+  object-position: 70% 6%;
+}
+img[src*="team-collaboration.jpg"] {
+  object-position: 52% 34%;
+}
+img[src*="team-meeting.jpg"] {
+  object-position: 50% 34%;
+}
+img[src*="team-sonia.jpg"] {
+  object-position: 52% 34%;
+}
+img[src*="team-sukhjit-lalli.jpg"] {
+  object-position: 50% 34%;
+}
+img[src*="professional-downtown.jpg"] {
+  object-position: 50% 66%;
+}
+/* Narrow industry-carousel cards show a thinner slice of the team photo */
+.ind-card img[src*="team-collaboration.jpg"] {
+  object-position: 70% 34%;
 }

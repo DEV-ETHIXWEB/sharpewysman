@@ -5,12 +5,13 @@ import { CtaBand } from "@/components/CtaBand";
 import { getArticles, getOpenJobs } from "@/lib/wp";
 import { breadcrumbLd, buildMetadata } from "@/lib/seo";
 
-export const metadata = buildMetadata({
+const base = buildMetadata({
   title: "Insights: Accounting Careers & Hiring Advice",
   description:
     "Practical advice for Vancouver CPAs and the firms that hire them: choosing a recruiter, moving from public practice to industry, partner-track roles and more.",
   path: "/insights",
 });
+export const metadata = { ...base, alternates: { ...base.alternates, types: { "application/rss+xml": "/insights/feed.xml" } } };
 
 export default async function InsightsPage() {
   const [articles, jobs] = await Promise.all([getArticles(), getOpenJobs()]);

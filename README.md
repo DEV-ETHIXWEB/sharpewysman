@@ -227,6 +227,7 @@ The homepage hero plays a full-bleed Vancouver skyline film behind the copy.
   plus an auto-generated share image.
 * JSON-LD structured data: `EmploymentAgency` (with founder, area served and services), `WebSite`,
   `BreadcrumbList`, `JobPosting` (Google Jobs eligible), `FAQPage`, `Article`, `Person` and `Service`.
+* `/insights/feed.xml` (RSS), `/.well-known/security.txt`, `www` redirected to the bare domain, and a branded 404 with popular pages.
 * A dynamic `sitemap.xml` built from WordPress content, `robots.txt` (preview deployments are never
   indexed), and `llms.txt` for AI search assistants.
 * One H1 per page, a semantic heading order, and alt text on every image.

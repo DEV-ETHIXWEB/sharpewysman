@@ -85,10 +85,14 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    return legacyRedirects.flatMap(([source, destination]) => [
+    return [
+      // One canonical host: www always goes to the bare domain.
+      { source: "/:path*", has: [{ type: "host", value: "www.sharpewysman.com" }], destination: "https://sharpewysman.com/:path*", permanent: true },
+      ...legacyRedirects.flatMap(([source, destination]) => [
       { source, destination, permanent: true },
       ...(source.includes(":") || source.endsWith(".xml") ? [] : [{ source: `${source}/`, destination, permanent: true }]),
-    ]);
+      ]),
+    ];
   },
   async headers() {
     return [

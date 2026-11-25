@@ -13,12 +13,12 @@ const ROW_STAGGER = 620; // delay step between rows: must clear DURATION so row 
  * here; anything missing falls back to a quiet text wordmark rather than risk
  * showing the wrong company's mark.
  */
-const CLIENT_LOGOS: Record<string, { src: string; width: number; height: number; invert?: boolean }> = {
-  "Johnsen Archer": { src: "/images/clients/johnsen-archer.svg", width: 135, height: 61 },
-  MNP: { src: "/images/clients/mnp.jpg", width: 250, height: 81 },
-  "Renewal by Andersen": { src: "/images/clients/renewal-by-andersen.png", width: 1182, height: 455 },
+const CLIENT_LOGOS: Record<string, { src: string; width: number; height: number; invert?: boolean; h?: string }> = {
+  "Johnsen Archer": { src: "/images/clients/johnsen-archer.svg", width: 135, height: 61, h: "h-10 md:h-12" },
+  MNP: { src: "/images/clients/mnp.jpg", width: 250, height: 81, h: "h-6 md:h-7" },
+  "Renewal by Andersen": { src: "/images/clients/renewal-by-andersen.png", width: 1182, height: 455, h: "h-11 md:h-14" },
   // This file is a white-on-transparent export (for use on a dark band); inverted it reads as a clean black mark here.
-  "Baker Tilly WM": { src: "/images/clients/baker-tilly-wm.svg", width: 151, height: 40, invert: true },
+  "Baker Tilly WM": { src: "/images/clients/baker-tilly-wm.svg", width: 151, height: 40, invert: true, h: "h-7 md:h-8" },
 };
 
 function shuffledIndices(n: number, avoid?: number[]): number[] {
@@ -94,12 +94,13 @@ export function LogoCloud({ items }: { items: string[] }) {
                   alt={name}
                   width={logo.width}
                   height={logo.height}
-                  className={`h-9 w-auto max-w-[9.5rem] object-contain grayscale transition-[filter] duration-300 hover:grayscale-0 sm:h-10 md:h-11 ${
+                  // Each mark is sized by eye to the same visual weight; multiply drops white backgrounds (MNP).
+                  className={`${logo.h ?? "h-9 md:h-11"} w-auto max-w-[10rem] object-contain opacity-75 mix-blend-multiply grayscale transition-[filter,opacity] duration-300 hover:opacity-100 hover:grayscale-0 ${
                     logo.invert ? "invert" : ""
                   }`}
                 />
               ) : (
-                <span className="text-center font-serif text-base text-ink/70 transition hover:text-ink sm:text-lg md:text-xl">{name}</span>
+                <span className="block text-center font-display text-base leading-tight text-ink/65 transition hover:text-ink sm:text-lg md:text-[1.4rem]">{name}</span>
               )}
             </div>
           </div>

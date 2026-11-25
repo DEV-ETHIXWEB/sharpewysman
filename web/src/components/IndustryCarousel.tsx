@@ -78,7 +78,7 @@ export function IndustryCarousel({ industries, openByIndustry }: { industries: I
             href={`/industries/${ind.slug}`}
             data-reveal="fade"
             style={{ height: CARD_H }}
-            className="group relative flex w-[220px] shrink-0 snap-start overflow-hidden rounded-2xl sm:w-[260px] md:w-[280px]"
+            className="ind-card group relative flex w-[220px] shrink-0 snap-start overflow-hidden rounded-2xl sm:w-[260px] md:w-[280px]"
           >
             <Image
               src={ind.image}

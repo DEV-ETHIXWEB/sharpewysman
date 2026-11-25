@@ -5,7 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 
 type Step = { title: string; body: string };
 
-const STEP_MS = 2700;
+const STEP_MS = 6000; // long enough to read a step before the next one arrives
 const SIZE = 500; // ring box, px (desktop only)
 const CENTER = SIZE / 2;
 const NODE_R = 198;
@@ -82,13 +82,14 @@ export function ProcessOrbit({ tracks }: { tracks: { id: string; label: string; 
 
       <div id={`${uid}-panel`} role={tracks.length > 1 ? "tabpanel" : undefined} aria-labelledby={tracks.length > 1 ? `${uid}-tab-${trackId}` : undefined} className="mt-12 w-full">
         {/* Ring + detail card (desktop) */}
-        <div className="hidden items-center gap-20 lg:flex lg:justify-center">
-          <div
-            className="relative shrink-0"
-            style={{ width: SIZE, height: SIZE }}
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-          >
+        <div
+          className="hidden items-center gap-20 lg:flex lg:justify-center"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocusCapture={() => setPaused(true)}
+          onBlurCapture={() => setPaused(false)}
+        >
+          <div className="relative shrink-0" style={{ width: SIZE, height: SIZE }}>
             <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="absolute inset-0 h-full w-full" aria-hidden>
               <circle cx={CENTER} cy={CENTER} r={NODE_R * 0.52} fill="none" stroke="var(--color-line)" strokeWidth="1" strokeDasharray="1 7" strokeLinecap="round" />
               <circle cx={CENTER} cy={CENTER} r={NODE_R} fill="none" stroke="var(--color-gold)" strokeWidth="6" strokeOpacity="0.4" />

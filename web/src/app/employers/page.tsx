@@ -183,9 +183,9 @@ export default async function EmployersPage() {
                 key={m.slug}
                 data-reveal
                 style={{ ["--i" as string]: i }}
-                className="grid overflow-hidden rounded-2xl border border-line bg-white transition duration-300 sm:grid-cols-[0.85fr_1.15fr] sm:items-stretch hover:-translate-y-1 hover:border-accent/30 hover:shadow-xl hover:shadow-ink/10"
+                className="grid overflow-hidden rounded-2xl border border-line bg-white transition duration-300 sm:grid-cols-[0.85fr_1.15fr] sm:items-stretch lg:grid-cols-1 xl:grid-cols-[0.85fr_1.15fr] hover:-translate-y-1 hover:border-accent/30 hover:shadow-xl hover:shadow-ink/10"
               >
-                <div className="relative aspect-[4/5] bg-paper-2 sm:aspect-auto">
+                <div className="relative aspect-[4/5] bg-paper-2 sm:aspect-auto lg:aspect-[4/3] xl:aspect-auto">
                   {m.image ? <Image src={m.image} alt={`${m.name}, ${m.role}`} fill sizes="(min-width: 1024px) 22vw, (min-width: 640px) 35vw, 90vw" className="object-cover" /> : null}
                 </div>
                 <div className="flex flex-col justify-center p-8 md:p-10">
