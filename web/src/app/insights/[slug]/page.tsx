@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: a.title,
     description: a.excerpt,
     path: `/insights/${a.slug}`,
-    image: a.image,
+    image: `/insights/${a.slug}/opengraph-image`,
     type: "article",
     publishedTime: a.date,
     modifiedTime: a.modified ?? a.date,

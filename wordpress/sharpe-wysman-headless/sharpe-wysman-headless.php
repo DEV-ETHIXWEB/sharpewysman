@@ -934,6 +934,47 @@ if ( ! defined( 'SW_ALLOW_XMLRPC' ) || ! SW_ALLOW_XMLRPC ) {
 }
 
 /* ==========================================================================
+ * 7c. Retention: the privacy policy promises enquiries and resumes are deleted
+ *     automatically after SW_ENQUIRY_RETENTION_MONTHS (default 24). Runs daily.
+ *     define( 'SW_ENQUIRY_RETENTION_MONTHS', 36 ) in wp-config.php to change it,
+ *     and update the privacy policy to match.
+ * ======================================================================== */
+
+add_action(
+	'init',
+	function () {
+		if ( ! wp_next_scheduled( 'sw_retention_cleanup' ) ) {
+			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', 'sw_retention_cleanup' );
+		}
+	}
+);
+register_deactivation_hook(
+	__FILE__,
+	function () {
+		wp_clear_scheduled_hook( 'sw_retention_cleanup' );
+	}
+);
+
+add_action(
+	'sw_retention_cleanup',
+	function () {
+		$months = defined( 'SW_ENQUIRY_RETENTION_MONTHS' ) ? max( 1, (int) SW_ENQUIRY_RETENTION_MONTHS ) : 24;
+		$old    = get_posts(
+			array(
+				'post_type'      => 'sw_enquiry',
+				'post_status'    => 'any',
+				'posts_per_page' => 200,
+				'fields'         => 'ids',
+				'date_query'     => array( array( 'before' => gmdate( 'Y-m-d H:i:s', strtotime( "-{$months} months" ) ), 'column' => 'post_date_gmt' ) ),
+			)
+		);
+		foreach ( $old as $id ) {
+			wp_delete_post( $id, true ); // also deletes the stored resume (before_delete_post hook above)
+		}
+	}
+);
+
+/* ==========================================================================
  * 8. One-time import of launch content
  * ======================================================================== */
 

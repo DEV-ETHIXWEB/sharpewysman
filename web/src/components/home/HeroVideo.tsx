@@ -67,7 +67,7 @@ export function HeroVideo({
     <div ref={wrapRef} className={`pointer-events-none select-none ${blend ? "mix-blend-screen" : ""} ${className}`} style={style} aria-hidden>
       <div className="absolute inset-0">
         {/* The poster is in the first HTML response, so the hero paints immediately */}
-        <Image src="/video/hero-skyline-poster.jpg" alt="" fill sizes="100vw" priority className="object-cover" />
+        <Image src="/video/hero-skyline-poster.jpg" alt="" fill sizes="100vw" priority quality={55} className="object-cover" />
         {mode === "video" ? (
           <video
             ref={videoRef}

@@ -234,6 +234,24 @@ The homepage hero plays a full-bleed Vancouver skyline film behind the copy.
 * `security.txt` at `/.well-known/security.txt` (RFC 9116), with an expiry regenerated on every build.
 * Lighthouse (mobile, production build, 9 November 2026, measured on this design): home 89, job page 95, Accessibility 100, Best Practices 100, CLS 0. Re-measure after launch on the production domain.
 
+## Monitoring, verification and data retention
+
+* **Uptime:** point a free UptimeRobot (or Better Stack) HTTP monitor at `https://sharpewysman.com/api/health`,
+  every 5 minutes, alerting the team email. It returns 200 `{"status":"ok"}` when the site and WordPress
+  (which receives every enquiry) are up, and 503 when enquiries would fail.
+* **Errors:** form failures are logged as `[enquiry] ...` lines (status codes only, never visitor details)
+  in the host's function logs (Netlify: Logs > Functions).
+* **Search Console / Bing:** set `NEXT_PUBLIC_GSC_VERIFICATION` and/or `NEXT_PUBLIC_BING_VERIFICATION` to
+  the token each tool gives for the HTML-tag method, redeploy, verify, then submit `/sitemap.xml`.
+* **Retention:** the WordPress plugin deletes enquiries and their resumes 24 months after they arrive
+  (daily cron). Change it with `define( 'SW_ENQUIRY_RETENTION_MONTHS', 36 );` in wp-config.php and update
+  the privacy policy to match. Access, export and erasure requests: WordPress > Tools > Export/Erase
+  Personal Data, by email address.
+* **Legal pages:** Privacy policy, Terms and the Accessibility statement are written in
+  `web/src/content/legal.ts` (drafted 2026-11-25 from how the site really handles data). The site shows
+  whichever is newer, that copy or the WordPress page, so once counsel approves a version, publishing it
+  in WordPress takes over automatically.
+
 ## Launch punch list (what is still needed, and who owns it)
 
 | Item | Status | Owner |
@@ -281,13 +299,9 @@ the security headers are present, and a real enquiry and a real job application 
 * **Public email address** for the contact page and footer. The old site showed none.
 * **FAQ answers** about fees and confidentiality are written to industry norms. Confirm they match
   how the client works.
-* **Privacy policy and terms:** the current text is a generic template (it mentions shipping and
-  payments). It should be replaced with a recruitment-specific policy that complies with PIPEDA. It must
-  cover: what the forms collect (including resumes and IP address), how long enquiries are kept, how to
-  request access or deletion, and Google Analytics cookies if GA4 is switched on. The terms also
-  contained the unfilled placeholder "[Your Jurisdiction]"; the site now renders it as British Columbia
-  and Canada (`fillLegalPlaceholders` in `web/src/lib/sanitize.ts`), which counsel should confirm. The
-  terms also mention user accounts and an "Effective Date" that do not exist on this site.
+* **Privacy policy and terms:** recruitment-specific drafts replaced the old shop template (see
+  "Monitoring, verification and data retention"). The client's counsel should review them, especially
+  the 24-month retention period and the British Columbia governing-law clause.
 * **Case studies, awards and client logos:** none exist yet. Add real ones in WordPress. Template
   logos and "AllSquares" content from the old site were intentionally not carried over.
 * **Insights:** three launch articles were written for SEO and need the client's review.

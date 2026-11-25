@@ -19,7 +19,10 @@ interface MetaInput {
 export function buildMetadata({ title, description, path, image, type = "website", publishedTime, modifiedTime, noindex }: MetaInput): Metadata {
   const url = abs(path);
   // Every page gets a share image: its own, or the branded default card.
-  const images = image ? [{ url: image.startsWith("http") ? image : abs(image) }] : [{ url: abs("/opengraph-image"), width: 1200, height: 630, alt: SITE.name }];
+  // Branded cards (".../opengraph-image") are 1200x630; other images are page photos.
+  const images = image
+    ? [image.endsWith("/opengraph-image") ? { url: abs(image), width: 1200, height: 630, alt: title } : { url: image.startsWith("http") ? image : abs(image) }]
+    : [{ url: abs("/opengraph-image"), width: 1200, height: 630, alt: SITE.name }];
   return {
     // Titles that already carry the brand skip the "%s | Sharpe Wysman" template.
     // Long titles (articles) skip the suffix so search results don't cut them off.

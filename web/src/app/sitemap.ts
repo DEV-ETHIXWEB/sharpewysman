@@ -21,6 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ["/contact", 0.8, "yearly"],
     ["/privacy-policy", 0.2, "yearly"],
     ["/terms-conditions", 0.2, "yearly"],
+    ["/accessibility", 0.2, "yearly"],
   ];
   if (cases.length) statics.push(["/case-studies", 0.6, "monthly"]);
   return [

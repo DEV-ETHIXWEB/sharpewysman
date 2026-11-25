@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${job.title} Job in ${job.city}, BC`,
     description: job.summary,
     path: `/jobs/${job.slug}`,
+    image: `/jobs/${job.slug}/opengraph-image`,
     noindex: job.status !== "open",
   });
 }

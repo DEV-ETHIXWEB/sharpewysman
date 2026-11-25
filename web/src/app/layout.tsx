@@ -46,7 +46,11 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false },
   openGraph: { siteName: SITE.name, locale: SITE.locale, type: "website" },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
-  verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION } : undefined,
+  // Search Console and Bing Webmaster Tools: set the env var to the token each tool gives you.
+  verification: {
+    google: process.env.NEXT_PUBLIC_GSC_VERIFICATION || undefined,
+    other: process.env.NEXT_PUBLIC_BING_VERIFICATION ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_VERIFICATION } : undefined,
+  },
 };
 
 export const viewport: Viewport = {

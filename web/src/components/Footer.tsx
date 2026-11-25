@@ -117,6 +117,11 @@ export async function Footer() {
                 Terms & conditions
               </Link>
             </li>
+            <li>
+              <Link href="/accessibility" className="hover:text-gold">
+                Accessibility
+              </Link>
+            </li>
             {GA_ID ? (
               <li>
                 <CookieSettingsLink className="hover:text-gold" />

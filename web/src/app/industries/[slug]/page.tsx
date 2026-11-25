@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${ind.name} Recruitment, Vancouver`,
     description: `${ind.name} recruiters in Vancouver. Hire ${ind.roles.slice(0, 3).join(", ")} and more with Sharpe Wysman, recruiting locally since 2008.`,
     path: `/industries/${ind.slug}`,
-    image: ind.image,
+    image: `/industries/${ind.slug}/opengraph-image`,
   });
 }
 

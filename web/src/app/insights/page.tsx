@@ -40,7 +40,7 @@ export default async function InsightsPage() {
         <h2 className="sr-only">Latest articles</h2>
         <div className="container-sw grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
           {articles.map((a, i) => (
-            <ArticleCard key={a.slug} article={a} index={i} />
+            <ArticleCard key={a.slug} article={a} index={i} priority={i === 0} />
           ))}
         </div>
       </section>
