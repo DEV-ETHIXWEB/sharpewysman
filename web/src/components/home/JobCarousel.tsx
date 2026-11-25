@@ -60,7 +60,7 @@ export function JobCarousel({ jobs, totalOpen }: { jobs: Job[]; totalOpen: numbe
           className={`pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-paper to-transparent transition-opacity duration-300 ${canRight ? "opacity-100" : "opacity-0"}`}
         />
 
-        <div ref={trackRef} className="no-scrollbar -mb-8 -mt-3 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-10 pt-3">
+        <div ref={trackRef} className="no-scrollbar relative -mb-8 -mt-3 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-10 pt-3">
           {jobs.map((job) => {
             const salary = formatSalary(job);
             return (
@@ -68,7 +68,7 @@ export function JobCarousel({ jobs, totalOpen }: { jobs: Job[]; totalOpen: numbe
                 key={job.slug}
                 href={`/jobs/${job.slug}`}
                 data-reveal="fade"
-                className="group flex w-[320px] shrink-0 snap-start flex-col rounded-2xl border border-line bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-accent/30 hover:shadow-xl hover:shadow-ink/10 sm:w-[360px] sm:p-8"
+                className="group relative flex w-[320px] shrink-0 snap-start flex-col rounded-2xl border border-line bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-accent/30 hover:shadow-xl hover:shadow-ink/10 sm:w-[360px] sm:p-8"
               >
                 <p className="font-mono text-xs uppercase tracking-widest text-muted">{EMPLOYMENT[job.employmentType] ?? job.employmentType}</p>
                 <h3 className="font-display mt-3 text-2xl leading-snug text-ink transition group-hover:text-accent">{job.title}</h3>
@@ -101,7 +101,7 @@ export function JobCarousel({ jobs, totalOpen }: { jobs: Job[]; totalOpen: numbe
           <Link
             href="/jobs"
             data-reveal="fade"
-            className="group flex w-[320px] shrink-0 snap-start flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-line bg-paper-2/60 p-7 text-center transition duration-300 hover:-translate-y-1 hover:border-accent sm:w-[360px] sm:p-8"
+            className="group relative flex w-[320px] shrink-0 snap-start flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-line bg-paper-2/60 p-7 text-center transition duration-300 hover:-translate-y-1 hover:border-accent sm:w-[360px] sm:p-8"
           >
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-ink text-gold transition duration-300 group-hover:scale-110 group-hover:bg-gold group-hover:text-ink">
               <Arrow className="h-5 w-5" />
