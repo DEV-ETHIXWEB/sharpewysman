@@ -98,13 +98,12 @@ export function Testimonials({ items, tone = "light" }: { items: Testimonial[]; 
     <div>
       <div className="container-sw flex flex-wrap items-center justify-between gap-4">
         {groups.length > 1 ? (
-          <div role="tablist" aria-label="Testimonials from" className={`inline-flex rounded-full border p-1 ${dark ? "border-white/15" : "border-line bg-white"}`}>
+          <div role="group" aria-label="Show testimonials from" className={`inline-flex rounded-full border p-1 ${dark ? "border-white/15" : "border-line bg-white"}`}>
             {groups.map((g) => (
               <button
                 key={g.id}
-                role="tab"
                 type="button"
-                aria-selected={aud === g.id}
+                aria-pressed={aud === g.id}
                 onClick={() => setAud(g.id)}
                 className={`rounded-full px-5 py-2.5 text-sm font-bold transition ${
                   aud === g.id ? (dark ? "bg-gold text-ink" : "bg-ink text-white") : dark ? "text-white/75 hover:text-white" : "text-muted hover:text-ink"

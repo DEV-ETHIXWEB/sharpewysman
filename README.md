@@ -284,7 +284,10 @@ the security headers are present, and a real enquiry and a real job application 
 * **Privacy policy and terms:** the current text is a generic template (it mentions shipping and
   payments). It should be replaced with a recruitment-specific policy that complies with PIPEDA. It must
   cover: what the forms collect (including resumes and IP address), how long enquiries are kept, how to
-  request access or deletion, and Google Analytics cookies if GA4 is switched on.
+  request access or deletion, and Google Analytics cookies if GA4 is switched on. The terms also
+  contained the unfilled placeholder "[Your Jurisdiction]"; the site now renders it as British Columbia
+  and Canada (`fillLegalPlaceholders` in `web/src/lib/sanitize.ts`), which counsel should confirm. The
+  terms also mention user accounts and an "Effective Date" that do not exist on this site.
 * **Case studies, awards and client logos:** none exist yet. Add real ones in WordPress. Template
   logos and "AllSquares" content from the old site were intentionally not carried over.
 * **Insights:** three launch articles were written for SEO and need the client's review.

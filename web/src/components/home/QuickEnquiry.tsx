@@ -5,6 +5,7 @@ import { useId, useRef, useState, type FormEvent } from "react";
 import { IconArrow } from "../icons";
 import { Tick } from "../ui";
 import { trackLead } from "@/lib/analytics";
+import { EMAIL_RE } from "@/lib/validate";
 
 type Topic = "hire" | "register";
 
@@ -28,10 +29,13 @@ export function EnquiryForm({ className = "" }: { className?: string }) {
     const name = String(fd.get("name") ?? "").trim();
     const email = String(fd.get("email") ?? "").trim();
     if (!name) errs.name = "Enter your name.";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Enter a valid email address.";
-    if (!fd.get("consent")) errs.consent = "Please confirm so we can reply.";
+    if (!EMAIL_RE.test(email)) errs.email = "Enter an email address like name@company.com.";
+    if (!fd.get("consent")) errs.consent = "Tick the box so we can reply.";
     setErrors(errs);
-    if (Object.keys(errs).length) return;
+    if (Object.keys(errs).length) {
+      formRef.current?.querySelector<HTMLElement>(`[name="${Object.keys(errs)[0]}"]`)?.focus();
+      return;
+    }
     fd.set("topic", topic);
     setStatus("sending");
     setServerError("");
@@ -57,6 +61,19 @@ export function EnquiryForm({ className = "" }: { className?: string }) {
     setStatus("error");
   }
 
+  const clear = (k: string) =>
+    setErrors((prev) => {
+      if (!prev[k]) return prev;
+      const next = { ...prev };
+      delete next[k];
+      return next;
+    });
+  const a11y = (k: string) => ({
+    "aria-invalid": !!errors[k],
+    "aria-describedby": errors[k] ? `${uid}-${k}-err` : undefined,
+    onInput: () => clear(k),
+  });
+
   const field =
     "block w-full rounded-lg border border-white/15 bg-white/[0.06] px-3.5 py-2.5 text-[0.95rem] text-white placeholder:text-white/40 transition focus:border-gold focus:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-gold/30";
 
@@ -66,7 +83,7 @@ export function EnquiryForm({ className = "" }: { className?: string }) {
         <Tick animate className="h-9 w-11 text-gold" />
         <p className="mt-5 font-display text-2xl">Thank you{firstName ? `, ${firstName}` : ""}.</p>
         <p className="mt-2 text-sm leading-relaxed text-white/70">
-          A recruiter will reply personally within one business day. We&rsquo;ve also sent a confirmation to your inbox.
+          A recruiter will reply personally within one business day.
         </p>
         <button
           type="button"
@@ -102,7 +119,17 @@ export function EnquiryForm({ className = "" }: { className?: string }) {
             type="button"
             role="radio"
             aria-checked={topic === id}
+            tabIndex={topic === id ? 0 : -1}
             onClick={() => setTopic(id)}
+            onKeyDown={(e) => {
+              // Radio-group keys: arrows move and select, like native radios.
+              if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+              e.preventDefault();
+              const next = topic === "hire" ? "register" : "hire";
+              setTopic(next);
+              (e.currentTarget.parentElement?.querySelector(`[data-topic="${next}"]`) as HTMLElement | null)?.focus();
+            }}
+            data-topic={id}
             className={`rounded-full py-2 text-sm font-bold transition ${topic === id ? "bg-gold text-ink" : "text-white/70 hover:text-white"}`}
           >
             {label}
@@ -115,15 +142,15 @@ export function EnquiryForm({ className = "" }: { className?: string }) {
           <label htmlFor={`${uid}-name`} className="sr-only">
             Full name
           </label>
-          <input id={`${uid}-name`} name="name" autoComplete="name" placeholder="Full name" className={field} aria-invalid={!!errors.name} />
-          {errors.name ? <p className="mt-1 text-xs font-bold text-[#ff9aa0]">{errors.name}</p> : null}
+          <input id={`${uid}-name`} name="name" autoComplete="name" placeholder="Full name" className={field} {...a11y("name")} />
+          {errors.name ? <p id={`${uid}-name-err`} className="mt-1 text-xs font-bold text-[#ff9aa0]">{errors.name}</p> : null}
         </div>
         <div>
           <label htmlFor={`${uid}-email`} className="sr-only">
             Email
           </label>
-          <input id={`${uid}-email`} name="email" type="email" autoComplete="email" placeholder="Work email" className={field} aria-invalid={!!errors.email} />
-          {errors.email ? <p className="mt-1 text-xs font-bold text-[#ff9aa0]">{errors.email}</p> : null}
+          <input id={`${uid}-email`} name="email" type="email" autoComplete="email" placeholder="Work email" className={field} {...a11y("email")} />
+          {errors.email ? <p id={`${uid}-email-err`} className="mt-1 text-xs font-bold text-[#ff9aa0]">{errors.email}</p> : null}
         </div>
         <div>
           <label htmlFor={`${uid}-msg`} className="sr-only">
@@ -139,7 +166,7 @@ export function EnquiryForm({ className = "" }: { className?: string }) {
       </div>
 
       <label className="mt-4 flex items-start gap-2.5 text-xs leading-relaxed text-white/60">
-        <input type="checkbox" name="consent" value="yes" className="check check-dark !h-[1.1rem] !w-[1.1rem]" aria-invalid={!!errors.consent} />
+        <input type="checkbox" name="consent" value="yes" className="check check-dark !h-[1.1rem] !w-[1.1rem]" {...a11y("consent")} onChange={() => clear("consent")} />
         <span>
           Sharpe Wysman may contact me about this enquiry (
           <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-white">
@@ -148,7 +175,7 @@ export function EnquiryForm({ className = "" }: { className?: string }) {
           ).
         </span>
       </label>
-      {errors.consent ? <p className="mt-1 text-xs font-bold text-[#ff9aa0]">{errors.consent}</p> : null}
+      {errors.consent ? <p id={`${uid}-consent-err`} className="mt-1 text-xs font-bold text-[#ff9aa0]">{errors.consent}</p> : null}
 
       {status === "error" ? (
         <p role="alert" className="mt-3 text-xs text-[#ff9aa0]">

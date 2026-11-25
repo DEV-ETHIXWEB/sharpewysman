@@ -7,6 +7,7 @@ import { Tick } from "./ui";
 import { IconArrow, IconDocument, IconUpload } from "./icons";
 import { trackLead } from "@/lib/analytics";
 import { services } from "@/content/company";
+import { CV_EXT_RE, CV_MAX_MB, EMAIL_RE, normaliseUrl, PHONE_RE } from "@/lib/validate";
 
 type Topic = "hire" | "register" | "general";
 
@@ -16,7 +17,7 @@ const TOPICS: { id: Topic; label: string }[] = [
   { id: "general", label: "Something else" },
 ];
 
-const MAX_MB = 5;
+const MAX_MB = CV_MAX_MB;
 const CV_TYPES = ".pdf,.doc,.docx";
 
 /**
@@ -69,10 +70,14 @@ export function EnquiryForm({
     const errs: Record<string, string> = {};
     if (!String(fd.get("name") ?? "").trim()) errs.name = "Enter your name.";
     const email = String(fd.get("email") ?? "").trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Enter an email address like name@company.com.";
+    if (!EMAIL_RE.test(email)) errs.email = "Enter an email address like name@company.com.";
+    const phone = String(fd.get("phone") ?? "").trim();
+    if (phone && !PHONE_RE.test(phone)) errs.phone = "Enter a phone number using digits, or leave it blank.";
+    if (normaliseUrl(String(fd.get("linkedin") ?? "")) === null) errs.linkedin = "Enter a LinkedIn address like linkedin.com/in/yourname, or leave it blank.";
     if (!String(fd.get("message") ?? "").trim() && mode === "contact") errs.message = "Tell us a little about what you need.";
     const cv = fd.get("cv");
     if (mode === "apply" && (!(cv instanceof File) || cv.size === 0)) errs.cv = "Attach your resume (PDF or Word).";
+    else if (cv instanceof File && cv.size > 0 && !CV_EXT_RE.test(cv.name)) errs.cv = "Attach your resume as a PDF or Word document.";
     if (cv instanceof File && cv.size > MAX_MB * 1024 * 1024) errs.cv = `Your file is larger than ${MAX_MB} MB. Attach a smaller file.`;
     if (!fd.get("consent")) errs.consent = "Confirm you agree so we can contact you.";
     return errs;
@@ -126,9 +131,15 @@ export function EnquiryForm({
             : "Thank you. We'll reply within one business day. If it's urgent, call us."}
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/jobs" className="btn btn-ink">
-            Browse more jobs
-          </Link>
+          {mode === "contact" && topic === "hire" ? (
+            <Link href="/employers" className="btn btn-ink">
+              How we recruit
+            </Link>
+          ) : (
+            <Link href="/jobs" className="btn btn-ink">
+              Browse current jobs
+            </Link>
+          )}
           <a href={`tel:${phoneHref}`} className="btn btn-ghost tabular-nums">
             {phone}
           </a>
@@ -195,7 +206,8 @@ export function EnquiryForm({
           <label htmlFor="phone" className="label">
             Phone <span className="font-normal text-muted">(optional)</span>
           </label>
-          <input id="phone" name="phone" type="tel" autoComplete="tel" className="field" />
+          <input id="phone" name="phone" type="tel" autoComplete="tel" className="field" {...a11y("phone")} />
+          {err("phone")}
         </div>
         {showCompany ? (
           <div>
@@ -209,7 +221,8 @@ export function EnquiryForm({
             <label htmlFor="linkedin" className="label">
               LinkedIn profile <span className="font-normal text-muted">(optional)</span>
             </label>
-            <input id="linkedin" name="linkedin" type="url" inputMode="url" placeholder="https://linkedin.com/in/…" className="field" />
+            <input id="linkedin" name="linkedin" type="url" inputMode="url" placeholder="linkedin.com/in/yourname" className="field" {...a11y("linkedin")} />
+            {err("linkedin")}
           </div>
         )}
       </div>

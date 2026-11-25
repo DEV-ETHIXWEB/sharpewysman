@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getOpenJobs, WP_URL } from "./wp";
 import { SITE_URL } from "./site";
 import { services } from "@/content/company";
+import { CV_EXT_RE, EMAIL_RE, normaliseUrl, PHONE_RE } from "./validate";
 
 /**
  * Server-side handling for the contact and job application forms.
@@ -25,7 +26,6 @@ const CV_MIME = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/octet-stream",
 ]);
-const CV_EXT = /\.(pdf|docx?)$/i;
 
 const FAIL_MSG = "We couldn't send that just now.";
 
@@ -123,18 +123,13 @@ export async function handleEnquiry(req: Request, kind: "contact" | "apply") {
   }
 
   if (!data.name) return fail("Enter your name.", 422);
-  if (!/^[^\s@<>"',;]+@[^\s@<>"',;]+\.[^\s@<>"',;]{2,}$/.test(data.email)) return fail("Enter a valid email address.", 422);
+  if (!EMAIL_RE.test(data.email)) return fail("Enter a valid email address.", 422);
   if (!data.consent) return fail("Confirm you agree to be contacted.", 422);
-  if (data.phone && !/^[\d\s()+.\-x]{7,40}$/i.test(data.phone)) return fail("Enter a valid phone number, or leave it blank.", 422);
+  if (data.phone && !PHONE_RE.test(data.phone)) return fail("Enter a valid phone number, or leave it blank.", 422);
   if (data.linkedin) {
-    const url = /^https?:\/\//i.test(data.linkedin) ? data.linkedin : `https://${data.linkedin}`;
-    try {
-      const u = new URL(url);
-      if (!/^https?:$/.test(u.protocol) || !u.hostname.includes(".")) throw new Error();
-      data.linkedin = u.toString();
-    } catch {
-      return fail("Enter a valid LinkedIn URL, or leave it blank.", 422);
-    }
+    const url = normaliseUrl(data.linkedin);
+    if (!url) return fail("Enter a valid LinkedIn URL, or leave it blank.", 422);
+    data.linkedin = url;
   }
 
   // Applications must be for a real, open role. The title always comes from our own job data.
@@ -151,7 +146,7 @@ export async function handleEnquiry(req: Request, kind: "contact" | "apply") {
   if (kind === "apply" && !hasCv) return fail("Attach your resume.", 422);
   if (hasCv) {
     if (cv.size > MAX_FILE) return fail("Your resume is larger than 5 MB.", 413);
-    if (!CV_EXT.test(cv.name) || (cv.type && !CV_MIME.has(cv.type)) || !(await looksLikeCv(cv))) {
+    if (!CV_EXT_RE.test(cv.name) || (cv.type && !CV_MIME.has(cv.type)) || !(await looksLikeCv(cv))) {
       return fail("Attach your resume as a PDF or Word document.", 415);
     }
   }

@@ -19,6 +19,11 @@ export function MobileNav({ nav, industries, phone, phoneHref }: { nav: L[]; ind
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // Everything outside the header goes inert, so Tab stays inside the open menu.
+    const behind = Array.from(document.body.children).filter(
+      (el): el is HTMLElement => el instanceof HTMLElement && !el.contains(buttonRef.current) && !el.inert,
+    );
+    behind.forEach((el) => (el.inert = true));
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false);
@@ -28,6 +33,7 @@ export function MobileNav({ nav, industries, phone, phoneHref }: { nav: L[]; ind
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
+      behind.forEach((el) => (el.inert = false));
       window.removeEventListener("keydown", onKey);
     };
   }, [open]);
@@ -61,13 +67,20 @@ export function MobileNav({ nav, industries, phone, phoneHref }: { nav: L[]; ind
         hidden={!open}
         className="absolute inset-x-0 top-full z-40 h-[calc(100dvh-5rem)] overflow-y-auto border-t border-white/10 bg-[#141315]/[0.97] md:h-[calc(100dvh-5.75rem)]"
       >
-        <nav aria-label="Mobile" className="container-sw py-6">
+        <nav
+          aria-label="Mobile"
+          className="container-sw py-6"
+          onClick={(e) => {
+            if ((e.target as HTMLElement).closest("a")) setOpen(false);
+          }}
+        >
           <ul className="divide-y divide-white/10">
             {nav.map((item, i) => (
               <li key={item.href} data-menu-item style={{ ["--i" as string]: i }}>
                 <Link
                   href={item.href}
-                  className={`block py-4 font-display text-[1.75rem] ${pathname.startsWith(item.href) ? "text-gold" : "text-white"}`}
+                  aria-current={pathname === item.href || pathname.startsWith(`${item.href}/`) ? "page" : undefined}
+                  className={`block py-4 font-display text-[1.75rem] ${pathname === item.href || pathname.startsWith(`${item.href}/`) ? "text-gold" : "text-white"}`}
                 >
                   {item.label}
                 </Link>

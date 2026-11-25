@@ -25,9 +25,17 @@ export function MotionRuntime() {
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
-          if (e.isIntersecting) {
-            e.target.classList.add("is-in");
-            io.unobserve(e.target);
+          if (!e.isIntersecting) continue;
+          // In a sideways-scrolling row, reveal the whole row together: cards that
+          // only arrive on swipe would otherwise show up blank while their stagger runs.
+          const row = e.target.parentElement;
+          const group =
+            row && row.scrollWidth > row.clientWidth + 1 && /(auto|scroll)/.test(getComputedStyle(row).overflowX)
+              ? Array.from(row.querySelectorAll<HTMLElement>(":scope > [data-reveal]:not(.is-in)"))
+              : [e.target as HTMLElement];
+          for (const el of group) {
+            el.classList.add("is-in");
+            io.unobserve(el);
           }
         }
       },

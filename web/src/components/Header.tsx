@@ -3,7 +3,7 @@ import { getIndustries, getSettings } from "@/lib/wp";
 import { NAV } from "@/lib/site";
 import { Logo } from "./ui";
 import { MobileNav } from "./MobileNav";
-import { NavLink } from "./NavLink";
+import { NavDropdownDismiss, NavLink } from "./NavLink";
 import { IconArrow, IconChevronDown, IconPhone, INDUSTRY_ICONS } from "./icons";
 
 export async function Header() {
@@ -27,7 +27,7 @@ export async function Header() {
           <ul className="flex items-center gap-1.5 text-[1rem]">
             {NAV.map((item) =>
               item.href === "/industries" ? (
-                <li key={item.href} className="group relative">
+                <li key={item.href} className="nav-dd group relative">
                   <NavLink href={item.href}>
                     {item.label}
                     <IconChevronDown className="h-3.5 w-3.5 opacity-60 transition duration-300 group-hover:rotate-180 group-focus-within:rotate-180" strokeWidth={2} />
@@ -80,6 +80,7 @@ export async function Header() {
           </Link>
         </div>
 
+        <NavDropdownDismiss />
         <MobileNav nav={[...NAV]} industries={industryLinks} phone={settings.phone} phoneHref={settings.phoneHref} />
       </div>
     </header>

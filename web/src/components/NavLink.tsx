@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 export function NavLink({ href, children }: { href: string; children: ReactNode }) {
   const pathname = usePathname();
@@ -18,4 +18,35 @@ export function NavLink({ href, children }: { href: string; children: ReactNode 
       {children}
     </Link>
   );
+}
+
+/**
+ * Escape closes the Industries dropdown even while the pointer still rests on it
+ * (hover content must be dismissible). It reopens once the pointer leaves and returns.
+ */
+export function NavDropdownDismiss() {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      document.querySelectorAll<HTMLElement>(".nav-dd").forEach((li) => {
+        if (!li.matches(":hover, :focus-within")) return;
+        li.dataset.dismissed = "";
+        const trigger = li.querySelector<HTMLElement>("a");
+        if (li.contains(document.activeElement)) trigger?.focus();
+        const reset = () => {
+          delete li.dataset.dismissed;
+          li.removeEventListener("pointerleave", reset);
+          li.removeEventListener("focusout", onOut);
+        };
+        const onOut = (ev: FocusEvent) => {
+          if (!li.contains(ev.relatedTarget as Node)) reset();
+        };
+        li.addEventListener("pointerleave", reset);
+        li.addEventListener("focusout", onOut);
+      });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+  return null;
 }

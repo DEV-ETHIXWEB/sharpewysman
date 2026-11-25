@@ -497,7 +497,8 @@
     border-color 0.3s,
     background-color 0.5s,
     color 0.3s;
-  will-change: opacity, transform;
+  /* No will-change: browsers promote opacity/transform transitions on their own, and a
+     permanent hint on every reveal blows Firefox's layer budget on long pages. */
 }
 .js [data-reveal="fade"] {
   transform: none;
@@ -1191,3 +1192,7 @@ img[src*="professional-downtown.jpg"] {
 .ind-card img[src*="team-collaboration.jpg"] {
   object-position: 70% 34%;
 }
+
+/* Escape dismisses the hover dropdown until the pointer leaves (see NavDropdownDismiss). */
+.nav-dd[data-dismissed] > div { visibility: hidden !important; opacity: 0 !important; }
+.nav-dd[data-dismissed] svg { rotate: 0deg !important; }
