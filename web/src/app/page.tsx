@@ -116,7 +116,7 @@ export default async function HomePage() {
                     <ServiceMark slug={s.slug} />
                     <h3 className="mt-5 text-xl text-white md:text-[1.4rem]">{s.title}</h3>
                     <p className="mt-2 font-serif text-base text-gold">{s.lede}</p>
-                    <span className="mt-auto flex items-center gap-2 pt-4 font-mono text-[0.65rem] uppercase tracking-widest text-white/40 motion-reduce:hidden [@media(hover:none)]:hidden">
+                    <span className="mt-auto flex items-center gap-2 pt-4 font-mono text-[0.72rem] uppercase tracking-widest text-white/40 motion-reduce:hidden [@media(hover:none)]:hidden">
                       Hover to read more
                     </span>
                   </div>
@@ -125,7 +125,7 @@ export default async function HomePage() {
                   <div data-glow className="flip-card-face flip-card-back flex flex-col bg-[#2e2d31] p-6 md:p-7">
                     <h3 className="text-lg text-white">{s.title}</h3>
                     <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-dark">{s.body}</p>
-                    <p className="mt-4 border-t border-white/10 pt-3 font-mono text-[0.65rem] uppercase tracking-widest text-white/60">Best for: {s.bestFor}</p>
+                    <p className="mt-4 border-t border-white/10 pt-3 font-mono text-[0.72rem] uppercase tracking-widest text-white/60">Best for: {s.bestFor}</p>
                     <Link href={`/contact?topic=hire&service=${s.slug}`} className="link-arrow mt-4 text-sm text-gold">
                       Enquire <Arrow className="h-3.5 w-3.5" />
                     </Link>

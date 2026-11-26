@@ -9,7 +9,7 @@ import { abs, breadcrumbLd, buildMetadata } from "@/lib/seo";
 export const metadata = buildMetadata({
   title: "Contact Sharpe Wysman | Vancouver Recruitment",
   description:
-    "Talk to a Vancouver accounting and finance recruiter. Discuss a role you need to fill, register your resume, or ask a question. We reply within one business day.",
+    "Talk to a Vancouver accounting and finance recruiter: fill a role, register your resume or ask a question. We reply within one business day.",
   path: "/contact",
 });
 

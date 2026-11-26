@@ -137,7 +137,7 @@ function sw_email_layout( $args ) {
 <title><?php echo esc_html( wp_strip_all_tags( $args['title'] ) ); ?></title>
 <!--[if mso]><style>table,td,div,p,a{font-family:Arial,sans-serif!important;}</style><![endif]-->
 <style>
-  @media (max-width:620px){ .sw-card{padding:32px 24px!important;} .sw-h1{font-size:28px!important;} .sw-pad{padding-left:16px!important;padding-right:16px!important;} }
+  @media (max-width:620px){ .sw-card{padding:32px 24px!important;} .sw-h1{font-size:28px!important;} .sw-pad{padding-left:16px!important;padding-right:16px!important;} .sw-tag{display:none!important;} }
   a{color:<?php echo esc_attr( $t['accent'] ); ?>;}
 </style>
 </head>
@@ -151,7 +151,7 @@ function sw_email_layout( $args ) {
     <tr><td bgcolor="<?php echo esc_attr( $t['ink'] ); ?>" style="background:<?php echo esc_attr( $t['ink'] ); ?>;border-radius:14px 14px 0 0;padding:26px 36px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
         <td><a href="<?php echo esc_url( $site ); ?>" target="_blank"><img src="<?php echo esc_url( $logo ); ?>" width="190" alt="Sharpe Wysman Recruitment Solutions" style="display:block;width:190px;max-width:190px;height:auto;border:0;"></a></td>
-        <td align="right" style="font-family:<?php echo esc_attr( $t['mono'] ); ?>;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:<?php echo esc_attr( $t['gold'] ); ?>;">Vancouver &middot; Since 2008</td>
+        <td class="sw-tag" align="right" style="white-space:nowrap;font-family:<?php echo esc_attr( $t['mono'] ); ?>;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:<?php echo esc_attr( $t['gold'] ); ?>;">Vancouver &middot; Since 2008</td>
       </tr></table>
     </td></tr>
     <!-- Gold rule -->

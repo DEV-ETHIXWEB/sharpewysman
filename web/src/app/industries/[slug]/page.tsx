@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ind) return {};
   return buildMetadata({
     title: `${ind.name} Recruitment, Vancouver`,
-    description: `${ind.name} recruiters in Vancouver. Hire ${ind.roles.slice(0, 3).join(", ")} and more with Sharpe Wysman, recruiting locally since 2008.`,
+    description: `${ind.name} recruiters in Vancouver. Hire ${ind.roles.slice(0, 3).join(", ")} and more. Recruiting locally since 2008.`,
     path: `/industries/${ind.slug}`,
     image: `/industries/${ind.slug}/opengraph-image`,
   });
@@ -46,6 +46,7 @@ export default async function IndustryPage({ params }: Props) {
           {
             "@context": "https://schema.org",
             "@type": "Service",
+            name: `${ind.name} recruitment in Vancouver`,
             serviceType: `${ind.name} recruitment`,
             provider: { "@id": `${SITE_URL}/#organization` },
             areaServed: { "@type": "AdministrativeArea", name: "Metro Vancouver" },

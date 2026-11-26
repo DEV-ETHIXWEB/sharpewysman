@@ -8,7 +8,7 @@ import { abs, breadcrumbLd, buildMetadata } from "@/lib/seo";
 export const metadata = buildMetadata({
   title: "Accounting, Tax & Finance Jobs in Vancouver",
   description:
-    "Current accounting and finance jobs in Greater Vancouver: tax managers, audit managers, controllers, directors of finance and partner-track roles. Apply in confidence.",
+    "Accounting and finance jobs in Greater Vancouver: tax and audit managers, controllers, directors of finance and partner-track roles. Apply in confidence.",
   path: "/jobs",
 });
 
