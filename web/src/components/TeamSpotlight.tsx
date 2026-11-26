@@ -46,7 +46,7 @@ export function TeamSpotlight({ team }: { team: TeamMember[] }) {
           {m.image ? (
             <Image src={m.image} alt={`${m.name}, ${m.role}`} fill sizes="(min-width: 1024px) 32vw, 100vw" className="object-cover object-top" />
           ) : null}
-          <span className="absolute left-5 top-5 z-[2] rounded-full bg-white px-5 py-2.5 text-sm font-bold shadow-[0_8px_20px_-6px_rgb(30_29_31/0.25)]">
+          <span className="absolute bottom-5 left-5 z-[2] rounded-full bg-white px-5 py-2.5 text-sm font-bold shadow-[0_8px_20px_-6px_rgb(30_29_31/0.25)]">
             {m.role}
           </span>
         </div>
@@ -79,7 +79,7 @@ export function TeamSpotlight({ team }: { team: TeamMember[] }) {
 
           {hasExperience ? (
             <div className="mt-10 border-t border-line pt-10">
-              <h4 className="text-lg">{m.name} experience</h4>
+              <h4 className="text-lg">Experience</h4>
               {experience.length ? (
                 <div className="mt-4 space-y-4 text-muted">
                   {experience.map((p) => (

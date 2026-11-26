@@ -201,16 +201,17 @@ export class AssistantEngine {
 
   /* --------------------------------------------------------- matching */
 
-  private matchJobs(q: string, raw: string): KBJob[] {
+  private matchJobs(q: string, raw: string, opts: { requireTopic?: boolean; ignoreCity?: boolean } = {}): KBJob[] {
     const qt = new Set(tokens(q));
     const floor = salaryFloor(raw);
-    const city = /\bsurrey\b/.test(q) ? "Surrey" : /\b(downtown|vancouver)\b/.test(q) && !/greater/.test(q) ? "Vancouver" : null;
+    const city = opts.ignoreCity ? null : /\bsurrey\b/.test(q) ? "Surrey" : /\b(downtown|vancouver)\b/.test(q) && !/greater/.test(q) ? "Vancouver" : null;
     const scored = this.kb.jobs.map((j) => {
       const title = tokens(j.title);
       const body = tokens(`${j.summary} ${j.highlights.join(" ")} ${j.requirements.join(" ")}`);
       let s = 0;
       title.forEach((t) => qt.has(t) && (s += t === "manag" || t === "senior" ? 1 : 3));
       body.forEach((t) => qt.has(t) && (s += 0.4));
+      if (opts.requireTopic && s < 1) return { j, s: -99 };
       if (city && j.city === city) s += 2;
       if (city && j.city !== city) s -= 8;
       if (floor && (j.salaryMax ?? j.salaryMin ?? 0) < floor) s -= 10;
@@ -224,6 +225,14 @@ export class AssistantEngine {
   }
 
   private findJobByName(q: string): KBJob | undefined {
+    // A job's headline title said in full ("senior accountant", "tax manager") wins outright; longest wins.
+    const flat = (x: string) => ` ${normalise(x).replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim()} `;
+    const nq = flat(q);
+    const head = this.kb.jobs
+      .map((j) => ({ j, h: flat(j.title.split(",")[0]) }))
+      .filter((x) => x.h.trim().length >= 6 && x.h.trim() !== "manager" && nq.includes(x.h))
+      .sort((a, b) => b.h.length - a.h.length)[0];
+    if (head) return head.j;
     const qt = new Set(tokens(q));
     let best: { j: KBJob; s: number } | undefined;
     for (const j of this.kb.jobs) {
@@ -318,7 +327,7 @@ export class AssistantEngine {
     if (/\b(bye|goodbye|see you|that'?s all|that is all|no thanks|nothing else)\b/.test(q)) {
       return done({ blocks: [text(`Thanks for stopping by${c.name ? `, ${c.name}` : ""}. If anything comes up, we're a call or a message away.`), contact] }, "bye");
     }
-    if (/\b(who|what) are you\b|\bare you (a |an )?(bot|robot|human|real|person|ai|machine)\b|\bchat ?gpt\b|\byour name\b/.test(q)) {
+    if (/\b(who|what) are you\b|\bare you (a |an )?(bot|robot|human|real|person|ai|machine)\b|\bis (this|it) (a |an )?(bot|robot|chat ?bot|human|real person|person|ai|machine)\b|\bam i (talking|speaking|chatting) (to|with) (a |an )?(bot|robot|human|real|person|ai|machine)\b|\bchat ?gpt\b|\byour name\b/.test(q)) {
       return done(
         {
           blocks: [
@@ -351,6 +360,146 @@ export class AssistantEngine {
       );
     }
 
+    /* ---- the firm's name */
+    if (/\b(sharpe|wysman)\b/.test(q) && /\b(name|mean|meaning|stand for|called|come from)\b/.test(q)) {
+      return done(
+        {
+          blocks: [text(`I don't have the story behind the name, but ${kb.founder.name}, who founded the firm in ${kb.founded}, would be glad to tell you.`), contact],
+          chips: ["Who founded Sharpe Wysman?", "Show me current jobs"],
+        },
+        "name-origin",
+      );
+    }
+
+    /* ---- frustration */
+    if (/\b(you suck|useless|stupid|idiot|dumb|rubbish|terrible bot|hate (you|this)|not helpful|waste of time)\b/.test(q)) {
+      return done({ blocks: [text("Sorry I haven't been more helpful. A recruiter can answer you properly, by phone or message."), contact] }, "frustration");
+    }
+
+    /* ---- privacy and data */
+    if (/\b(privacy policy|my (personal )?(data|information|info|details)|personal (data|information)|delete|erase|remove my|cookies?|pipa|pipeda|gdpr)\b|\b(stor\w*|sav\w*|record\w*|keep\w*|log\w*)\b.*\b(chat|conversation|messages?)\b|\b(chat|conversation)\b.*\b(stored|saved|recorded|private)\b/.test(`${q} | ${raw.toLowerCase()}`)) {
+      return done(
+        {
+          blocks: [
+            text("This chat stays in your browser for this visit. It isn't sent to us or stored by us."),
+            text("Enquiries, applications and resumes sent through the site are deleted automatically after 24 months, or sooner if you ask. You can ask to see, correct or delete your information at any time, and we respond within 30 days."),
+            { kind: "actions", actions: [{ label: "Privacy policy", href: "/privacy-policy", primary: true }, { label: "Contact us", href: "/contact" }] },
+          ],
+          chips: ["Will my employer find out?", "Talk to a recruiter"],
+        },
+        "privacy",
+      );
+    }
+
+    /* ---- application status */
+    if (/\b(i (have )?applied|i sent (my|an) (application|resume|cv)|application status|status of my application|heard back|hear back|any (update|news)|follow(ing)? up on my)\b/.test(q)) {
+      return done(
+        {
+          blocks: [
+            text("A recruiter reviews every application personally, usually within two business days. If it's been longer than that, call us and we'll check on it for you. I can't see individual applications from here."),
+            contact,
+          ],
+          chips: ["Show me current jobs", "Will my employer find out?"],
+        },
+        "app-status",
+        { audience: "candidate" },
+      );
+    }
+
+    /* ---- office hours */
+    if (/\b(hours|opening times?|open (today|now|on|at|tomorrow)|are you open|closed|weekends?|saturday|sunday|holidays?)\b/.test(q)) {
+      return done(
+        {
+          blocks: [text(`The quickest way to reach a recruiter is to call **${kb.settings.phone}**. Messages sent through the site get a reply within one business day.`), contact],
+          chips: ["Show me current jobs", "I'm hiring"],
+        },
+        "hours",
+      );
+    }
+
+    /* ---- LinkedIn */
+    if (/\blinked ?in\b/.test(q) && kb.settings.linkedin) {
+      return done(
+        {
+          blocks: [text(`You can connect with our founder, ${kb.founder.name}, on LinkedIn.`), { kind: "actions", actions: [{ label: "Open LinkedIn", href: kb.settings.linkedin, primary: true }] }],
+          chips: ["Show me current jobs", "Talk to a recruiter"],
+        },
+        "linkedin",
+      );
+    }
+
+    /* ---- outside our area */
+    if (/\b(toronto|calgary|edmonton|montreal|ottawa|winnipeg|halifax|victoria|kelowna|ontario|alberta|quebec|manitoba|saskatchewan|nova scotia|outside (of )?(vancouver|bc|british columbia|the lower mainland)|other (cities|provinces)|across canada|nationwide|usa|united states|abroad|overseas)\b/.test(q)) {
+      return done(
+        {
+          blocks: [
+            text("We focus on Greater Vancouver, including Surrey, Burnaby, Richmond and the North Shore, and our current roles are all based there."),
+            text("If you're planning a move to the Vancouver area, register your resume and a recruiter will talk you through the market."),
+            { kind: "actions", actions: [{ label: "Browse jobs", href: "/jobs", primary: true }, { label: "Register your resume", href: "/contact?topic=register" }] },
+          ],
+          chips: ["Show me current jobs", "Talk to a recruiter"],
+        },
+        "area",
+      );
+    }
+
+    /* ---- immigration */
+    if (/\b(work permits?|visas?|sponsor\w*|immigra\w*|newcomers?|permanent resident|lmia|international (student|candidate)s?|canadian experience)\b/.test(q)) {
+      return done(
+        {
+          blocks: [
+            text("We can't advise on immigration, visas or work permits, and sponsorship decisions sit with each employer."),
+            text("If you're eligible to work in Canada, register your resume and a recruiter will talk through roles that suit your experience."),
+            { kind: "actions", actions: [{ label: "Register your resume", href: "/contact?topic=register", primary: true }] },
+          ],
+          chips: ["Show me current jobs", "Is it free for candidates?"],
+        },
+        "immigration",
+        { audience: "candidate" },
+      );
+    }
+
+    /* ---- early career */
+    if (/\b(entry.level|new grads?|recent grads?|just graduated|graduate (job|role|position)s?|junior|students?|co.?op|internships?|interns?|first job|no experience)\b/.test(q)) {
+      return done(
+        {
+          blocks: [
+            text("We specialize in mid-level to leadership positions, so our current roles ask for professional experience."),
+            text("If you're earlier in your career, register your resume anyway. We keep it on file and call if a suitable role comes in."),
+            { kind: "actions", actions: [{ label: "Register your resume", href: "/contact?topic=register", primary: true }, { label: "See current roles", href: "/jobs" }] },
+          ],
+          chips: ["Show me current jobs", "Is it free for candidates?"],
+        },
+        "early-career",
+        { audience: "candidate" },
+      );
+    }
+
+    /* ---- contract, temporary and part-time work */
+    if (/\b(part.time|temp|temps|temporary|contract (staff\w*|work|workers?|roles?|jobs?|positions?|hire)|contractors?|interim|fixed.term|maternity cover|locum)\b/.test(q)) {
+      const employer = c.audience === "employer" || /\b(we|our|need|staff|cover|hire)\b/.test(q);
+      return done(
+        {
+          blocks: [
+            text("Alongside permanent recruitment, Sharpe Wysman provides contract staffing."),
+            text(
+              employer
+                ? "Tell us about the role and the timing, and a recruiter will come back to you within one business day."
+                : "Contract and part-time opportunities aren't always advertised, so register your resume and tell us what you're open to.",
+            ),
+            {
+              kind: "actions",
+              actions: employer
+                ? [{ label: "Discuss a role", href: "/contact?topic=hire", primary: true }]
+                : [{ label: "Register your resume", href: "/contact?topic=register", primary: true }, { label: "See current roles", href: "/jobs" }],
+            },
+          ],
+          chips: employer ? ["How do your fees work?", "What's your process?"] : ["Show me current jobs", "Is it free for candidates?"],
+        },
+        "contract",
+      );
+    }
+
     /* ---- conversational references to earlier jobs */
     const last = c.lastJob ? kb.jobs.find((j) => j.slug === c.lastJob) : undefined;
     const ord = q.match(/\b(first|1st|second|2nd|third|3rd|fourth|4th|fifth|5th|last) (one|role|job|position)?\b/);
@@ -359,8 +508,12 @@ export class AssistantEngine {
       const j = kb.jobs.find((x) => x.slug === c.lastJobs[idx]);
       if (j) return this.jobDetail(j, c, seed, done);
     }
+    if (ord && /\b(one|role|job|position)\b/.test(q)) {
+      if (last) return this.jobDetail(last, c, seed, done);
+      return this.jobList(kb.jobs, c, seed, done, q, true);
+    }
     if (last && /^(tell me more|more( info| details)?|details|what else|go on|interesting|sounds good)$/.test(q)) return this.jobDetail(last, c, seed, done);
-    if (last && /\b(salary|pay|how much|compensation|package)\b/.test(q) && !this.findJobByName(q)) {
+    if (last && /\b(salary|pay|how much|compensation|package)\b/.test(q) && !/\b(fee|fees|charge|cost|you charge)\b/.test(q) && !this.findJobByName(q)) {
       const s = salaryText(last);
       return done(
         {
@@ -388,7 +541,7 @@ export class AssistantEngine {
       const pool = kb.jobs.filter((j) => j.slug !== c.lastJob && (!last || j.industry === last.industry));
       if (pool.length) return this.jobList(pool, c, seed, done, q, true);
     }
-    if (/\b(how (do|can|should) i apply|apply|application)\b/.test(q)) {
+    if (/\b(how (do|can|should) i apply|apply|application)\b/.test(q) && !/\b(private|confidential\w*|secret|find out|discreet)\b/.test(q)) {
       const target = this.findJobByName(q) ?? last;
       return done(
         {
@@ -463,11 +616,39 @@ export class AssistantEngine {
     if (/\b(advice|tips?|guide|article|blog|insights?|public practice|move (from|to|into)|should i (move|leave|switch|take|accept)|partner.track|choose a recruiter|career (change|move|advice))\b/.test(q)) {
       const hits = this.bm25(tokens(q)).filter((h) => h.d.id.startsWith("article:") && h.score > 0.5);
       if (hits.length) return done({ blocks: hits[0].d.answer, chips: ["Show me current jobs", "Talk to a recruiter"] }, "article");
+      if (/\b(blog|articles?|insights?|advice|tips?|guides?)\b/.test(q) && kb.articles.length) {
+        return done(
+          {
+            blocks: [
+              text("Here's what we've written recently:"),
+              { kind: "steps", steps: kb.articles.slice(0, 4).map((a) => ({ title: a.title, body: a.excerpt })) },
+              { kind: "actions", actions: [{ label: "Read our insights", href: "/insights", primary: true }] },
+            ],
+            chips: ["Show me current jobs", "Talk to a recruiter"],
+          },
+          "articles",
+        );
+      }
     }
 
     /* ---- fees */
     if (/\b(fee|fees|cost|costs|charge|price|pricing|rates?|free|pay you|commission)\b/.test(q)) {
       const employer = c.audience === "employer" || /\b(employer|company|firm|we|our|hire|hiring|placement fee|retained|contingency)\b/.test(q);
+      const candidate = c.audience === "candidate" || /\b(candidates?|me|i|my|job ?seekers?|applicants?)\b/.test(q);
+      if (!employer && !candidate) {
+        const fees = kb.faqs.find((f) => f.id === "fees");
+        return done(
+          {
+            blocks: [
+              text("**For candidates**, it's completely free. Our fees are paid by the hiring employer."),
+              text(`**For employers**, ${(fees?.answer ?? "fees depend on the service and the role.").replace(/^./, (m) => m.toLowerCase())}`),
+              { kind: "actions", actions: [{ label: "Discuss a role", href: "/contact?topic=hire", primary: true }, { label: "Browse jobs", href: "/jobs" }] },
+            ],
+            chips: ["What services do you offer?", "Will my employer find out?"],
+          },
+          "fees",
+        );
+      }
       const faq = kb.faqs.find((f) => f.id === (employer ? "fees" : "candidate-fee"));
       return done(
         {
@@ -484,6 +665,26 @@ export class AssistantEngine {
           chips: employer ? ["What services do you offer?", "How quickly can you find someone?"] : ["Will my employer find out?", "Show me current jobs"],
         },
         "fees",
+      );
+    }
+
+    /* ---- salaries in general (no role in context) */
+    if (/\b(salary|salaries|pay|how much)\b/.test(q) && !/\d/.test(q) && !named) {
+      const published = kb.jobs.filter((j) => salaryText(j));
+      return done(
+        {
+          blocks: [
+            text(
+              published.length
+                ? `We publish salaries where the employer has agreed to: ${published.map((j) => `the **${j.title}** role pays **${salaryText(j)}**`).join("; ")}. For the other roles, we share the range in a confidential conversation.`
+                : "Salaries are shared in a confidential conversation, along with the firm's name and full details.",
+            ),
+            { kind: "actions", actions: [{ label: "See all jobs", href: "/jobs", primary: true }] },
+          ],
+          chips: ["Which pay over $120k?", "How do I apply?"],
+        },
+        "salary-general",
+        { audience: c.audience ?? "candidate" },
       );
     }
 
@@ -525,8 +726,33 @@ export class AssistantEngine {
     if (wantsJobs || salaryAsk || /^show me (current )?jobs?$/.test(q)) {
       const GENERIC = new Set(["job", "legal", "it", "humanresourc", "humanresources", "engineering", "any", "current", "open", "have", "list", "all", "available", "show", "see"]);
       const specific = tokens(q).filter((t) => !GENERIC.has(t) && !t.startsWith("account"));
-      let list = industry && !specific.length && !salaryAsk ? kb.jobs.filter((j) => j.industry === industry.slug) : this.matchJobs(q, raw);
-      if (industry && !list.length && !salaryAsk) list = kb.jobs.filter((j) => j.industry === industry.slug);
+      // A named discipline or title ("bookkeeper", "audit", "CFO") must actually match a role, never fall back to "everything".
+      const roleWord = /\b(bookkeep\w*|payroll|cfo|chief financial|vp finance|accounts? (payable|receivable)|analysts?|clerks?|auditors?|audit|assurance|treasury|financial planning|cost account\w*|controllers?|tax|compilations?|directors?|partners?|accountants?|credit|billing|ifrs|aspe|pubco)\b/.test(q);
+      let list = industry && !specific.length && !salaryAsk ? kb.jobs.filter((j) => j.industry === industry.slug) : this.matchJobs(q, raw, { requireTopic: roleWord });
+      if (industry && !list.length && !salaryAsk && !roleWord) list = kb.jobs.filter((j) => j.industry === industry.slug);
+      // Nothing in Surrey: offer the same kind of role elsewhere in Greater Vancouver.
+      if (!list.length && roleWord && /\bsurrey\b/.test(q)) {
+        const elsewhere = this.matchJobs(q, raw, { requireTopic: true, ignoreCity: true });
+        if (elsewhere.length) {
+          const r = this.jobList(elsewhere, c, seed, done, q);
+          r.reply.blocks[0] = text(`Nothing like that in Surrey right now, but here ${elsewhere.length === 1 ? "is one role" : `are **${elsewhere.length} roles**`} elsewhere in Greater Vancouver:`);
+          return r;
+        }
+      }
+      if (!list.length && roleWord && !salaryAsk) {
+        return done(
+          {
+            blocks: [
+              text("None of our advertised roles match that right now, but many of our searches are confidential and never advertised."),
+              text("If you register your resume, a recruiter will contact you as soon as something suitable comes in."),
+              { kind: "actions", actions: [{ label: "Register your resume", href: "/contact?topic=register", primary: true }, { label: `See all ${kb.jobs.length} jobs`, href: "/jobs" }] },
+            ],
+            chips: ["Show me all jobs", "Is it free for candidates?"],
+          },
+          "jobs-none",
+          { audience: "candidate" },
+        );
+      }
       const generic = !list.length && !salaryAsk && (!industry || industry.slug === "accounting");
       if (generic) list = kb.jobs;
       if (!list.length) {
@@ -591,6 +817,27 @@ export class AssistantEngine {
     }
 
     /* ---- services */
+    const named_services = kb.services.filter(
+      (s) =>
+        (s.slug === "contingency-search" && /\bcontingen\w*/.test(q)) ||
+        (s.slug === "search-and-selection" && /\b(retained|search and selection|executive search|headhunt\w*)\b/.test(q)) ||
+        (s.slug === "workplace-consulting" && /\b(workplace consult\w*|consulting|team structure|succession)\b/.test(q)),
+    );
+    if (named_services.length) {
+      const fees = kb.faqs.find((f) => f.id === "fees");
+      return done(
+        {
+          blocks: [
+            ...named_services.map((s) => text(`**${s.title}.** ${s.lede} ${s.body} Best for ${s.bestFor.toLowerCase()}.`)),
+            ...(fees ? [text(fees.answer)] : []),
+            { kind: "actions", actions: [{ label: "Discuss a role", href: "/contact?topic=hire", primary: true }, { label: "Compare services", href: "/employers#services" }] },
+          ],
+          chips: ["What's your process?", "How quickly can you find someone?"],
+        },
+        "service",
+        { audience: "employer" },
+      );
+    }
     if (/\b(services?|retained|contingency|search and selection|workplace consulting|what do you (offer|do)|how can you help)\b/.test(q)) {
       return done(
         {
@@ -603,7 +850,7 @@ export class AssistantEngine {
     }
 
     /* ---- industries */
-    if (industry && /\b(do you|recruit|cover|work|industr|sector|specialt|about|tell)\b/.test(q)) {
+    if (industry && (/\b(do you|recruit\w*|cover|work|industr\w*|sectors?|specialt\w*|about|tell)\b/.test(q) || tokens(q).length <= 2)) {
       const roles = kb.jobs.filter((j) => j.industry === industry.slug);
       return done(
         {
@@ -675,24 +922,9 @@ export class AssistantEngine {
     }
 
     /* ---- location */
-    if (/\b(where are you|located|location|office|address|areas?|cover|based|which cities|surrey|burnaby|richmond|north shore|remote)\b/.test(q)) {
+    if (/\b(where are you|located|location|office|address|areas?|cover|based|which cities|surrey|burnaby|richmond|north shore|remote)\b/.test(q) && !/\b(e-?mail|phone|number|call)\b/.test(q)) {
       const faq = kb.faqs.find((f) => f.id === "where");
       return done({ blocks: [text(faq?.answer ?? "We're based in Vancouver and work across Greater Vancouver."), contact], chips: ["Show me current jobs", "Who's on the team?"] }, "location");
-    }
-
-    /* ---- contact / human handoff */
-    if (/\b(talk|speak|chat) (to|with) (a |an )?(someone|somebody|person|human|recruiter|real)|\bcall (me|you)\b|\b(phone|telephone|number|email|e-mail|contact|reach (you|someone))\b|^talk to a recruiter$/.test(q)) {
-      return done(
-        {
-          blocks: [
-            text(
-              `${hey}${cap("Of course.")} You can call ${kb.team[0]?.name.split(" ")[0] ?? "us"} directly on **${kb.settings.phone}**${kb.settings.email ? `, email **${kb.settings.email}**` : ""}, or send a message and a recruiter will reply within one business day.`,
-            ),
-            contact,
-          ],
-        },
-        "contact",
-      );
     }
 
     /* ---- register */
@@ -710,8 +942,24 @@ export class AssistantEngine {
       );
     }
 
+    /* ---- contact / human handoff */
+    if (/\b(talk|speak|chat) (to|with) (a |an )?(someone|somebody|person|human|recruiter|real)|\bcall (me|you)\b|\b(phone|telephone|number|email|e-mail|contact|reach (you|someone))\b|^talk to a recruiter$/.test(q)) {
+      return done(
+        {
+          blocks: [
+            text(
+              `${hey}${cap("Of course.")} You can call ${kb.team[0]?.name.split(" ")[0] ?? "us"} directly on **${kb.settings.phone}**${kb.settings.email ? `, email **${kb.settings.email}**` : ""}, or send a message and a recruiter will reply within one business day.`,
+            ),
+            contact,
+          ],
+        },
+        "contact",
+      );
+    }
+
     /* ---- open retrieval */
-    const qt = tokens(q);
+    // The brand name is in almost every document, so it must not count as a match on its own.
+    const qt = tokens(q).filter((t) => !/^(sharpe|wysman|sharp)$/.test(t));
     const hits = this.bm25(qt);
     const top = hits[0];
     const overlap = top ? new Set(qt.filter((t) => top.d.tokens.includes(t))).size : 0;

@@ -1082,13 +1082,14 @@ html[data-scrolled="true"] .site-header {
       animation-range: cover 0% cover 100%;
     }
     @keyframes parallax {
+      /* Gentle: keeps heads and hands of people inside their frames */
       from {
-        translate: 0 -5%;
-        scale: 1.1;
+        translate: 0 -2.5%;
+        scale: 1.06;
       }
       to {
-        translate: 0 5%;
-        scale: 1.1;
+        translate: 0 2.5%;
+        scale: 1.06;
       }
     }
   }
@@ -1191,6 +1192,14 @@ img[src*="professional-downtown.jpg"] {
 /* Narrow industry-carousel cards show a thinner slice of the team photo */
 .ind-card img[src*="team-collaboration.jpg"] {
   object-position: 70% 34%;
+}
+/* The wide specialty card shows a thin band of a portrait photo: keep both faces in it */
+img.ind-primary-img[src*="industry-accounting-finance.jpg"] {
+  object-position: 50% 18%;
+}
+/* Tall desktop hero frames: keep everyone at the edges whole */
+img.hero-img[src*="team-collaboration.jpg"] {
+  object-position: 56% 34%;
 }
 
 /* Escape dismisses the hover dropdown until the pointer leaves (see NavDropdownDismiss). */

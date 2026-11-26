@@ -179,7 +179,7 @@ export function PageHero({
               alt=""
               fill
               sizes="(min-width: 1024px) 30vw, 0px"
-              className={`parallax-img object-cover ${video ? "hidden motion-reduce:block" : ""}`}
+              className={`hero-img object-cover ${video ? "hidden motion-reduce:block" : ""}`}
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-ink/50 to-transparent transition-opacity duration-500 group-hover:from-ink/85" aria-hidden />

@@ -40,7 +40,7 @@ export async function Footer() {
 
   return (
     <footer className="on-dark bg-ink text-white">
-      <div className="container-sw grid gap-12 py-16 md:py-20 lg:grid-cols-[1.3fr_2fr]">
+      <div className="container-sw grid gap-10 py-12 md:gap-12 md:py-20 lg:grid-cols-[1.3fr_2fr]">
         <div className="max-w-sm">
           <Logo variant="light" />
           <p className="mt-6 text-muted-dark">
@@ -75,11 +75,16 @@ export async function Footer() {
           </dl>
         </div>
 
-        <div className="grid gap-10 sm:grid-cols-3">
-          {cols.map((c) => (
-            <nav key={c.title} aria-label={c.title}>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-9 sm:grid-cols-3 sm:gap-10">
+          {cols.map((c, ci) => (
+            // On phones the last column spans the full width with its links in two columns, keeping the footer short.
+            <nav key={c.title} aria-label={c.title} className={ci === cols.length - 1 ? "col-span-2 sm:col-span-1" : undefined}>
               <h2 className="eyebrow text-gold">{c.title}</h2>
-              <ul className="mt-5 space-y-3">
+              <ul
+                className={`mt-4 text-[0.95rem] sm:mt-5 sm:block sm:space-y-3 sm:text-base ${
+                  ci === cols.length - 1 ? "grid grid-cols-2 gap-x-6 gap-y-3" : "space-y-3"
+                }`}
+              >
                 {c.links.map((l) => (
                   <li key={l.href}>
                     <Link href={l.href} className="text-white/80 transition hover:text-gold">

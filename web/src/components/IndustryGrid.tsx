@@ -20,7 +20,7 @@ export function IndustryGrid({ industries, openByIndustry }: { industries: Indus
             alt=""
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="parallax-img -z-10 object-cover opacity-45 transition duration-700 group-hover:scale-[1.03]"
+            className="ind-primary-img -z-10 object-cover opacity-45 transition duration-700 group-hover:scale-[1.03]"
           />
           <div className="absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/70 to-ink/10" />
           <span className="mb-auto flex h-16 w-16 items-center justify-center text-gold">

@@ -95,7 +95,7 @@ export default async function EmployersPage() {
                     <CountUp value={s.value} />
                   </p>
                   {tag ? (
-                    <span className="mt-4 inline-block rounded-full bg-white/10 px-3 py-1 font-mono text-[0.65rem] uppercase tracking-widest text-gold">
+                    <span className="mt-4 inline-block rounded-full bg-white/10 px-3 py-1 font-mono text-[0.72rem] uppercase tracking-widest text-gold">
                       {tag}
                     </span>
                   ) : null}

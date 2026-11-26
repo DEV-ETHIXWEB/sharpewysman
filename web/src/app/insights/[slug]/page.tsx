@@ -60,7 +60,7 @@ export default async function ArticlePage({ params }: Props) {
         </header>
         {a.image ? (
           <div className="container-sw -mb-4 mt-10 md:mt-14">
-            <div className="relative mx-auto aspect-[21/9] max-w-5xl overflow-hidden rounded-xl">
+            <div className="relative mx-auto aspect-[3/2] max-w-5xl overflow-hidden rounded-xl md:aspect-[16/9]">
               <Image src={a.image} alt="" fill sizes="(min-width: 1024px) 64rem, 100vw" className="object-cover" priority />
             </div>
           </div>

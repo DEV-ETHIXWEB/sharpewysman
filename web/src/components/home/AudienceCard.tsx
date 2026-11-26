@@ -30,7 +30,7 @@ export function AudienceCard({ data, index }: { data: Audience; index: number })
       style={{ ["--i" as string]: index }}
       className="audience-card group relative flex flex-col overflow-hidden rounded-xl border border-line bg-white transition duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-ink/10"
     >
-      <div className="audience-image relative aspect-[21/9] overflow-hidden">
+      <div className="audience-image relative aspect-[3/2] overflow-hidden lg:aspect-[16/9]">
         <Image src={data.image} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="parallax-img object-cover transition duration-700 group-hover:scale-[1.03]" />
       </div>
       <div className="audience-body flex flex-1 flex-col p-6 md:p-7">
